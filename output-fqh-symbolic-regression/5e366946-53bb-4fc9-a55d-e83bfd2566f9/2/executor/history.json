@@ -1,0 +1,17 @@
+[
+  {
+    "round": 0,
+    "candidates": [
+      {
+        "round_idx": 0,
+        "candidate_idx": 0,
+        "random_idx": "_ea9",
+        "solution_file_path": "output-fqh-symbolic-regression/5e366946-53bb-4fc9-a55d-e83bfd2566f9/2/executor/0_0/solution_ea9.py",
+        "evaluation_file_path": "output-fqh-symbolic-regression/5e366946-53bb-4fc9-a55d-e83bfd2566f9/2/executor/0_0/evaluation_ea9.json",
+        "score": 0.9975849667366918,
+        "reason": "{\n  \"status\": \"success\",\n  \"summary\": \"score=0.997585; fidelity=0.998083; validation_nmse=0.00191711; exchange_error=0; rotation_error=4.04e-16 at M=3; finite=1.0000; complexity=13; fitted={'c0_re': 0.5794122894559998, 'c0_im': -2.3050105230157816, 'p1': 0.2638842516498641}\",\n  \"score\": 0.9975849667366918,\n  \"metrics\": {\n    \"validity\": 1.0,\n    \"validation_nmse\": 0.0019171124021141962,\n    \"validation_fidelity\": 0.9980830437945456,\n    \"exchange_error\": 0.0,\n    \"rotation_error\": 4.0402353025792183e-16,\n    \"inferred_angular_momentum\": 3,\n    \"finite_fraction\": 1.0,\n    \"expression_complexity\": 13,\n    \"parameter_count\": 3,\n    \"accuracy_component\": 0.9980838839389672,\n    \"physics_factor\": 0.9999999999999994,\n    \"complexity_penalty\": 0.9995001249791693,\n    \"eval_time\": 3.4545699330046773\n  },\n  \"artifacts\": {\n    \"expression\": \"c0 * z12**3 * exp(-abs(p1) * (abs(z1)**2 + abs(z2)**2))\",\n    \"fitted_parameters\": {\n      \"c0_re\": 0.5794122894559998,\n      \"c0_im\": -2.3050105230157816,\n      \"p1\": 0.2638842516498641\n    },\n    \"global_scale\": {\n      \"real\": 0.04696144611013744,\n      \"imag\": -0.007508621486724609\n    },\n    \"optimizer\": {\n      \"attempted\": true,\n      \"success\": true,\n      \"nfev\": 17,\n      \"message\": \"`xtol` termination condition is satisfied.\",\n      \"residual_cost\": 11.189819941233885\n    },\n    \"training_samples_used\": 6000,\n    \"validation_samples_used\": 8000,\n    \"split_seed\": 20260916,\n    \"dataset\": \"/data/home/zyh/jaqmc/symbolic/datasets/disk_n2_Q6_kapa_1/dataset_50000.npz\"\n  }\n}",
+        "source": "disk"
+      }
+    ]
+  }
+]

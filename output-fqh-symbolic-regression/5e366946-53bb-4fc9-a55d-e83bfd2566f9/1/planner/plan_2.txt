@@ -1,0 +1,52 @@
+======================================================================
+PLAN 2  (ALTERNATIVE)
+Basis-expansion ansatz with automatic SPARSE TERM SELECTION
+======================================================================
+
+1. MATHEMATICAL FORMULATION
+----------------------------------------------------------------------
+Variables  X = coefficients {a_j} (complex, j=1..K) of a fixed basis,
+           plus the single real Gaussian width p1.
+   Basis (all with the SAME M = 3 and odd under exchange):
+     b_0 = z_rel^3
+     b_1 = z_rel^3 * r_rel^2            (= z_rel^4 * conj(z_rel))
+     b_2 = z_rel^3 * r_rel^4
+     b_3 = z_rel^3 * |Z_cm|^2
+     b_4 = z_rel^3 * r_rel^2 * |Z_cm|^2
+     b_5 = z_rel^5 * conj(z_rel)^2 ... (kept only if M=3, odd)
+   where z_rel = z1 - z2 , r_rel^2 = |z_rel|^2 , Z_cm = (z1+z2)/2.
+   Psi = ( sum_j a_j b_j ) * exp( -|p1|*(|z1|^2 + |z2|^2) )
+Constraints C:
+   C1 antisymmetry (every b_j odd in z_rel), C2 single M=3,
+   C3 finiteness (Gaussian), C4 <=10 params.
+Objective f(X): minimize validation NMSE; complexity tie-break =
+   number of non-zero a_j (sparsity).
+
+2. SOLVER STRATEGY
+----------------------------------------------------------------------
+   STRUCTURE: Orthogonal Matching Pursuit (OMP) / LARS over the basis to
+     greedily add the term that most reduces the training residual, then a
+     single global least-squares refit of the selected coefficients plus p1
+     (scipy.optimize.least_squares, 'trf').
+   PARAMETERS: closed-form linear least squares for {a_j} (given p1),
+     wrapped in a 1-D golden-section search over p1.
+
+3. VALIDITY MECHANISM
+----------------------------------------------------------------------
+   Build the basis with a pre-screen that keeps ONLY terms with
+   (i) odd power in z_rel and (ii) net rotation weight 3; assert this
+   numerically (rotate by phi, check phase == exp(-3 i phi)) before use.
+   After selection, reject any coefficient whose inclusion raises
+   validation NMSE (guarantees the sparsity path never hurts).
+
+4. WHY THIS SOLUTION
+----------------------------------------------------------------------
+   Advantages:
+     (+) Automated: explores a richer radial/CM correction space.
+     (+) Linear-in-coefficients -> convex sub-problem, cheap, exact.
+   Disadvantages:
+     (-) More parameters -> overfitting + complexity penalty risk.
+     (-) The basis is hand-chosen; if the true correction is outside the
+         span it stalls.
+     (-) Less interpretable; only preferred if Plan 1 underfits.
+======================================================================

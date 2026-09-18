@@ -1,0 +1,45 @@
+{
+  "status": "success",
+  "score": 0.9922190316667573,
+  "summary": "score=0.992219; fidelity=0.999189; validation_nmse=0.000811299; exchange_error=0; rotation_error=4.41e-16 at M=3; finite=1.0000; complexity=26; fitted={'c0_re': 1.0072710623111918, 'c0_im': -0.01656447021105801, 'p1': 0.280726470544843, 'p2': -0.01384761284182289, 'p3': 0.03782804253921796}",
+  "metrics": {
+    "validity": 1.0,
+    "validation_nmse": 0.0008112992686487752,
+    "validation_fidelity": 0.9991888324063054,
+    "exchange_error": 0.0,
+    "rotation_error": 4.407235335447992e-16,
+    "inferred_angular_momentum": 3,
+    "finite_fraction": 1.0,
+    "expression_complexity": 26,
+    "parameter_count": 5,
+    "accuracy_component": 0.9991889310759581,
+    "physics_factor": 0.9999999999999993,
+    "complexity_penalty": 0.9930244429332351,
+    "eval_time": 5.1940280739218
+  },
+  "artifacts": {
+    "expression": "c0 * (z1 - z2)**3 * (1 + p3 * abs(z1 - z2)**2) * exp(-abs(p1)*(abs(z1)**2 + abs(z2)**2) - abs(p2)*abs(z1 - z2)**2)",
+    "fitted_parameters": {
+      "c0_re": 1.0072710623111918,
+      "c0_im": -0.01656447021105801,
+      "p1": 0.280726470544843,
+      "p2": -0.01384761284182289,
+      "p3": 0.03782804253921796
+    },
+    "global_scale": {
+      "real": 0.010836461022221088,
+      "imag": -0.10366341674287657
+    },
+    "optimizer": {
+      "attempted": true,
+      "success": true,
+      "nfev": 23,
+      "message": "`xtol` termination condition is satisfied.",
+      "residual_cost": 4.845894781853758
+    },
+    "training_samples_used": 6000,
+    "validation_samples_used": 8000,
+    "split_seed": 20260916,
+    "dataset": "/data/home/zyh/jaqmc/symbolic/datasets/disk_n2_Q6_kapa_1/dataset_50000.npz"
+  }
+}

@@ -1,0 +1,48 @@
+======================================================================
+PLAN 3  (ALTERNATIVE, LEAST ROBUST)
+Open-ended symbolic-regression / genetic-programming search over
+non-holomorphic structures with a constraint-repair operator
+======================================================================
+
+1. MATHEMATICAL FORMULATION
+----------------------------------------------------------------------
+Variables  X = the expression TREE itself (structure) + its numeric leaves.
+   Primitive set: {z1, z2, conj(z1), conj(z2), +, -, *, /, **2, **3,
+   exp, abs, add/mul by fitted complex constants}.
+Constraints C:
+   C1 fermionic antisymmetry, C2 single integer M,
+   C3 finiteness on the sampled domain, C4 <=10 fitted parameters,
+   C5 no memorization / no I/O (hard task rules).
+Objective f(X): multi-objective
+   maximize Score = accuracy_component * physics_factor * complexity_penalty,
+   i.e. minimize validation NMSE with penalties for exchange_error,
+   rotation_error, non-finite fraction, and expression complexity.
+
+2. SOLVER STRATEGY
+----------------------------------------------------------------------
+   Genetic programming (tree crossover + subtree mutation) over the
+   primitive set, with a repair operator applied to every offspring:
+      repair(tree): find the antisymmetric relative factor; if none,
+        multiply by a minimal (z_rel)^(odd) factor to restore C1;
+        then symmetrize rotation content to the nearest integer M;
+        then clamp any exponential argument to be <=0 (finiteness).
+   Numeric leaves refit by scipy.optimize.least_squares after each edit.
+
+3. VALIDITY MECHANISM
+----------------------------------------------------------------------
+   The constraint-repair operator is applied BEFORE evaluation, so every
+   evaluated individual is feasible by construction. A final assertion
+   re-checks C1-C3 numerically; infeasible results are discarded.
+
+4. WHY THIS SOLUTION
+----------------------------------------------------------------------
+   Advantages:
+     (+) Maximum structural freedom; could discover surprises (e.g. a
+         different M sector or an unexpected Jastrow form).
+   Disadvantages:
+     (-) Expensive, high variance, hard to reproduce -> contradicts the
+         "reproducible across independent runs" success criterion.
+     (-) Large overfitting and complexity-penalty risk.
+     (-) Slower to yield a first good candidate; only recommended after
+         the structured families (Plans 1-2) have visibly plateaued.
+======================================================================

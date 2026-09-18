@@ -1,0 +1,1790 @@
+LoongFlow 符号回归任务
+  主机：        c20163.hpc2
+  Slurm Job ID：3378302
+  数据集：      /data/home/zyh/jaqmc/symbolic/datasets/disk_n2_Q6_strength5/dataset_uniform_augmented.npz
+  输出目录：    /data/home/zyh/LoongFlow/runs/fqh-kappa5-v1
+  最大迭代数：  50
+  目标分数：    0.995
+  拟合 max_nfev：120
+  CPU 线程数：  4
+运行命令： ./run_math.sh symbolic_regression --config /tmp/loongflow-sr.3378302.6SjrjI.yaml --initial-file /data/home/zyh/LoongFlow/agents/math_agent/examples/symbolic_regression/initial_program.py --eval-file /data/home/zyh/LoongFlow/agents/math_agent/examples/symbolic_regression/eval_program.py --max-iterations 50 --target-score 0.995 --log-level INFO
+✅ Checks passed. Preparing to run task: symbolic_regression
+------------------------------------------------------------------
+🚀 Command to execute:
+PYTHONPATH=/data/home/zyh/LoongFlow/src:/data/home/zyh/LoongFlow:./src python agents/math_agent/math_evolve_agent.py --config ./agents/math_agent/examples/symbolic_regression/task_config.yaml --eval-file ./agents/math_agent/examples/symbolic_regression/eval_program.py --initial-file ./agents/math_agent/examples/symbolic_regression/initial_program.py --config /tmp/loongflow-sr.3378302.6SjrjI.yaml --initial-file /data/home/zyh/LoongFlow/agents/math_agent/examples/symbolic_regression/initial_program.py --eval-file /data/home/zyh/LoongFlow/agents/math_agent/examples/symbolic_regression/eval_program.py --max-iterations 50 --target-score 0.995 --log-level INFO
+------------------------------------------------------------------
+[2026-09-17 17:28:02,601] [WARNING] [log_id=a063e1f9891a] [LiteLLM] LiteLLM: model cost map fetch attempt 1/3 failed (ConnectError fetching https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json: [Errno 111] Connection refused); retrying in 2.9s
+[2026-09-17 17:28:05,528] [WARNING] [log_id=a063e1f9891a] [LiteLLM] LiteLLM: model cost map fetch attempt 2/3 failed (ConnectError fetching https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json: [Errno 111] Connection refused); retrying in 4.4s
+[2026-09-17 17:28:09,995] [WARNING] [log_id=a063e1f9891a] [LiteLLM] LiteLLM: Failed to fetch remote model cost map from https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json: ConnectError fetching https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json: [Errno 111] Connection refused (after 3 attempts). Falling back to local backup.
+1. Loading base configuration from YAML...
+2. Merging command-line overrides...
+3. Validating final configuration...
+   - Configuration is valid.
+Logging configured. Level: INFO, Console: True, File: True (at /data/home/zyh/LoongFlow/runs/fqh-kappa5-v1/logs)
+4. Initializing PESAgent...
+[2026-09-17 17:29:31,949] [INFO] [log_id=a063e1f9891a] [PESAgent] Creating database from config...
+[2026-09-17 17:29:31,949] [INFO] [log_id=a063e1f9891a] [PESAgent] Created database: <loongflow.framework.pes.database.database.EvolveDatabase object at 0x14caf2bf63c0>
+[2026-09-17 17:29:31,949] [INFO] [log_id=a063e1f9891a] [PESAgent] Registering Planner worker: 'evolve_planner'
+[2026-09-17 17:29:31,949] [INFO] [log_id=a063e1f9891a] [PESAgent] Registering Executor worker: 'evolve_executor_chat'
+[2026-09-17 17:29:31,949] [INFO] [log_id=a063e1f9891a] [PESAgent] Registering Executor worker: 'evolve_executor_react'
+[2026-09-17 17:29:31,949] [INFO] [log_id=a063e1f9891a] [PESAgent] Registering Executor worker: 'evolve_executor_fuse'
+[2026-09-17 17:29:31,949] [INFO] [log_id=a063e1f9891a] [PESAgent] Registering Summary worker: 'evolve_summary'
+
+======================================
+🚀 Starting Evolve Process 🚀
+🎯 Task: You are a mathematical physicist studying symbolic representations of
+complex fr...
+📈 Target Score: 0.995
+🔄 Max Iterations: 50
+- Planner: evolve_planner
+- Executor: evolve_executor_fuse
+- Summarizer: evolve_summary
+======================================
+
+[2026-09-17 17:29:31,953] [INFO] [log_id=a063e1f9891a] [LoongFlowEvaluator] Starting evaluation 58aeb74c7267436da248e9e45969f033 in /data/home/zyh/LoongFlow/runs/fqh-kappa5-v1/evaluator/eval_58aeb74c7267436da248e9e45969f033
+[2026-09-17 17:30:14,516] [INFO] [log_id=a063e1f9891a] [LoongFlowEvaluator] Evaluation completed. Status: EvaluationStatus.SUCCESS, Score: 0.00351876817876436, Summary: score=0.003519; full_data_fidelity=0.000034; full_data_nmse=0.999966; exchange_error=0; rotation_error=9.82e-17 at M=1; finite=1.0000; complexity=2; fitted={'c0_re': 1.215368665360016, 'c0_im': 1.0019015278753671}
+[2026-09-17 17:30:14,517] [INFO] [log_id=a063e1f9891a] [PESAgent] Starting initial evolution workers...
+[2026-09-17 17:30:14,517] [INFO] [log_id=a063e1f9891a] [PESAgent] Started 1 initial evolution workers.
+[2026-09-17 17:30:14,517] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 637557f7ffe2, Starting evolution cycle for iteration 1.
+[2026-09-17 17:30:14,518] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:30:14,520] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 637557f7ffe2: Planner: Current Iteration 1 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:30:14,521] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 637557f7ffe2: Planner: Get sample parent solution: {}
+[2026-09-17 17:30:14,521] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 637557f7ffe2: Planner: Start create best plan in iteration 1
+[2026-09-17 17:30:22,657] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.455073 seconds
+[2026-09-17 17:30:23,531] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.872526 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:30:27,049] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 1 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:30:30,140] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 43757ea63981, Starting evolution cycle for iteration 2.
+[2026-09-17 17:30:30,140] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:30:30,142] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 43757ea63981: Planner: Current Iteration 2 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:30:30,142] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 43757ea63981: Planner: Get sample parent solution: {}
+[2026-09-17 17:30:30,142] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 43757ea63981: Planner: Start create best plan in iteration 2
+[2026-09-17 17:30:30,149] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.421478 seconds
+[2026-09-17 17:30:30,572] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.982118 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:30:31,568] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 2 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:30:34,569] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 3cdcf1f73ddb, Starting evolution cycle for iteration 3.
+[2026-09-17 17:30:34,569] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:30:34,570] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 3cdcf1f73ddb: Planner: Current Iteration 3 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:30:34,570] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 3cdcf1f73ddb: Planner: Get sample parent solution: {}
+[2026-09-17 17:30:34,571] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 3cdcf1f73ddb: Planner: Start create best plan in iteration 3
+[2026-09-17 17:30:34,578] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.391735 seconds
+[2026-09-17 17:30:34,971] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.885939 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:30:35,870] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 3 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:30:38,871] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: ad1efddc051e, Starting evolution cycle for iteration 4.
+[2026-09-17 17:30:38,871] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:30:38,872] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: ad1efddc051e: Planner: Current Iteration 4 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:30:38,872] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: ad1efddc051e: Planner: Get sample parent solution: {}
+[2026-09-17 17:30:38,872] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: ad1efddc051e: Planner: Start create best plan in iteration 4
+[2026-09-17 17:30:38,877] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.493863 seconds
+[2026-09-17 17:30:39,373] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.785833 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:30:40,787] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 4 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:30:43,849] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: afa4fe010951, Starting evolution cycle for iteration 5.
+[2026-09-17 17:30:43,849] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:30:43,850] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: afa4fe010951: Planner: Current Iteration 5 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:30:43,850] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: afa4fe010951: Planner: Get sample parent solution: {}
+[2026-09-17 17:30:43,851] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: afa4fe010951: Planner: Start create best plan in iteration 5
+[2026-09-17 17:30:43,857] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.409063 seconds
+[2026-09-17 17:30:44,269] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.941998 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:30:45,223] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 5 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:30:48,224] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 04c034469d8e, Starting evolution cycle for iteration 6.
+[2026-09-17 17:30:48,224] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:30:48,225] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 04c034469d8e: Planner: Current Iteration 6 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:30:48,225] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 04c034469d8e: Planner: Get sample parent solution: {}
+[2026-09-17 17:30:48,226] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 04c034469d8e: Planner: Start create best plan in iteration 6
+[2026-09-17 17:30:48,231] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.439283 seconds
+[2026-09-17 17:30:48,673] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.776521 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:30:49,463] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 6 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:30:52,463] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 02cd16cee9d6, Starting evolution cycle for iteration 7.
+[2026-09-17 17:30:52,464] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:30:52,465] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 02cd16cee9d6: Planner: Current Iteration 7 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:30:52,465] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 02cd16cee9d6: Planner: Get sample parent solution: {}
+[2026-09-17 17:30:52,465] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 02cd16cee9d6: Planner: Start create best plan in iteration 7
+[2026-09-17 17:30:52,470] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.376543 seconds
+[2026-09-17 17:30:52,849] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.924326 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:30:53,787] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 7 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:30:56,788] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 866faeebc254, Starting evolution cycle for iteration 8.
+[2026-09-17 17:30:56,788] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:30:56,790] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 866faeebc254: Planner: Current Iteration 8 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:30:56,790] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 866faeebc254: Planner: Get sample parent solution: {}
+[2026-09-17 17:30:56,791] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 866faeebc254: Planner: Start create best plan in iteration 8
+[2026-09-17 17:30:56,796] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.433219 seconds
+[2026-09-17 17:30:57,231] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.937037 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:30:58,182] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 8 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:31:01,183] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 5a2edd785416, Starting evolution cycle for iteration 9.
+[2026-09-17 17:31:01,183] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:31:01,184] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 5a2edd785416: Planner: Current Iteration 9 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:31:01,184] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 5a2edd785416: Planner: Get sample parent solution: {}
+[2026-09-17 17:31:01,184] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 5a2edd785416: Planner: Start create best plan in iteration 9
+[2026-09-17 17:31:01,190] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.420207 seconds
+[2026-09-17 17:31:01,613] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.912886 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:31:02,538] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 9 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:31:05,539] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 69ee0a2eb313, Starting evolution cycle for iteration 10.
+[2026-09-17 17:31:05,539] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:31:05,540] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 69ee0a2eb313: Planner: Current Iteration 10 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:31:05,540] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 69ee0a2eb313: Planner: Get sample parent solution: {}
+[2026-09-17 17:31:05,541] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 69ee0a2eb313: Planner: Start create best plan in iteration 10
+[2026-09-17 17:31:05,546] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.490437 seconds
+[2026-09-17 17:31:06,038] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.862930 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:31:06,913] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 10 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:31:09,914] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 6b7ae69ada29, Starting evolution cycle for iteration 11.
+[2026-09-17 17:31:10,587] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:31:10,588] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 6b7ae69ada29: Planner: Current Iteration 11 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:31:10,588] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 6b7ae69ada29: Planner: Get sample parent solution: {}
+[2026-09-17 17:31:10,589] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 6b7ae69ada29: Planner: Start create best plan in iteration 11
+[2026-09-17 17:31:10,594] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.453640 seconds
+[2026-09-17 17:31:11,049] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.843790 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:31:11,906] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 11 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:31:14,907] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: a4be8aafbbe6, Starting evolution cycle for iteration 12.
+[2026-09-17 17:31:16,056] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:31:16,057] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: a4be8aafbbe6: Planner: Current Iteration 12 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:31:16,058] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: a4be8aafbbe6: Planner: Get sample parent solution: {}
+[2026-09-17 17:31:16,058] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: a4be8aafbbe6: Planner: Start create best plan in iteration 12
+[2026-09-17 17:31:16,064] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.418741 seconds
+[2026-09-17 17:31:16,485] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.879704 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:31:17,377] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 12 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:31:20,378] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: efd86b5b6eb1, Starting evolution cycle for iteration 13.
+[2026-09-17 17:31:20,379] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:31:20,380] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: efd86b5b6eb1: Planner: Current Iteration 13 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:31:20,380] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: efd86b5b6eb1: Planner: Get sample parent solution: {}
+[2026-09-17 17:31:20,380] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: efd86b5b6eb1: Planner: Start create best plan in iteration 13
+[2026-09-17 17:31:20,386] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.436284 seconds
+[2026-09-17 17:31:20,824] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.979063 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:31:21,817] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 13 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:31:24,818] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 33df4a35b56d, Starting evolution cycle for iteration 14.
+[2026-09-17 17:31:25,137] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:31:25,138] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 33df4a35b56d: Planner: Current Iteration 14 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:31:25,286] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 33df4a35b56d: Planner: Get sample parent solution: {}
+[2026-09-17 17:31:25,287] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 33df4a35b56d: Planner: Start create best plan in iteration 14
+[2026-09-17 17:31:25,292] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.412779 seconds
+[2026-09-17 17:31:25,708] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.917051 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:31:26,638] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 14 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:31:29,639] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 91fb0dfaffb4, Starting evolution cycle for iteration 15.
+[2026-09-17 17:31:29,640] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:31:29,641] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 91fb0dfaffb4: Planner: Current Iteration 15 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:31:29,641] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 91fb0dfaffb4: Planner: Get sample parent solution: {}
+[2026-09-17 17:31:29,641] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 91fb0dfaffb4: Planner: Start create best plan in iteration 15
+[2026-09-17 17:31:29,647] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.380692 seconds
+[2026-09-17 17:31:30,030] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.867863 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:31:31,291] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 15 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:31:34,292] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 63ed5cb1cd54, Starting evolution cycle for iteration 16.
+[2026-09-17 17:31:34,292] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:31:34,293] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 63ed5cb1cd54: Planner: Current Iteration 16 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:31:34,293] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 63ed5cb1cd54: Planner: Get sample parent solution: {}
+[2026-09-17 17:31:34,294] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 63ed5cb1cd54: Planner: Start create best plan in iteration 16
+[2026-09-17 17:31:34,299] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.426044 seconds
+[2026-09-17 17:31:34,727] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.796136 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:31:35,536] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 16 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:31:38,537] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 09cc6707e4a4, Starting evolution cycle for iteration 17.
+[2026-09-17 17:31:38,538] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:31:38,539] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 09cc6707e4a4: Planner: Current Iteration 17 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:31:38,539] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 09cc6707e4a4: Planner: Get sample parent solution: {}
+[2026-09-17 17:31:38,539] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 09cc6707e4a4: Planner: Start create best plan in iteration 17
+[2026-09-17 17:31:38,544] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.454585 seconds
+[2026-09-17 17:31:39,001] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.887281 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:31:39,901] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 17 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:31:42,902] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: e2620380b2e3, Starting evolution cycle for iteration 18.
+[2026-09-17 17:31:42,902] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:31:42,903] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: e2620380b2e3: Planner: Current Iteration 18 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:31:42,903] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: e2620380b2e3: Planner: Get sample parent solution: {}
+[2026-09-17 17:31:42,904] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: e2620380b2e3: Planner: Start create best plan in iteration 18
+[2026-09-17 17:31:42,908] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.447217 seconds
+[2026-09-17 17:31:43,358] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.764224 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:31:44,136] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 18 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:31:47,137] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: a6f98433eaa7, Starting evolution cycle for iteration 19.
+[2026-09-17 17:31:47,137] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:31:47,138] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: a6f98433eaa7: Planner: Current Iteration 19 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:31:47,138] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: a6f98433eaa7: Planner: Get sample parent solution: {}
+[2026-09-17 17:31:47,139] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: a6f98433eaa7: Planner: Start create best plan in iteration 19
+[2026-09-17 17:31:47,144] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.423870 seconds
+[2026-09-17 17:31:47,570] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.820374 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:31:48,404] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 19 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:31:51,405] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 0719367b0fa1, Starting evolution cycle for iteration 20.
+[2026-09-17 17:31:51,406] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:31:51,407] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 0719367b0fa1: Planner: Current Iteration 20 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:31:51,407] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 0719367b0fa1: Planner: Get sample parent solution: {}
+[2026-09-17 17:31:51,407] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 0719367b0fa1: Planner: Start create best plan in iteration 20
+[2026-09-17 17:31:51,412] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.450356 seconds
+[2026-09-17 17:31:51,865] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.909508 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:31:52,787] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 20 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:31:55,788] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 5b238ebe24aa, Starting evolution cycle for iteration 21.
+[2026-09-17 17:31:55,789] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:31:55,790] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 5b238ebe24aa: Planner: Current Iteration 21 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:31:55,790] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 5b238ebe24aa: Planner: Get sample parent solution: {}
+[2026-09-17 17:31:55,790] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 5b238ebe24aa: Planner: Start create best plan in iteration 21
+[2026-09-17 17:31:55,796] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.468127 seconds
+[2026-09-17 17:31:56,267] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.879396 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:31:57,159] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 21 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:32:00,160] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 1f36f6bfa6ec, Starting evolution cycle for iteration 22.
+[2026-09-17 17:32:00,161] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:32:00,161] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 1f36f6bfa6ec: Planner: Current Iteration 22 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:32:00,162] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 1f36f6bfa6ec: Planner: Get sample parent solution: {}
+[2026-09-17 17:32:00,162] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 1f36f6bfa6ec: Planner: Start create best plan in iteration 22
+[2026-09-17 17:32:00,167] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.432052 seconds
+[2026-09-17 17:32:00,602] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.752167 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:32:01,367] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 22 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:32:04,368] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 9747b8486350, Starting evolution cycle for iteration 23.
+[2026-09-17 17:32:04,369] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:32:04,369] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 9747b8486350: Planner: Current Iteration 23 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:32:04,369] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 9747b8486350: Planner: Get sample parent solution: {}
+[2026-09-17 17:32:04,370] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 9747b8486350: Planner: Start create best plan in iteration 23
+[2026-09-17 17:32:04,375] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.426108 seconds
+[2026-09-17 17:32:04,803] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.762306 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:32:05,579] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 23 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:32:08,580] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 064dc240546b, Starting evolution cycle for iteration 24.
+[2026-09-17 17:32:08,580] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:32:08,581] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 064dc240546b: Planner: Current Iteration 24 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:32:08,581] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 064dc240546b: Planner: Get sample parent solution: {}
+[2026-09-17 17:32:08,581] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 064dc240546b: Planner: Start create best plan in iteration 24
+[2026-09-17 17:32:08,586] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.390702 seconds
+[2026-09-17 17:32:08,979] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.767267 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:32:10,374] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 24 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:32:13,375] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 8ef2a5d54e47, Starting evolution cycle for iteration 25.
+[2026-09-17 17:32:13,375] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:32:13,376] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 8ef2a5d54e47: Planner: Current Iteration 25 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:32:13,376] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 8ef2a5d54e47: Planner: Get sample parent solution: {}
+[2026-09-17 17:32:13,377] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 8ef2a5d54e47: Planner: Start create best plan in iteration 25
+[2026-09-17 17:32:13,382] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.440242 seconds
+[2026-09-17 17:32:13,824] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.902529 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:32:14,741] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 25 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:32:17,742] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 1c3ee798d83f, Starting evolution cycle for iteration 26.
+[2026-09-17 17:32:17,742] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:32:17,743] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 1c3ee798d83f: Planner: Current Iteration 26 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:32:17,743] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 1c3ee798d83f: Planner: Get sample parent solution: {}
+[2026-09-17 17:32:17,743] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 1c3ee798d83f: Planner: Start create best plan in iteration 26
+[2026-09-17 17:32:17,748] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.385238 seconds
+[2026-09-17 17:32:18,136] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.995409 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:32:19,145] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 26 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:32:22,146] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: d08042324b3c, Starting evolution cycle for iteration 27.
+[2026-09-17 17:32:22,146] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:32:22,147] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: d08042324b3c: Planner: Current Iteration 27 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:32:22,147] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: d08042324b3c: Planner: Get sample parent solution: {}
+[2026-09-17 17:32:22,147] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: d08042324b3c: Planner: Start create best plan in iteration 27
+[2026-09-17 17:32:22,154] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.466500 seconds
+[2026-09-17 17:32:22,623] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.818580 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:32:23,455] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 27 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:32:26,456] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 72738ff6427b, Starting evolution cycle for iteration 28.
+[2026-09-17 17:32:26,457] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:32:26,458] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 72738ff6427b: Planner: Current Iteration 28 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:32:26,458] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 72738ff6427b: Planner: Get sample parent solution: {}
+[2026-09-17 17:32:26,458] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 72738ff6427b: Planner: Start create best plan in iteration 28
+[2026-09-17 17:32:26,463] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.435201 seconds
+[2026-09-17 17:32:26,901] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.946802 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:32:27,861] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 28 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:32:30,862] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: e27b37497c26, Starting evolution cycle for iteration 29.
+[2026-09-17 17:32:30,862] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:32:30,863] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: e27b37497c26: Planner: Current Iteration 29 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:32:30,863] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: e27b37497c26: Planner: Get sample parent solution: {}
+[2026-09-17 17:32:30,864] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: e27b37497c26: Planner: Start create best plan in iteration 29
+[2026-09-17 17:32:30,869] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.407612 seconds
+[2026-09-17 17:32:31,278] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.816929 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:32:32,108] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 29 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:32:35,108] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: dac5dd512f66, Starting evolution cycle for iteration 30.
+[2026-09-17 17:32:35,109] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:32:35,110] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: dac5dd512f66: Planner: Current Iteration 30 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:32:35,110] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: dac5dd512f66: Planner: Get sample parent solution: {}
+[2026-09-17 17:32:35,110] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: dac5dd512f66: Planner: Start create best plan in iteration 30
+[2026-09-17 17:32:35,115] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.431920 seconds
+[2026-09-17 17:32:35,549] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.759634 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:32:36,321] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 30 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:32:39,322] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 039ac196147c, Starting evolution cycle for iteration 31.
+[2026-09-17 17:32:39,322] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:32:39,323] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 039ac196147c: Planner: Current Iteration 31 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:32:39,323] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 039ac196147c: Planner: Get sample parent solution: {}
+[2026-09-17 17:32:39,324] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 039ac196147c: Planner: Start create best plan in iteration 31
+[2026-09-17 17:32:39,329] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.431279 seconds
+[2026-09-17 17:32:39,762] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.943527 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:32:40,720] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 31 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:32:43,721] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 17a53110c1d7, Starting evolution cycle for iteration 32.
+[2026-09-17 17:32:43,721] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:32:43,722] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 17a53110c1d7: Planner: Current Iteration 32 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:32:43,722] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 17a53110c1d7: Planner: Get sample parent solution: {}
+[2026-09-17 17:32:43,722] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 17a53110c1d7: Planner: Start create best plan in iteration 32
+[2026-09-17 17:32:43,727] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.452919 seconds
+[2026-09-17 17:32:44,182] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.889561 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:32:45,085] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 32 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:32:48,086] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 5ce913ca770f, Starting evolution cycle for iteration 33.
+[2026-09-17 17:32:48,086] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:32:48,087] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 5ce913ca770f: Planner: Current Iteration 33 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:32:48,087] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 5ce913ca770f: Planner: Get sample parent solution: {}
+[2026-09-17 17:32:48,088] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 5ce913ca770f: Planner: Start create best plan in iteration 33
+[2026-09-17 17:32:48,094] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.397905 seconds
+[2026-09-17 17:32:48,494] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.913499 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:32:49,421] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 33 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:32:52,422] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 49f16913fdb5, Starting evolution cycle for iteration 34.
+[2026-09-17 17:32:52,422] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:32:52,423] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 49f16913fdb5: Planner: Current Iteration 34 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:32:52,423] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 49f16913fdb5: Planner: Get sample parent solution: {}
+[2026-09-17 17:32:52,423] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 49f16913fdb5: Planner: Start create best plan in iteration 34
+[2026-09-17 17:32:52,428] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.379985 seconds
+[2026-09-17 17:32:52,810] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.902661 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:32:53,725] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 34 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:32:56,726] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 27e6e180621e, Starting evolution cycle for iteration 35.
+[2026-09-17 17:32:56,727] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:32:56,728] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 27e6e180621e: Planner: Current Iteration 35 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:32:56,728] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 27e6e180621e: Planner: Get sample parent solution: {}
+[2026-09-17 17:32:56,728] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 27e6e180621e: Planner: Start create best plan in iteration 35
+[2026-09-17 17:32:56,733] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.434216 seconds
+[2026-09-17 17:32:57,170] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.792521 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:32:57,975] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 35 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:33:00,976] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 42e74d1809ed, Starting evolution cycle for iteration 36.
+[2026-09-17 17:33:00,976] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:33:00,977] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 42e74d1809ed: Planner: Current Iteration 36 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:33:00,977] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 42e74d1809ed: Planner: Get sample parent solution: {}
+[2026-09-17 17:33:00,977] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 42e74d1809ed: Planner: Start create best plan in iteration 36
+[2026-09-17 17:33:00,982] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.449020 seconds
+[2026-09-17 17:33:01,434] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.940881 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:33:02,387] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 36 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:33:05,388] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: afa4fd8e60ee, Starting evolution cycle for iteration 37.
+[2026-09-17 17:33:05,389] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:33:05,389] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: afa4fd8e60ee: Planner: Current Iteration 37 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:33:05,390] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: afa4fd8e60ee: Planner: Get sample parent solution: {}
+[2026-09-17 17:33:05,390] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: afa4fd8e60ee: Planner: Start create best plan in iteration 37
+[2026-09-17 17:33:05,395] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.432955 seconds
+[2026-09-17 17:33:05,830] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.908274 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:33:06,751] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 37 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:33:09,752] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: b8062686fff4, Starting evolution cycle for iteration 38.
+[2026-09-17 17:33:09,752] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:33:09,754] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: b8062686fff4: Planner: Current Iteration 38 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:33:09,754] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: b8062686fff4: Planner: Get sample parent solution: {}
+[2026-09-17 17:33:09,754] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: b8062686fff4: Planner: Start create best plan in iteration 38
+[2026-09-17 17:33:09,759] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.489723 seconds
+[2026-09-17 17:33:10,251] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.763687 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:33:11,027] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 38 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:33:14,028] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 8911b7c750a7, Starting evolution cycle for iteration 39.
+[2026-09-17 17:33:14,029] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:33:14,030] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 8911b7c750a7: Planner: Current Iteration 39 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:33:14,030] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 8911b7c750a7: Planner: Get sample parent solution: {}
+[2026-09-17 17:33:14,030] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 8911b7c750a7: Planner: Start create best plan in iteration 39
+[2026-09-17 17:33:14,037] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.387762 seconds
+[2026-09-17 17:33:14,427] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.761689 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:33:15,202] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 39 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:33:18,203] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 62c5e7436db1, Starting evolution cycle for iteration 40.
+[2026-09-17 17:33:18,203] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:33:18,204] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 62c5e7436db1: Planner: Current Iteration 40 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:33:18,204] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 62c5e7436db1: Planner: Get sample parent solution: {}
+[2026-09-17 17:33:18,205] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 62c5e7436db1: Planner: Start create best plan in iteration 40
+[2026-09-17 17:33:18,210] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.494001 seconds
+[2026-09-17 17:33:18,705] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.873321 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:33:19,592] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 40 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:33:22,593] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 33a43c719d17, Starting evolution cycle for iteration 41.
+[2026-09-17 17:33:22,593] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:33:22,594] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 33a43c719d17: Planner: Current Iteration 41 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:33:22,595] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 33a43c719d17: Planner: Get sample parent solution: {}
+[2026-09-17 17:33:22,595] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 33a43c719d17: Planner: Start create best plan in iteration 41
+[2026-09-17 17:33:22,601] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.441496 seconds
+[2026-09-17 17:33:23,044] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.999669 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:33:24,057] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 41 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:33:27,058] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: eb0e9d1d3000, Starting evolution cycle for iteration 42.
+[2026-09-17 17:33:27,059] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:33:27,060] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: eb0e9d1d3000: Planner: Current Iteration 42 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:33:27,060] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: eb0e9d1d3000: Planner: Get sample parent solution: {}
+[2026-09-17 17:33:27,060] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: eb0e9d1d3000: Planner: Start create best plan in iteration 42
+[2026-09-17 17:33:27,065] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.444104 seconds
+[2026-09-17 17:33:27,512] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.821081 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:33:28,347] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 42 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:33:31,348] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 8d453b7f4b26, Starting evolution cycle for iteration 43.
+[2026-09-17 17:33:31,348] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:33:31,349] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 8d453b7f4b26: Planner: Current Iteration 43 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:33:31,349] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 8d453b7f4b26: Planner: Get sample parent solution: {}
+[2026-09-17 17:33:31,350] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 8d453b7f4b26: Planner: Start create best plan in iteration 43
+[2026-09-17 17:33:31,355] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.395176 seconds
+[2026-09-17 17:33:31,752] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.944314 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:33:32,711] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 43 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:33:35,712] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: ff29e1951053, Starting evolution cycle for iteration 44.
+[2026-09-17 17:33:35,712] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:33:35,713] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: ff29e1951053: Planner: Current Iteration 44 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:33:35,713] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: ff29e1951053: Planner: Get sample parent solution: {}
+[2026-09-17 17:33:35,713] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: ff29e1951053: Planner: Start create best plan in iteration 44
+[2026-09-17 17:33:35,718] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.387528 seconds
+[2026-09-17 17:33:36,108] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.824335 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:33:36,946] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 44 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:33:39,947] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 9838da112004, Starting evolution cycle for iteration 45.
+[2026-09-17 17:33:39,947] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:33:39,948] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 9838da112004: Planner: Current Iteration 45 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:33:39,948] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 9838da112004: Planner: Get sample parent solution: {}
+[2026-09-17 17:33:39,949] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 9838da112004: Planner: Start create best plan in iteration 45
+[2026-09-17 17:33:39,955] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.394317 seconds
+[2026-09-17 17:33:40,351] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.769928 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:33:41,134] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 45 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:33:44,135] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: b543e310c923, Starting evolution cycle for iteration 46.
+[2026-09-17 17:33:44,135] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:33:44,136] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: b543e310c923: Planner: Current Iteration 46 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:33:44,136] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: b543e310c923: Planner: Get sample parent solution: {}
+[2026-09-17 17:33:44,137] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: b543e310c923: Planner: Start create best plan in iteration 46
+[2026-09-17 17:33:44,143] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.405228 seconds
+[2026-09-17 17:33:44,550] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.898004 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:33:45,461] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 46 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:33:48,462] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: eede3a532ed7, Starting evolution cycle for iteration 47.
+[2026-09-17 17:33:48,463] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:33:48,464] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: eede3a532ed7: Planner: Current Iteration 47 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:33:48,464] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: eede3a532ed7: Planner: Get sample parent solution: {}
+[2026-09-17 17:33:48,464] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: eede3a532ed7: Planner: Start create best plan in iteration 47
+[2026-09-17 17:33:48,470] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.468866 seconds
+[2026-09-17 17:33:48,940] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.977000 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:33:49,930] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 47 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:33:52,931] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: d7e88fab575e, Starting evolution cycle for iteration 48.
+[2026-09-17 17:33:52,931] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:33:52,932] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: d7e88fab575e: Planner: Current Iteration 48 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:33:52,932] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: d7e88fab575e: Planner: Get sample parent solution: {}
+[2026-09-17 17:33:52,933] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: d7e88fab575e: Planner: Start create best plan in iteration 48
+[2026-09-17 17:33:52,938] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.489021 seconds
+[2026-09-17 17:33:53,430] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.846453 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:33:54,289] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 48 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:33:57,290] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: e8582bb96d86, Starting evolution cycle for iteration 49.
+[2026-09-17 17:33:57,290] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:33:57,291] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: e8582bb96d86: Planner: Current Iteration 49 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:33:57,291] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: e8582bb96d86: Planner: Get sample parent solution: {}
+[2026-09-17 17:33:57,292] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: e8582bb96d86: Planner: Start create best plan in iteration 49
+[2026-09-17 17:33:57,297] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.478055 seconds
+[2026-09-17 17:33:57,778] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.755301 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:33:58,547] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 49 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:34:01,547] [INFO] [log_id=a063e1f9891a] [PESAgent] Trace ID: 7a428540c82f, Starting evolution cycle for iteration 50.
+[2026-09-17 17:34:01,548] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 17:34:01,548] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 7a428540c82f: Planner: Current Iteration 50 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 17:34:01,549] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 7a428540c82f: Planner: Get sample parent solution: {}
+[2026-09-17 17:34:01,549] [INFO] [log_id=a063e1f9891a] [agents.math_agent.planner.plan_agent] Trace ID: 7a428540c82f: Planner: Start create best plan in iteration 50
+[2026-09-17 17:34:01,554] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.474503 seconds
+[2026-09-17 17:34:02,032] [INFO] [log_id=a063e1f9891a] [openai._base_client] Retrying request to /chat/completions in 0.988410 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 17:34:03,033] [ERROR] [log_id=a063e1f9891a] [PESAgent] Evolution cycle for iteration 50 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 17:34:06,034] [INFO] [log_id=a063e1f9891a] [PESAgent] Triggering checkpoint save. Count: 0, Iter: 50.
+[2026-09-17 17:34:06,035] [INFO] [log_id=a063e1f9891a] [loongflow.agentsdk.memory.evolution.in_memory] Checkpointing memory to /data/home/zyh/LoongFlow/runs/fqh-kappa5-v1/database/checkpoints/checkpoint-checkpoint-iter-50-0
+[2026-09-17 17:34:06,035] [INFO] [log_id=a063e1f9891a] [loongflow.agentsdk.memory.evolution.in_memory] Saved checkpoint with 0 programs to /data/home/zyh/LoongFlow/runs/fqh-kappa5-v1/database/checkpoints/checkpoint-checkpoint-iter-50-0
+[2026-09-17 17:34:06,035] [INFO] [log_id=a063e1f9891a] [loongflow.agentsdk.memory.evolution.in_memory] Saved checkpoint with tag checkpoint-iter-50-0 to /data/home/zyh/LoongFlow/runs/fqh-kappa5-v1/database/checkpoints/checkpoint-checkpoint-iter-50-0
+[2026-09-17 17:34:06,035] [INFO] [log_id=a063e1f9891a] [PESAgent] Checkpoint saved to /data/home/zyh/LoongFlow/runs/fqh-kappa5-v1/database/checkpoint-iter-50-0
+[2026-09-17 17:34:06,035] [INFO] [log_id=a063e1f9891a] [PESAgent] Max iterations (50) reached. Cleaning up...
+[2026-09-17 17:34:06,035] [INFO] [log_id=a063e1f9891a] [PESAgent] Final token usage - Completion tokens: 0, cost: 0.0. Prompt tokens: 0, cost: 0.0. Total tokens: 0, Total Cost: 0.0.
+[2026-09-17 17:34:06,035] [INFO] [log_id=a063e1f9891a] [PESAgent] Evolution process concluded. Invoking Finalizer.
+LoongFlow Finalizer: Generating final report from database.
+Process concluded.
+Best score achieved: 0.0
+Found in iteration: 0
+Total iterations: 0
+Total cost time: 275 seconds
+Total tokens: 0.0
+Total cost: 0.0
+
+✅ Evolution process finished successfully.
+{
+  "id": "0d5cbd19-c0fd-4e79-b1e2-a958d6cc436f",
+  "timestamp": "2026-09-17T09:34:06.036016",
+  "trace_id": "",
+  "conversation_id": "",
+  "role": "assistant",
+  "sender": "LoongFlowFinalizer",
+  "metadata": {},
+  "content": [
+    {
+      "type": "evolve_result",
+      "best_score": 0.0,
+      "best_solution": [],
+      "evaluation": [],
+      "start_time": "2026-09-17 17:29:31",
+      "end_time": "2026-09-17 17:34:06",
+      "cost_time": 275,
+      "last_iteration": 0,
+      "total_iterations": 0,
+      "total_cost": 0.0,
+      "total_tokens": 0.0
+    }
+  ]
+}
+✅ Task finished.

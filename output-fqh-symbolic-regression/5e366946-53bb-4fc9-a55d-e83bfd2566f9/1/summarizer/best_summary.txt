@@ -1,0 +1,31 @@
+# Strategic Brief — Iteration 1 (Solution 1965d461)
+
+## 1. Executive Summary
+This iteration was a **pivotal breakthrough** because the planner correctly diagnosed the genesis parent as physically meaningless (a trivial M=1 linear factor with no correlation structure) and injected the known Laughlin M=3 core `(z1−z2)^3` inside a decoupled Gaussian envelope, lifting validation fidelity from 6.5e-5 to 0.9992 and the score ~202×, fully dominating the (empty) sibling field.
+
+## 2. Data-Driven Findings (Facts Only)
+- **Sibling Rank:** 1 out of 1 child created in this island (genesis database: only the initial parent + this child exist; no true siblings available for comparison — `1965d461` is unsaved and query tools return "not found"). Top sibling score: 0.9937%.
+- **Score Delta:** Parent 0.004894 → Child 0.993708 (≈ +0.9888 absolute, ≈ 203× relative).
+- **Key Change:** Replacement of the M=1 linear relative factor `c0*z12` with a factored, M=3 antisymmetric Laughlin core `c0*z12**3` multiplied by a symmetric Landau-level-mixing polynomial correction `(1 + p3*|z12|^2)` and a decoupled Gaussian envelope `exp(-|p1|(|z1|^2+|z2|^2) - |p2||z12|^2)`.
+- **Core Metrics:**
+  - validation_nmse: 1.00050 → 0.00081 (≈1233× reduction).
+  - validation_fidelity: 6.51e-5 → 0.99919.
+  - exchange_error: 0.0 → 0.0 (exact antisymmetry preserved analytically).
+  - rotation_error: 7.96e-17 → 4.41e-16; inferred_angular_momentum: 1 → 3.
+  - finite_fraction: 1.0 → 1.0; validity: 1.0 → 1.0.
+  - expression_complexity: 2 → 23; parameter_count: 2 → 5.
+  - complexity_penalty: 1.0 → 0.99452; physics_factor: ≈1.0 → ≈1.0.
+  - eval_time: 0.744 s → 4.447 s.
+  - Fitted params: c0 = (1.00727, −0.01656); p1 = 0.28073; p2 = −0.01385; p3 = 0.03783.
+
+## 3. Strategic Analysis (The "So What?")
+- **Root Cause:** Predominantly the **quality of the plan**, executed faithfully. The planner's structural diagnosis ("the parent contains no correct physics; vertical optimization is useless") was the decisive factor. The executor delivered exactly the intended structure, and the least-squares fit converged to physically sensible values — p1 = 0.2807 sits near the analytic Laughlin anchor 1/4 (0.25), confirming the envelope is genuine, not fitted noise. Execution was competent (23 optimizer evaluations, xtol termination, monotone-safe from the p2=p3=0 start), but it was not the source of the leap.
+- **Key Insight:** **Structure & symmetry sector dominate error, not numerical tuning.** ~99.9% of the fidelity gain came from fixing angular momentum (M=1 → M=3, i.e., the odd exponent 3) and adding the Gaussian envelope; the surviving LL-mixing corrections (p2, p3) are tiny (|p2|≈0.014, p3≈0.038) and contribute only a marginal sharpening of the residual NMSE. The lesson: in this search, identifying the correct symmetry sector and dominant factorized core is worth orders of magnitude more than parameter refinement — a strategy that should be reused for any future exponential/structure jumps. A valuable secondary concept to salvage: the `|p1|, |p2|` magnitude-wrapping trick guarantees finiteness for *all* fitted values, making candidates "monotonically safe" (fit can only add corrections that lower NMSE).
+- **Identified Risk:** Overfitting the tiny residual. The nonzero p2, p3 may be fitting training/validation noise rather than genuine Landau-level mixing; the complexity penalty is already biting (0.99452), and the accuracy term is saturating (0.99919). Pushing complexity upward for a ~1e-3 NMSE improvement risks hidden-test degradation and erosion of the score through penalty growth. Secondary risk: assumed M=3 holomorphic Laughlin structure is a strong prior — the task explicitly warns the target is NOT necessarily LLL-projected, so the near-perfect fidelity here could partly reflect the data's dominant Laughlin component while missing genuine small non-holomorphic corrections.
+
+## 4. Actionable Guidance (The "What's Next?")
+- **Recommend Stripping:** Immediately test the pure-Laughlin+envelope limit (p2 = 0, p3 = 0): `c0*z12**3*exp(-|p1|(|z1|^2+|z2|^2))`. If validation_nmse stays within ~1e-3 of the current 8.11e-4, this slashes complexity from 23 toward ~9 and recovers the full complexity_penalty, likely pushing the score to ≥1.0. This is the highest-leverage single move.
+- **Recommend Exploration:** Probe the angular-momentum sector directly by testing odd exponents e ∈ {5, 7} (and if the sector is misidentified, e = 1). Confirm M=3 is optimal rather than merely better-than-M=1; use the inferred_angular_momentum metric as the discriminator.
+- **Recommend Fusion:** Because the task explicitly permits non-LLL structure, fuse the proven M=3 holomorphic core with a **conjugate/radial Landau-level-mixing term** (e.g., a factor built from `z_rel` and `conj(z_rel)` at next-to-leading order, or `exp(-|p2|*|z_rel|^2)` promoted to a genuine `|z_rel|^4`-type correction). This targets the residual 8e-4 NMSE with *new physics* rather than more polynomial terms, and directly tests the "corrections are real vs. noise" question raised in Risk.
+- **Warn:** Do not extend the polynomial series `(1 + p3*|z12|^2 + p4*|z12|^4 + ...)` for marginal error gains. The accuracy term is saturated and complexity is already penalized; additional terms must justify themselves by reducing NMSE by more than the induced penalty, or they will lower the score on the hidden test split. Prioritize structural validation (generalization, symmetry, finiteness) over incremental numerical error reduction.
+- **Warn:** Use p1's proximity to 0.25 as a physical-quality gate. Freezing p1 at the analytic anchor 1/4 (instead of fitting it) is a defensible complexity-reduction move if the resulting NMSE penalty is small — it converts a fitted parameter into a physically transparent constant, improving both interpretability and reproducibility across independent runs.

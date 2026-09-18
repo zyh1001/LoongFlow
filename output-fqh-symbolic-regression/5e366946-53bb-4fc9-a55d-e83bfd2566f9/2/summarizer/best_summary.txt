@@ -1,0 +1,33 @@
+## Comparative Analysis — Iteration 2 (Solution `a09e3539`, island_2)
+
+**1. Executive Summary**
+
+This iteration was a decisive, physics-anchored breakthrough because the plan correctly diagnosed that the residual loss of the prior population record was dominated by *complexity penalty rather than accuracy*, prompting the substitution of a minimal, analytically-guaranteed M=3 Laughlin core (`c0·z12³·exp(−|p1|(|z1|²+|z2|²))`) for a 23-op reference, lifting the score ~204× and outperforming the island_1 record.
+
+**2. Data-Driven Findings (Facts Only)**
+
+- **Sibling Rank:** 1 of 1 child in island_2 (first-born of this lineage; no siblings present in the database). Cross-island benchmark: score 0.997585 vs. island_1 record 0.993708 → new population best.
+- **Score Delta:** From parent (0.004894) to child (0.997585), i.e. Δ ≈ +0.992691 (≈ 204× improvement).
+- **Key Change:** Adoption of the odd M=3 Laughlin core `z12**3` (replacing parent's M=1 `z12`) multiplied by a single shared-width Gaussian envelope `exp(−abs(p1)·(|z1|²+|z2|²))`, with `abs(p1)` placed inside the exponent — reducing fitted parameters to 3 and expression complexity to 13 (vs. the 23-op reference).
+- **Core Metrics:**
+  - validation_nmse: 1.0005 → 0.001917
+  - validation_fidelity: 6.51e-5 → 0.998083
+  - exchange_error: 0.0 (unchanged, already exact)
+  - rotation_error: 7.96e-17 → 4.04e-16, inferred M=1 → M=3
+  - finite_fraction: 1.0 → 1.0
+  - expression_complexity: 2 → 13; parameter_count: 2 → 3
+  - Score decomposition: accuracy_component 0.998084 × physics_factor 1.000000 × complexity_penalty 0.999500 = 0.997585
+  - eval_time ≈ 3.45 s (well within budget)
+
+**3. Strategic Analysis (The "So What?")**
+
+- **Root Cause:** Both plan quality and execution quality were high. The *plan* contributed the critical intelligence — it re-derived the score decomposition from the evaluator artifacts, identified that the dominant island_1 loss (0.0055) lived in the complexity penalty while accuracy was near-saturated (0.0008), and prescribed a "strip-to-Schelling-point" structure. The *execution* faithfully realized the prescribed V0 with correct token conventions and analytic guarantees. The outcome is therefore best attributed to a plan-driven strategic insight, cleanly executed.
+- **Key Insight:** The physically meaningful content of the target wavefunction for N=2, ν=1/3 is carried almost entirely by the **odd M=3 Laughlin core plus a single-width Gaussian envelope**; the extra `|z12|²` correction term in the 23-op reference bought only a ~2.3× nmse reduction (8.11e-4 → not applicable, but the correction's marginal fidelity contribution is tiny) at a large complexity cost. This confirms the task's own stated principle: when two candidates have similar validation quality, prefer the simpler one. The M=3 sector assignment is also now empirically confirmed (rotation_error ~1e-16), validating the Laughlin ν=1/3 hypothesis over the trivial M=1 parent.
+- **Identified Risk:** The child's nmse (1.92e-3) is *higher* than the island_1 record's (8.11e-4). The simplification traded accuracy for penalty. There is a real possibility that the removed `|z12|²`/relative-width degree of freedom encodes genuine Landau-level-mixing (the task explicitly permits non-holomorphic corrections at λ=1/3), so the minimal V0 may sit on the edge of a local optimum rather than at the true Pareto frontier. Additionally, the realized complexity (13) is higher than the plan's optimistic estimate (~9), leaving recoverable penalty headroom.
+
+**4. Actionable Guidance (The "What's Next?")**
+
+- **Recommend Fusion:** This is the highest-leverage next step. Fuse the island_1 record's *single* `|z12|²` correction term into this solution's now-proven low-complexity M=3 core: `c0·z12³·(1 + p3·|z12|²)·exp(−|p1|(|z1|²+|z2|²))`, initializing `p3 = 0` (monotone-safe). This targets the Pareto sweet spot — recovering the ~2.3× nmse gain while adding only 1 parameter and a handful of tokens, aiming to convert the current penalty advantage into a strictly dominating score above both 0.997585 and the island_1 reference.
+- **Recommend Stripping:** In parallel, attempt to reduce the *current* candidate's complexity from 13 toward the plan's estimated floor. Re-express the envelope using rotationally meaningful invariants (e.g. rewrite `|z1|²+|z2|²` via `2|Z_cm|²+½|z12|²`, or factor the Gaussian per-electron) and test whether an equivalent token count reduction is available. Keep the analytic guarantee `abs(p1)` inside `exp`. Retain the stripped form only if validation_fidelity does not drop materially — target a strictly Pareto-improving point.
+- **Recommend Exploration:** Now that M=3 is empirically confirmed, branch into the *non-holomorphic / Landau-level-mixing* family explicitly endorsed by the task at λ=1/3 — e.g. a conjugate-coordinate or radial correction term multiplied onto the proven antisymmetric core. The evaluator's `rotation_error`/`inferred_angular_momentum` metrics will immediately flag any M-sector violation, so this exploration is low-risk and high-information.
+- **Warn:** Do not over-fit by adding a truncated polynomial series `(1 + p3|z12|² + p4|z12|⁴ + …)` beyond one term — accuracy is near-saturated and each extra term inflates the complexity penalty disproportionately. Also guard against the local-optimum trap: the fact that a *simpler* form scored higher is not proof the physics is exhausted, since the removed correction demonstrably reduced nmse. Keep both the minimal V0 and the lightly-corrected V1 alive as separate lineages so the search does not collapse prematurely. Finally, the plan's predicted complexity (~9) missed by ~30%; future planners should base penalty estimates on the evaluator's observed token convention rather than analytic op-counts.

@@ -1,0 +1,12 @@
+{
+  "status": "validation_failed",
+  "summary": "Validation failed: Error: circles overlap",
+  "score": 0.0,
+  "metrics": {
+    "validity": 0.0,
+    "sum_radii": 0.0
+  },
+  "artifacts": {
+    "reason": "Geometric constraints not met."
+  }
+}

@@ -1,0 +1,93 @@
+======================================================================
+PLAN 1  (SELECTED / RECOMMENDED)
+Physics-constrained STRUCTURED ANSATZ:
+Laughlin core  x  Landau-level-mixing radial correction  x  Decoupled Gaussian
+======================================================================
+
+GOAL OF THE CHILD SOLUTION
+----------------------------------------------------------------------
+Replace the trivial parent  Psi = c0 * z12  (M=1, fidelity ~6.5e-5,
+score ~0.0049) with a physically complete two-electron nu=1/3 FQH
+wavefunction.  The single most important move is to insert the correct
+*structure*: an antisymmetric relative-coordinate core of angular
+momentum M=3, a Landau-level-mixing radial correction, and a Gaussian
+envelope whose center-of-mass and relative widths are decoupled.
+We rely on the evaluator's least-squares fitter for the NUMBERS and we
+supply only physically sensible structures + initialization.
+
+1. MATHEMATICAL FORMULATION
+----------------------------------------------------------------------
+Variables  X = (c0_re, c0_im, p1, p2, p3)   (5 fitted reals; c0 complex)
+   - c0 = c0_re + i*c0_im         : global complex normalization scale
+   - p1 : relative+CM Gaussian width parameter
+   - p2 : extra relative-coordinate (Jastrow-like) Gaussian width
+   - p3 : amplitude of the r_rel^2 Landau-level-mixing correction
+
+Ansatz
+   z1 = x1 - i y1 ,  z2 = x2 - i y2   (given convention, mandatory)
+   z_rel = z1 - z2 ,  r_rel^2 = |z1 - z2|^2
+
+   Psi(z1,z2) = c0 * (z1 - z2)^3
+                    * ( 1 + p3 * |z1 - z2|^2 )
+                    * exp( -|p1| * (|z1|^2 + |z2|^2)
+                           -|p2| * |z1 - z2|^2 )
+
+Constraints  C (all satisfied by CONSTRUCTION for ANY value of X)
+   C1  Exchange antisymmetry: (z1-z2)^3 -> (-(z1-z2))^3 = -(z1-z2)^3,
+       |...| factors invariant  =>  Psi(r2,r1) = -Psi(r1,r2).  MASKED.
+   C2  Single integer angular momentum M=3: under z_i -> e^{-i phi} z_i,
+       (z1-z2)^3 -> e^{-3 i phi}(...), all |.| factors invariant
+       =>  Psi -> e^{-3 i phi} Psi,  M = 3.  No M-mixing.  MASKED.
+   C3  Finiteness everywhere: exponent is -(|p1|*nonneg + |p2|*nonneg) so
+       exp() <= 1 always; the polynomial (z1-z2)^3 (1+p3 r^2) is
+       dominated by the Gaussian at infinity. No poles. MASKED.
+   C4  <= 10 fitted parameters (we use 5) and no prohibited behaviour
+       (pure closed-form expression, no I/O, no branches).
+
+Objective  f(X)
+   The evaluator minimizes the training normalized MSE with an
+   overall-consistent complex global scale and reports validation
+   NMSE / fidelity.  We (planner+executor) frame our own surrogate as:
+       minimize  L(X) = sum_i |Psi_hat(x_i;X) - Psi_target(x_i)|^2
+                        / sum_i |Psi_target(x_i)|^2      (validation NMSE)
+   subject to C1-C4 and a complexity tie-break (prefer fewer active
+   non-zero parameters, i.e. prefer p3 -> 0 if it does not help).
+   We never touch the test split.
+
+2. SOLVER STRATEGY
+----------------------------------------------------------------------
+Two decoupled parts (this is the key design principle):
+   (A) STRUCTURE FINDING (small, discrete, physically enumerated, O(1)):
+       enumerate the exponent e in {3} (primary; Laughlin nu=1/3) and the
+       correction order k in {0,1} and the Gaussian form {isotropic vs
+       decoupled}. That is a tiny discrete grid -> try the few physically
+       meaningful combinations and keep the best ON VALIDATION.
+   (B) PARAMETER TUNING (continuous, convex-ish, delegated):
+       the evaluator fits X with a trust-region least-squares
+       (scipy 'least_squares' / 'trf'). We only choose good INITIAL X.
+
+3. VALIDITY MECHANISM (guaranteed, not luck-based)
+----------------------------------------------------------------------
+   * Antisymmetry & M=3 are structural identities -> cannot be violated.
+   * |p1|,|p2| inside exp()  =>  finiteness for ANY fitted value, even if
+     the fitter wanders into negative territory.
+   * A deterministic verification function (see Phase 3) numerically
+     re-checks sign-flip, rotation phase, and finiteness on a grid; if it
+     ever fails, fall back to the minimal guaranteed-valid Laughlin form.
+
+4. WHY THIS SOLUTION
+----------------------------------------------------------------------
+   Advantages:
+     (+) Places the dominant physical structure (Laughlin z_rel^3 + LLM
+         correction + Gaussian envelope) in ONE candidate -> large jump
+         in fidelity from the first generation.
+     (+) Hard physics constraints are analytic identities, so score
+         cannot collapse from exchange / angular-momentum errors.
+     (+) Only 5 parameters, smooth, well conditioned, physically
+         initialized (p1=1/4 = the Laughlin value).
+     (+) p3 initialized to 0 -> the candidate STARTS at the clean
+         Laughlin limit (a guaranteed-valid fallback is embedded).
+   Disadvantages:
+     (-) Assumes the target sector is M=3; if the hidden state is in a
+         different sector the plan must switch (handled in Phase 3).
+======================================================================

@@ -1,0 +1,86 @@
+LoongFlow 符号回归任务
+  主机：        c20818.hpc2
+  Slurm Job ID：3381817
+  数据集：      /data/home/zyh/jaqmc/symbolic/datasets/disk_n2_Q6_strength5/dataset_uniform_augmented.npz
+  输出目录：    /data/home/zyh/LoongFlow/runs/fqh-kappa5-v1
+  最大迭代数：  50
+  目标分数：    0.995
+  拟合 max_nfev：120
+  CPU 线程数：  4
+运行命令： ./run_math.sh symbolic_regression --config /tmp/loongflow-sr.3381817.vgcbhK.yaml --initial-file /data/home/zyh/LoongFlow/agents/math_agent/examples/symbolic_regression/initial_program.py --eval-file /data/home/zyh/LoongFlow/agents/math_agent/examples/symbolic_regression/eval_program.py --max-iterations 50 --target-score 0.995 --log-level INFO
+✅ Checks passed. Preparing to run task: symbolic_regression
+------------------------------------------------------------------
+🚀 Command to execute:
+PYTHONPATH=/data/home/zyh/LoongFlow/src:/data/home/zyh/LoongFlow:./src python agents/math_agent/math_evolve_agent.py --config ./agents/math_agent/examples/symbolic_regression/task_config.yaml --eval-file ./agents/math_agent/examples/symbolic_regression/eval_program.py --initial-file ./agents/math_agent/examples/symbolic_regression/initial_program.py --config /tmp/loongflow-sr.3381817.vgcbhK.yaml --initial-file /data/home/zyh/LoongFlow/agents/math_agent/examples/symbolic_regression/initial_program.py --eval-file /data/home/zyh/LoongFlow/agents/math_agent/examples/symbolic_regression/eval_program.py --max-iterations 50 --target-score 0.995 --log-level INFO
+------------------------------------------------------------------
+[2026-09-17 21:56:29,508] [WARNING] [log_id=7f4b43c84c01] [LiteLLM] LiteLLM: model cost map fetch attempt 1/3 failed (ConnectError fetching https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json: [Errno 101] Network is unreachable); retrying in 2.4s
+[2026-09-17 21:56:51,966] [WARNING] [log_id=7f4b43c84c01] [LiteLLM] LiteLLM: model cost map fetch attempt 2/3 failed (ConnectError fetching https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json: [Errno 101] Network is unreachable); retrying in 4.1s
+[2026-09-17 21:57:16,059] [WARNING] [log_id=7f4b43c84c01] [LiteLLM] LiteLLM: Failed to fetch remote model cost map from https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json: ConnectError fetching https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json: [Errno 101] Network is unreachable (after 3 attempts). Falling back to local backup.
+1. Loading base configuration from YAML...
+2. Merging command-line overrides...
+3. Validating final configuration...
+   - Configuration is valid.
+Logging configured. Level: INFO, Console: True, File: True (at /data/home/zyh/LoongFlow/runs/fqh-kappa5-v1/logs)
+4. Initializing PESAgent...
+[2026-09-17 21:58:57,067] [INFO] [log_id=7f4b43c84c01] [PESAgent] Creating database from config...
+[2026-09-17 21:58:57,115] [INFO] [log_id=7f4b43c84c01] [PESAgent] Created database: <loongflow.framework.pes.database.database.EvolveDatabase object at 0x14b9ad739fd0>
+[2026-09-17 21:58:57,115] [INFO] [log_id=7f4b43c84c01] [PESAgent] Registering Planner worker: 'evolve_planner'
+[2026-09-17 21:58:57,115] [INFO] [log_id=7f4b43c84c01] [PESAgent] Registering Executor worker: 'evolve_executor_chat'
+[2026-09-17 21:58:57,115] [INFO] [log_id=7f4b43c84c01] [PESAgent] Registering Executor worker: 'evolve_executor_react'
+[2026-09-17 21:58:57,115] [INFO] [log_id=7f4b43c84c01] [PESAgent] Registering Executor worker: 'evolve_executor_fuse'
+[2026-09-17 21:58:57,115] [INFO] [log_id=7f4b43c84c01] [PESAgent] Registering Summary worker: 'evolve_summary'
+
+======================================
+🚀 Starting Evolve Process 🚀
+🎯 Task: You are a mathematical physicist studying symbolic representations of
+complex fr...
+📈 Target Score: 0.995
+🔄 Max Iterations: 50
+- Planner: evolve_planner
+- Executor: evolve_executor_fuse
+- Summarizer: evolve_summary
+======================================
+
+[2026-09-17 21:59:12,764] [INFO] [log_id=7f4b43c84c01] [LoongFlowEvaluator] Starting evaluation b03d92e167954e02a47b03f072635f27 in /data/home/zyh/LoongFlow/runs/fqh-kappa5-v1/evaluator/eval_b03d92e167954e02a47b03f072635f27
+[2026-09-17 21:59:53,048] [INFO] [log_id=7f4b43c84c01] [LoongFlowEvaluator] Evaluation completed. Status: EvaluationStatus.SUCCESS, Score: 0.00351876817876436, Summary: score=0.003519; full_data_fidelity=0.000034; full_data_nmse=0.999966; exchange_error=0; rotation_error=9.82e-17 at M=1; finite=1.0000; complexity=2; fitted={'c0_re': 1.215368665360016, 'c0_im': 1.0019015278753671}
+[2026-09-17 21:59:53,049] [INFO] [log_id=7f4b43c84c01] [PESAgent] Starting initial evolution workers...
+[2026-09-17 21:59:53,049] [INFO] [log_id=7f4b43c84c01] [PESAgent] Started 1 initial evolution workers.
+[2026-09-17 21:59:53,049] [INFO] [log_id=7f4b43c84c01] [PESAgent] Trace ID: ed8c5a402266, Starting evolution cycle for iteration 1.
+[2026-09-17 21:59:53,050] [INFO] [log_id=7f4b43c84c01] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 21:59:53,057] [INFO] [log_id=7f4b43c84c01] [agents.math_agent.planner.plan_agent] Trace ID: ed8c5a402266: Planner: Current Iteration 1 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 21:59:53,057] [INFO] [log_id=7f4b43c84c01] [agents.math_agent.planner.plan_agent] Trace ID: ed8c5a402266: Planner: Get sample parent solution: {}
+[2026-09-17 21:59:53,058] [INFO] [log_id=7f4b43c84c01] [agents.math_agent.planner.plan_agent] Trace ID: ed8c5a402266: Planner: Start create best plan in iteration 1
+[2026-09-17 22:04:34,303] [INFO] [log_id=7f4b43c84c01] [openai._base_client] Retrying request to /chat/completions in 0.433269 seconds
+[2026-09-17 22:08:56,447] [INFO] [log_id=7f4b43c84c01] [openai._base_client] Retrying request to /chat/completions in 0.793532 seconds
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+[2026-09-17 22:13:20,239] [ERROR] [log_id=7f4b43c84c01] [PESAgent] Evolution cycle for iteration 1 failed: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+Traceback (most recent call last):
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/pes/pes_agent.py", line 237, in _evolution_cycle
+    planner_result = await planner.run(context, None)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/agents/math_agent/planner/plan_agent.py", line 148, in run
+    resp = await agent.run(
+           ^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 112, in run
+    thoughts = await self._reason()
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/base/agent_base.py", line 164, in wrapper
+    result = await func(*hook_args, **hook_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/react_agent.py", line 210, in _reason
+    return await self.reasoner.reason(self.context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/home/zyh/LoongFlow/src/loongflow/framework/react/components/default_reasoner.py", line 47, in reason
+    raise Exception(
+Exception: Error code: litellm_error, error: litellm.InternalServerError: InternalServerError: OpenAIException - Connection error.
+[2026-09-17 22:13:24,162] [INFO] [log_id=7f4b43c84c01] [PESAgent] Trace ID: be041e151aa0, Starting evolution cycle for iteration 2.
+[2026-09-17 22:13:24,162] [INFO] [log_id=7f4b43c84c01] [agents.math_agent.planner.plan_agent] Planner: Agent successfully initialized
+[2026-09-17 22:13:24,165] [INFO] [log_id=7f4b43c84c01] [agents.math_agent.planner.plan_agent] Trace ID: be041e151aa0: Planner: Current Iteration 2 Memory status: {'global_status': {'current_iteration': 0, 'is_full': False, 'top_3_iterations': [], 'best_score': 0, 'best_iteration': 0, 'avg_score': 0, 'better_ratio': 0}}
+[2026-09-17 22:13:24,165] [INFO] [log_id=7f4b43c84c01] [agents.math_agent.planner.plan_agent] Trace ID: be041e151aa0: Planner: Get sample parent solution: {}
+[2026-09-17 22:13:24,165] [INFO] [log_id=7f4b43c84c01] [agents.math_agent.planner.plan_agent] Trace ID: be041e151aa0: Planner: Start create best plan in iteration 2

@@ -8,7 +8,6 @@ _让创造更自由！LoongFlow，让你的经验轻松转化为专业的 AI 生
 
 通过PES思考范式让Agent会思考、会学习，具备长程复杂推理能力，并且能够跳过局部最优，在迭代中积累经验实现专家级效果突破。
 
-<p align="center">
     <a href="https://arxiv.org/abs/2512.24077">
         <img
             src="https://img.shields.io/badge/cs.AI-2512.24077-B31C1C?logo=arxiv&logoColor=B31C1C"

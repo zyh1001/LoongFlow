@@ -1,0 +1,41 @@
+{
+  "status": "success",
+  "score": 0.00351876817876436,
+  "summary": "score=0.003519; full_data_fidelity=0.000034; full_data_nmse=0.999966; exchange_error=0; rotation_error=9.82e-17 at M=1; finite=1.0000; complexity=2; fitted={'c0_re': 1.215368665360016, 'c0_im': 1.0019015278753671}",
+  "metrics": {
+    "validity": 1.0,
+    "full_data_nmse": 0.9999663441024438,
+    "full_data_fidelity": 3.3655897555056797e-05,
+    "exchange_error": 0.0,
+    "rotation_error": 9.821508810495469e-17,
+    "inferred_angular_momentum": 1,
+    "finite_fraction": 1.0,
+    "expression_complexity": 2,
+    "parameter_count": 2,
+    "accuracy_component": 0.0035187681787643603,
+    "physics_factor": 0.9999999999999999,
+    "complexity_penalty": 1.0,
+    "eval_time": 2.348789914045483
+  },
+  "artifacts": {
+    "expression": "c0 * z12",
+    "fitted_parameters": {
+      "c0_re": 1.215368665360016,
+      "c0_im": 1.0019015278753671
+    },
+    "global_scale": {
+      "real": 0.00013481629965950048,
+      "imag": 0.0002355651300299843
+    },
+    "optimizer": {
+      "attempted": true,
+      "success": true,
+      "nfev": 14,
+      "message": "`xtol` termination condition is satisfied.",
+      "residual_cost": 99996.6344102445
+    },
+    "evaluation_mode": "all_finite_samples_fit_and_score",
+    "samples_used": 100000,
+    "dataset": "/data/home/zyh/jaqmc/symbolic/datasets/disk_n2_Q6_strength5/dataset_uniform_augmented.npz"
+  }
+}

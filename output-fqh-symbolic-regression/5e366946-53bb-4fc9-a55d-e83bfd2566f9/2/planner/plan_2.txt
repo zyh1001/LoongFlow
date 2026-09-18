@@ -1,0 +1,46 @@
+PLAN 2 -- Sparse Symmetry-Adapted Dictionary Regression (OMP / Lasso)
+=====================================================================
+
+MATHEMATICAL FORMULATION
+------------------------
+Variables: a sparse coefficient vector beta over a SYMMETRY-ADAPTED
+  dictionary of factors, all pre-multiplied by the mandatory antisymmetric
+  seed A(z1,z2) = z12**3 (M=3, odd):
+    D = { A*1, A*|z12|^2, A*|z12|^4, A*|Z_cm|^2, A*|Z_cm|^2*|z12|^2,
+          A*exp(-|p1|(|z1|^2+|z2|^2)) , ... }
+  plus a global complex amplitude c0.
+Constraints:
+  C1 antisymmetry and C2 M=3 are baked into A, hence hold for every beta.
+  C3 finiteness: exponential factors wrapped as exp(-|p| * nonneg).
+  C4 sparsity: ||beta||_0 <= 3 (enforced by the selection algorithm).
+Objective:
+  min_{beta}  ||Psi_hat(beta) - Psi_target||^2 / ||Psi_target||^2
+              + lambda * ||beta||_0
+  i.e. a sparse model-selection objective on the validation split; the
+  L0 term is the complexity-penalty proxy of the evaluator.
+
+SOLVER STRATEGY
+---------------
+1. Build the dictionary numerically on the training split (features X).
+2. Run Orthogonal Matching Pursuit (sklearn.linear_model orthogonal_mp) to
+   select k <= 3 atoms greedily; re-solve the linear least-squares for the
+   selected coefficients exactly (closed form via scipy.linalg.lstsq).
+3. Cross-check with LassoCV (sklearn) over a regularization path.
+4. Pick the sparsest model whose validation NMSE is within 1e-3 of the best.
+
+VALIDITY MECHANISM
+------------------
+Every dictionary atom is pre-symmetrized (A is odd, M=3), so ANY coefficient
+vector yields a valid antisymmetric M=3 candidate.  A projection step drops
+atoms whose fitted magnitude maps to complexity that increases the evaluator
+penalty; a final finite-check runs on |z|=1e4.
+
+WHY THIS SOLUTION
+-----------------
+Advantages: principled sparsity/penalty control; can discover unexpected
+  correction atoms.  Disadvantages: requires a path to generate features
+  from data (the executor has no data access -> must delegate fitting to the
+  evaluator), higher variance, risk of overfitting the tiny residual, and
+  the selected dictionary element may exceed the complexity budget that the
+  simpler Plan 1 already respects.  Less robust / less reproducible than
+  Plan 1.

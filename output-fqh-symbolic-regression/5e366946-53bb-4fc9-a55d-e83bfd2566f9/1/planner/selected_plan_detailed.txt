@@ -1,0 +1,212 @@
+======================================================================
+FINAL CHILD SOLUTION GENERATION PLAN  (SELECTED = PLAN 1, DETAILED)
+Physics-constrained structured ansatz with least-squares parameter
+tuning, a tiny discrete structure search, and an analytic+numeric
+safety valve.
+======================================================================
+
+OBJECTIVE
+----------------------------------------------------------------------
+Produce ONE candidate expression for the two-electron nu=1/3 FQH disk
+wavefunction Psi(z1,z2) that (a) is fermionically antisymmetric, (b) is
+a single integer angular-momentum eigenstate, (c) is finite everywhere,
+and (d) maximizes the evaluator score (validation fidelity) so that
+Score >= 1.0.  The parent (c0*z12, M=1, fidelity 6.5e-5, score 0.0049)
+contains no correct physics; this plan injects the correct structure in
+generation 1.
+
+OPERATING PRINCIPLE (decouple hard from easy)
+----------------------------------------------------------------------
+  HARD / NON-CONVEX  = choose the STRUCTURE (exponent, correction terms,
+                       Gaussian topology). Enumerated over a tiny,
+                       physically-justified discrete grid. O(1) options.
+  EASY / CONTINUOUS  = tune the NUMBERS X. Delegated to the evaluator's
+                       trust-region least squares with good init values.
+
+======================================================================
+PHASE 1 : MATHEMATICAL DEFINITION
+======================================================================
+Coordinates (convention is MANDATORY and unchanged):
+    z1 = x1 - i*y1 ,   z2 = x2 - i*y2
+    z_rel = z1 - z2 ,  r_rel^2 = |z1 - z2|^2 ,  Z_cm = (z1+z2)/2
+Identity used: |z1|^2 + |z2|^2 = 2|Z_cm|^2 + (1/2) r_rel^2
+  -> the two Gaussian widths (CM and relative) are DECOUPLED by p1,p2.
+
+CHOSEN STRUCTURE  S* :
+    S1 = Laughlin relative core        : (z1 - z2)^3
+    S2 = LL-mixing radial correction   : (1 + p3 * |z1 - z2|^2)
+    S3 = Gaussian envelope (decoupled) : exp(-|p1|*(|z1|^2+|z2|^2)
+                                             -|p2|*|z1-z2|^2)
+
+  Psi(z1,z2 ; X) =
+      c0 * (z1 - z2)^3
+         * ( 1 + p3 * |z1 - z2|^2 )
+         * exp( -|p1|*(|z1|^2 + |z2|^2) - |p2|*|z1 - z2|^2 )
+
+VARIABLES  X = (c0_re, c0_im, p1, p2, p3)
+    c0 = c0_re + i*c0_im  (complex global scale, |c0| set by fitter)
+    p1 : envelope width (initialized at the Laughlin value 1/4 = 0.25)
+    p2 : extra relative-coordinate Gaussian width (init 0)
+    p3 : LL-mixing amplitude (init 0 -> start exactly at the clean
+         Laughlin limit, which is itself guaranteed-valid)
+
+CONSTRAINTS  C  (all hold for EVERY X because they are analytic identities)
+    C1  Exchange antisymmetry: under z1 <-> z2,
+        z_rel -> -z_rel  =>  z_rel^3 -> -z_rel^3, every |.| factor is
+        invariant, hence Psi(r2,r1) = -Psi(r1,r2).   exchange_error = 0.
+    C2  Single angular momentum M=3: under z_i -> e^{-i phi} z_i,
+        Psi -> e^{-3 i phi} Psi  (no M-mixing).     rotation_error ~ 0.
+    C3  Finiteness: the exponent -|p1|*nonneg -|p2|*nonneg is ALWAYS <= 0,
+        so exp() <= 1 for any fitted p1,p2; the polynomial prefactor is
+        exponentially suppressed at infinity.  No poles anywhere.
+    C4  Parameter budget: 5 fitted params (<= 10); closed form only.
+
+OBJECTIVE  f(X)  (as seen by the fixed evaluator):
+    minimize  L(X) = || Psi_hat(.,X) - Psi_target ||^2 / || Psi_target ||^2
+    on VALIDATION (with a globally-consistent complex scale), subject to
+    C1-C4.  Secondary tie-break: fewer active parameters / lower
+    complexity (e.g. prefer p3 -> 0 when its addition does not reduce the
+    validation NMSE).  The hidden TEST split is never touched.
+
+======================================================================
+PHASE 2 : THE OPTIMIZATION LOOP  (structure grid + multi-start fit)
+======================================================================
+Because the continuous fit is non-convex, we run a MULTI-START strategy.
+
+STEP 2.1  Discrete structure enumeration (tiny, deterministic):
+    - exponent  e in {3}          (nu = 1/3 Laughlin; M = 3)
+    - correction order k in {0, 1} (k=1 -> the (1 + p3 r^2) factor)
+    - Gaussian topology in {decoupled(p1,p2), isotropic(p2=0)}
+    => at most ~4 structural variants; each is a physically meaningful
+       hypothesis. Keep the variant with the best VALIDATION score;
+       break ties toward fewer active parameters / lower complexity.
+
+STEP 2.2  Multi-start parameter initialization (mandated; N_restart >= 10):
+    For the selected structure produce N_restart perturbed initial vectors
+    by sampling around the physical anchor (p1=0.25, p2=0, p3=0):
+        p1 ~ U(0.10, 0.60)
+        p2 ~ U(-0.20, 0.20)          # |.| taken inside exp anyway
+        p3 ~ U(-0.30, 0.30)
+        c0 = (1.0, 0.0)              # scale magnitude fixed by fitter
+    Use  numpy.random.default_rng(SEED)  with a FIXED seed for
+    reproducibility.
+
+STEP 2.3  Continuous fit (delegated, per restart):
+    The evaluator fits X by trust-region least squares
+    (scipy.optimize.least_squares, method='trf', with numeric Jacobian;
+    fallback method='lm').  We only supply the initial X from 2.2.
+    If the interface lets the executor invoke the fitter directly, wrap
+    it as:
+        from scipy.optimize import least_squares
+        res = least_squares(residual, x0, method='trf', xtol=1e-12,
+                            ftol=1e-12, gtol=1e-12, max_nfev=2000)
+    keeping the best (lowest validation NMSE) over all restarts.
+
+STEP 2.4  Greedy term pruning (guarantee no complexity inflation):
+    For each active optional parameter (p2, then p3): set it to 0, refit
+    the remaining parameters, and KEEP the pruned version iff it does not
+    worsen validation fidelity beyond a small tolerance (e.g. 1e-3).
+    This implements the task rule "prefer a simpler formula when two
+    candidates have similar validation quality".
+
+======================================================================
+PHASE 3 : THE "SAFETY VALVE"  (deterministic post-processing)
+======================================================================
+The safety valve guarantees that whatever the fitter returns, the emitted
+candidate is VALID. It has three tiers.
+
+TIER A - Analytic identity guard (no computation needed):
+    The emitted expression string already (i) contains the odd factor
+    (z1-z2)**3, (ii) contains the symmetric factor abs(z1-z2)**2 inside
+    a multiplicative (1 + p3*...), and (iii) places |p1|,|p2| inside the
+    exponential.  Therefore C1,C2,C3 hold for ANY numeric X.  This is the
+    primary guarantee: the score cannot collapse from physics errors.
+
+TIER B - Deterministic numerical verification (run BEFORE submission):
+    Use a fixed grid of test points and CHECK the three identities
+    (pure numpy, no dataset, no evaluator internals):
+        import numpy as np
+        rng = np.random.default_rng(0)
+        z1 = rng.normal(size=200) + 1j*rng.normal(size=200)
+        z2 = rng.normal(size=200) + 1j*rng.normal(size=200)
+        def psi(z1, z2, c0, p1, p2, p3):
+            zr = z1 - z2
+            return (c0 * zr**3 * (1 + p3*np.abs(zr)**2)
+                    * np.exp(-np.abs(p1)*(np.abs(z1)**2 + np.abs(z2)**2)
+                             - np.abs(p2)*np.abs(zr)**2))
+        X = X_best
+        # C1 antisymmetry
+        assert np.allclose(psi(z2, z1, *X), -psi(z1, z2, *X))
+        # C2 rotation by pi/2 -> phase exp(-3 i phi)
+        phi = np.pi/2; Z1 = z1*np.exp(-1j*phi); Z2 = z2*np.exp(-1j*phi)
+        ratio = psi(Z1, Z2, *X) / psi(z1, z2, *X)
+        assert np.allclose(ratio, np.exp(-3j*phi))
+        # C3 finiteness on a large-radius shell
+        assert np.all(np.isfinite(psi(1e4*z1, 1e4*z2, *X)))
+    Any assertion failure triggers TIER C.
+
+TIER C - Guaranteed-valid fallback (never crash):
+    If TIER B fails, or the fitted X is non-finite / the evaluator reports
+    a failure, emit the MINIMAL Laughlin candidate:
+        expression : "c0 * (z1 - z2)**3 * exp(-0.25*(abs(z1)**2 + abs(z2)**2))"
+        parameters : {"c0_re":1.0, "c0_im":0.0}
+    which trivially satisfies C1-C4 and reproduces the canonical nu=1/3
+    Laughlin state with M=3 (strictly better than the parent's M=1 guess).
+
+======================================================================
+PHASE 4 : IMPLEMENTATION DETAILS (exact, code-ready)
+======================================================================
+Libraries: numpy (grid + verification), scipy.optimize (least_squares
+fallback).  No other packages.  All randomness uses a fixed seed.
+
+FINAL candidate_spec() TO EMIT (structure S3, params from Phase 2):
+
+    # EVOLVE-BLOCK-START
+    def candidate_spec():
+        # nu=1/3 Laughlin core (z1-z2)^3  ->  M = 3, odd (antisymmetry)
+        # (1 + p3*|z1-z2|^2)              ->  Landau-level-mixing radial
+        #                                     correction (still M = 3)
+        # |p1|,|p2| inside exp()          ->  finiteness for ANY fitted value
+        # note |z1|^2+|z2|^2 = 2|Z_cm|^2 + r_rel^2/2, so p1,p2 decouple the
+        # center-of-mass and relative Gaussian widths.
+        return {
+            "expression": (
+                "c0 * (z1 - z2)**3 * (1 + p3 * abs(z1 - z2)**2) * "
+                "exp(-abs(p1)*(abs(z1)**2 + abs(z2)**2)"
+                "    -abs(p2)*abs(z1 - z2)**2)"
+            ),
+            "parameters": {
+                "c0_re": 1.0,
+                "c0_im": 0.0,
+                "p1": 0.25,     # physical anchor: Laughlin width 1/4
+                "p2": 0.0,      # starts at clean Laughlin limit
+                "p3": 0.0,      # LL-mixing correction off at start
+            },
+        }
+    # EVOLVE-BLOCK-END
+
+NOTES / ROBUSTNESS RULES FOR THE EXECUTOR
+  * Use  abs / exp  (numpy-compatible).  If the evaluator namespace lacks
+    a bare "abs", substitute "np.abs"; if it is a symbolic engine, use
+    "Abs"/"exp" equivalents — but keep the STRUCTURE identical.
+  * Initializing p3=0 and p2=0 means the very first evaluated candidate is
+    already the guaranteed-valid Laughlin state; the fitter then only
+    ADDS corrections if they lower the validation NMSE.  This makes the
+    candidate "monotonically safe": it cannot be worse than Laughlin.
+  * If validation fidelity for M=3 is unexpectedly poor (< 0.5), the
+    executor may re-run Phase 2 with exponent e in {5, 1} (odd only) to
+    probe neighbouring angular-momentum sectors, and keep whichever
+    validation score is best — this is the only structural degree of
+    freedom left open, and it is resolved by validation, not by guessing.
+  * Do NOT touch the test split, the evaluator source, logs, or datasets.
+
+EXPECTED PERFORMANCE IMPROVEMENT
+  * Fidelity should jump from ~6.5e-5 (parent) to O(0.9-1.0) because the
+    candidate now spans the correct Laughlin structure + envelope + LLM
+    correction; accuracy_component rises accordingly and physics_factor
+    stays ~1 (exchange_error = 0, rotation_error ~ 0), giving Score >= 1.0.
+  * Complexity stays modest (5 fitted params, low-degree polynomial),
+    so complexity_penalty stays near 1.
+  * All hard constraints are analytic identities, so the result is
+    reproducible and cannot crash on feasibility.
+======================================================================

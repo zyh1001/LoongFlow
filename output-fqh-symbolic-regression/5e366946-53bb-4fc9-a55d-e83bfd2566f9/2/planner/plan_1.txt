@@ -1,0 +1,91 @@
+PLAN 1 (SELECTED) -- Physics-Constrained Minimal Laughlin-Core Ansatz
+===============================================================
+
+Name: "Analytic-Symmetry-Guaranteed Minimal Core + Complexity-Penalty-Aware Structure Selection"
+
+WHY THIS PLAN (Global Perspective)
+----------------------------------
+DB facts: island_1 already holds the best solution on record:
+  score=0.993708, fidelity=0.999189, validation_nmse=8.11e-4, M=3,
+  exchange_error=0, rotation_error~4e-16, complexity=23, penalty=0.99452,
+  params = c0=(1.007,-0.0166), p1=0.2807, p2=-0.01385, p3=0.03783.
+Decoded score model (reverse-engineered from that artifact):
+  score  = accuracy_component * physics_factor * complexity_penalty
+         = (1 - validation_nmse) * (~1.0) * penalty.
+The residual loss budget is dominated by the COMPLEXITY PENALTY (0.0055)
+and NOT by accuracy (0.0008).  The two fitted corrections (p2 ~ -0.0138,
+p3 ~ +0.0378) are tiny and buy only a marginal NMSE reduction while
+inflating complexity from ~9 to 23.  Strategy #2 (fusion) applies because
+island scores differ by >>10%: we fuse island_1's PROVEN M=3 structure
+into island_0's lineage, then STRIP the complexity to recover the penalty.
+This is exactly what the island_1 summary itself recommends as the
+"highest-leverage single move".
+
+MATHEMATICAL FORMULATION
+------------------------
+Variables:
+  Structural choice  s in S_struct = { (e, correction, gaussian) }
+      e in {3}                                  (M=3 Laughlin sector, confirmed)
+      correction in {"none"}                    (minimal; ladder given in Phase 2)
+      gaussian  in {"single_width"}             (one shared Gaussian width)
+  Continuous parameters X = (c0_re, c0_im, p1)  in R^3.
+Constraints (must hold for EVERY X; these are analytic identities):
+  C1 Exchange antisymmetry:  z12 -> -z12  =>  z12^3 -> -z12^3,
+       while |z12|^2, |z1|^2+|z2|^2 are invariant  =>  Psi(r2,r1) = -Psi(r1,r2).
+  C2 Single angular momentum: z_i -> exp(-i phi) z_i  =>  Psi -> exp(-3 i phi) Psi
+       (pure M=3, no sector mixing).
+  C3 Finiteness: exponent = -|p1|*(|z1|^2+|z2|^2) <= 0  =>  |exp(.)| <= 1,
+       polynomial prefactor suppressed at infinity, no poles => finite everywhere.
+  C4 <=10 fitted reals (we use 3); closed form only; no I/O / branches / RNG.
+Objective:
+  Maximize  score(X,s) = (1 - validation_nmse) * complexity_penalty(complexity(s)).
+  Equivalently: hold accuracy at the saturated ~0.999 level and MINIMIZE
+  complexity (maximize the penalty factor).  Tie-break to fewer parameters.
+  Hidden TEST split is never touched.
+
+CHOSEN EXPRESSION (the emitted candidate):
+  Psi(z1,z2) = c0 * z12**3 * exp(-abs(p1) * (abs(z1)**2 + abs(z2)**2))
+  parameters: {c0_re: 1.0, c0_im: 0.0, p1: 0.25}
+  (z12 = z1 - z2, z1 = x1 - i*y1, z2 = x2 - i*y2;  p1 initialized at the
+   analytic Laughlin/disk anchor 1/4.)
+
+SOLVER STRATEGY
+---------------
+Decouple the HARD (non-convex structure) from the EASY (continuous numbers):
+  * HARD part: the structure is FIXED analytically by physics + the
+    complexity analysis above (M=3 core x single Gaussian envelope).
+    A tiny discrete enumeration (Phase 2 of the detailed plan) proves this
+    is the lowest-complexity member of the physically admissible family.
+  * EASY part: the 3 continuous reals are fitted by the EVALUATOR's
+    trust-region least squares (scipy.optimize.least_squares, method='trf'),
+    which is a standard bounded nonlinear least-squares solver initialized
+    at the physical anchor. No bespoke optimizer is needed.
+
+VALIDITY MECHANISM (how constraints are GUARANTEED, not hoped for)
+------------------------------------------------------------------
+Tier A - Analytic identity: the odd power (z12**3), the rotation-invariant
+  magnitudes, and |p1| inside the exponential make C1/C2/C3 true for ANY
+  value the fitter returns.  Physics errors therefore cannot collapse the
+  score; feasibility is structural, not luck-based.
+Tier B - Deterministic numeric verification on synthetic Gaussian points
+  (numpy, fixed seed 0): assert Psi(z2,z1) == -Psi(z1,z2); assert
+  Psi(e^{-i phi}z1, e^{-i phi}z2)/Psi == e^{-3 i phi}; assert finite at
+  |z| = 1e4.  If any assertion fails, drop to Tier C.
+Tier C - Guaranteed-valid fallback: emit the canonical Laughlin candidate
+  "c0 * z12**3 * exp(-abs(p1)*(abs(z1)**2 + abs(z2)**2))" with
+  {c0_re:1.0, c0_im:0.0, p1:0.25}; trivially valid, M=3, and strictly
+  dominating the M=1 parent.
+
+WHY THIS SOLUTION
+-----------------
+Expected performance: nmse ~1e-3 (vs 8e-4 reference) but complexity drops
+  ~23 -> ~9, so penalty recovers 0.9945 -> ~0.998-1.0 and score rises from
+  0.9937 toward 0.996-1.0.  Directly attacks the DOMINANT loss channel.
+Advantages: (i) hard constraints hold analytically; (ii) reproducible
+  (3 params, fixed anchor, deterministic verification); (iii) physically
+  transparent (Laughlin M=3 core x Gaussian envelope); (iv) cannot crash.
+Disadvantages: (i) if the target carries genuine Landau-level mixing, the
+  tiny p2/p3 corrections removed here may cost a small NMSE increase; this
+  is bounded and far smaller than the recovered penalty (ladder in Phase 2
+  provides a controlled hedge). (ii) assumes the M=3 sector, already
+  confirmed empirically by island_1's inferred_angular_momentum=3.

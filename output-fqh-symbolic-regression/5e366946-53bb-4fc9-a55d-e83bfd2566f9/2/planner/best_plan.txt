@@ -1,0 +1,153 @@
+### Final Child Solution Generation Plan
+
+**Objective:** Produce ONE candidate expression for the two-electron ν=1/3 FQH disk wavefunction `Psi(z1,z2)` that (a) is fermionically antisymmetric, (b) is a single integer angular-momentum eigenstate, (c) is finite everywhere, and (d) MAXIMIZES the evaluator score `score = accuracy_component * physics_factor * complexity_penalty`, where `accuracy_component ≈ 1 − validation_nmse`. Target: reach / exceed the island_1 record of 0.993708 and approach ≥1.0.
+
+**Selected Outline:** PLAN 1 — *Physics-Constrained Minimal Laughlin-Core Ansatz with analytic symmetry guarantees + complexity-penalty-aware structure selection.*
+
+**Rationale for Selection (from the global database):**
+1. **Island-level facts.** Island_1 already holds the dominant solution: `c0*z12**3*(1+p3|z12|²)*exp(−|p1|(|z1|²+|z2|²)−|p2||z12|²)` with score `0.993708`, fidelity `0.999189`, `validation_nmse = 8.11e-4`, `M=3`, `exchange_error=0`, `rotation_error≈4e-16`, but `expression_complexity = 23` ⇒ `complexity_penalty = 0.99452`. Island_0 (our lineage) contains only the trivial parent `c0*z12` (score `0.004894`, `M=1`, fidelity `6.5e-5`); island_2 is empty.
+2. **Where the loss lives.** Decoding the artifact: `score ≈ (1 − nmse)·1·penalty = 0.999189·0.99452 = 0.99371`. The **residual loss is dominated by the COMPLEXITY PENALTY (0.0055), not by accuracy (0.0008)**. Therefore the highest-leverage move is **keeping the proven M=3 physics while SLASHING complexity** — exactly the "fusion" strategy (islands differ by ≫10%) plus the recommendation already recorded in island_1's own summary.
+3. **Robustness.** Plan 1's hard constraints are *analytic identities* (true for every fitted value), so the candidate cannot become invalid or crash. Plans 2 (sparse dictionary/OMP) and 3 (grammar GP) need data-side feature construction or stochastic search the executor cannot reliably perform, and both risk complexity blow-up / non-reproducibility.
+
+---
+
+## Best Plan (Plan 1, fully specified)
+
+### Phase 1: Mathematical Definition
+
+**Coordinates (mandatory convention):** `z1 = x1 − i·y1`, `z2 = x2 − i·y2`, `z12 = z1 − z2`, so `|z12|² = |z1−z2|²` and `|z1|²+|z2|² = 2|Z_cm|² + ½|z12|²`.
+
+**Structural space (HARD, discrete — decided analytically):**
+```
+S_struct = { (exponent e, correction, gaussian) }
+   e         ∈ {3}                 # M=3 Laughlin sector; confirmed by island_1 inferred_angular_momentum=3
+   correction∈ {"none"}            # minimal member (complexity-penalty recovery); ladder in Phase 2
+   gaussian  ∈ {"single_width"}    # ONE shared Gaussian width
+```
+
+**Chosen structure S\*:**
+```
+Psi(z1,z2;X) = c0 * z12**3 * exp( -abs(p1) * (abs(z1)**2 + abs(z2)**2) )
+```
+
+**Variables** `X = (c0_re, c0_im, p1) ∈ R³` — only 3 fitted reals (c0 complex). Initialize `c0 = (1.0, 0.0)`, `p1 = 0.25` (the analytic Laughlin/disk envelope anchor).
+
+**Constraints (hold for EVERY X — analytic identities):**
+- **C1 Exchange antisymmetry:** `z12 → −z12 ⇒ z12³ → −z12³`, while every magnitude factor is exchange-invariant ⇒ `Psi(r2,r1) = −Psi(r1,r2)`. `exchange_error = 0`.
+- **C2 Single angular momentum M=3:** under `z_i → e^{−iφ}z_i`, `z12 → e^{−iφ}z12` ⇒ `Psi → e^{−3iφ}Psi`, no sector mixing ⇒ `rotation_error ≈ 0`.
+- **C3 Finiteness:** exponent `= −|p1|·(nonneg) ≤ 0` ⇒ `|exp(·)| ≤ 1` for any fitted `p1`; the polynomial prefactor is exponentially suppressed at ∞; no poles ⇒ finite on the whole domain.
+- **C4 Budget:** ≤ 10 fitted reals (we use 3); closed form only; no I/O, branches, RNG, or hard-coded solutions.
+
+**Objective:**
+```
+maximize_X  score(X) = (1 − validation_nmse(X)) · complexity_penalty(complexity(S*))
+```
+Equivalently: keep accuracy at its saturated ~0.999 level and MINIMIZE complexity (maximize the penalty factor). Tie-break toward fewer active parameters. The hidden TEST split is never touched.
+
+---
+
+### Phase 2: The Optimization Loop (decoupled: structure = discrete/deterministic, numbers = continuous)
+
+**Step 2.1 — Discrete structure enumeration (deterministic, ≤4 variants, O(1)).**
+Enumerate the physically admissible family and select by the *estimated score*, computed with the evaluator's own metric decomposition `score = (1−nmse)·penalty`:
+- `V0 = "c0*z12**3*exp(−abs(p1)*(abs(z1)**2+abs(z2)**2))"` — 3 params, minimal complexity (PRIMARY).
+- `V1 = V0 × |z12|² correction`: `"c0*z12**3*(1+p3*abs(z12)**2)*exp(−abs(p1)*(abs(z1)**2+abs(z2)**2))"` — 4 params (hedge for genuine Landau-level mixing).
+- `V2 = V0 + relative-width Gaussian`: add `−abs(p2)*abs(z12)**2` inside `exp` — 4 params (decoupled CM/relative widths).
+- `V3 = island_1 structure` (reference upper bound).
+Selection rule (deterministic): choose the **lowest-complexity variant whose expected `validation_nmse ≤ 2×10⁻³`**; default = **V0**. Rationale: reference attains nmse 8e-4 with complexity 23, so the residual the corrections explain is tiny; V0 buys the full penalty recovery (complexity 23→~9, penalty 0.9945→~0.998–1.0) at a bounded nmse cost.
+
+**Step 2.2 — Continuous parameter fit (delegated to the evaluator, "easy" convex-ish part).**
+The evaluator fits `X` on the TRAINING split with a standard trust-region bounded nonlinear least-squares:
+```
+scipy.optimize.least_squares(residuals, x0, method='trf',
+                             xtol=1e-12, ftol=1e-12, gtol=1e-12, max_nfev=2000)
+```
+residuals = flattened `(Re, Im)` of `Psi_hat(X) − Psi_target`. Initialization `x0 = (c0_re=1.0, c0_im=0.0, p1=0.25)`. Global complex scale is resolved by the evaluator.
+**Monotone-safe property:** because `C1–C3` are analytic, the fitter can only *improve* nmse; it can never invalidate the candidate.
+
+**Step 2.3 — Multi-start (mandate; kills variance).**
+If the executor is permitted to define an initialization sweep, use a FIXED seed and `N_restart ≥ 10` starts:
+```
+rng = numpy.random.default_rng(0)
+p1_0 ∈ U(0.10, 0.60)   # anchor 0.25 in the interior
+c0_0 = (1.0, 0.0)
+```
+keep the start with the lowest validation NMSE. Fixed seed ⇒ reproducible.
+
+**Step 2.4 — Greedy term pruning (implements the task's "prefer simpler" rule).**
+For the optional parameters of V1/V2 (p3 first, then p2): set to 0, refit, and keep the pruned form **iff** validation fidelity does not drop by more than ~10⁻³; otherwise retain only the single cheapest correction that recovers it. This guarantees the emitted candidate is Pareto-minimal in (nmse, complexity).
+
+---
+
+### Phase 3: The "Safety Valve" (deterministic post-processing that STRICTLY enforces validity)
+
+**Tier A — Analytic identity guard (structural, cannot fail).** The emitted string already contains the odd `z12**3`, rotation-invariant magnitudes, and `abs(p1)` inside `exp`. Hence C1/C2/C3 are guaranteed for *all* numeric `X`. No repair step can even be necessary for these constraints.
+
+**Tier B — Deterministic numeric verification (run before submission).**
+```python
+import numpy as np
+rng = np.random.default_rng(0)
+z1 = rng.normal(size=256) + 1j*rng.normal(size=256)
+z2 = rng.normal(size=256) + 1j*rng.normal(size=256)
+
+def psi(z1, z2, c0, p1):
+    z12 = z1 - z2
+    return c0 * z12**3 * np.exp(-abs(p1)*(np.abs(z1)**2 + np.abs(z2)**2))
+
+X = X_best                      # (c0, p1) chosen by the fit / enumeration
+assert np.allclose(psi(z2, z1, *X), -psi(z1, z2, *X))              # C1 antisymmetry
+phi = np.pi/2
+assert np.allclose(psi(z1*np.exp(-1j*phi), z2*np.exp(-1j*phi), *X) / psi(z1, z2, *X),
+                   np.exp(-3j*phi))                               # C2 M=3
+assert np.all(np.isfinite(psi(1e4*z1, 1e4*z2, *X)))               # C3 finiteness
+assert np.all(np.isfinite(psi(1e-6*z1, 1e-6*z2, *X)))             # C3 no pole at origin
+```
+If any assertion fails → Tier C.
+
+**Tier C — Guaranteed-valid fallback (never crash, never regress).** If the fitter returns non-finite `X` or Tier B fails, emit the canonical Laughlin candidate
+```
+"c0 * z12**3 * exp(-abs(p1) * (abs(z1)**2 + abs(z2)**2))",  {c0_re:1.0, c0_im:0.0, p1:0.25}
+```
+which is trivially valid, M=3, and strictly dominates the M=1 parent (`0.004894`).
+
+---
+
+### Phase 4: Implementation Details (code-ready)
+
+**Libraries:** `numpy` (grid + verification), `scipy.optimize.least_squares` (parameter fit). Nothing else; fixed seed for reproducibility.
+
+**Exact `candidate_spec()` to emit (PRIMARY, V0):**
+```python
+# EVOLVE-BLOCK-START
+def candidate_spec():
+    # M=3 Laughlin core (odd) -> analytic fermionic antisymmetry + single M=3 sector
+    # single Gaussian envelope  -> finite everywhere for ANY fitted p1 (|p1| inside exp)
+    # only 3 fitted reals       -> recovers the complexity_penalty lost by the 23-op reference
+    return {
+        "expression": "c0 * z12**3 * exp(-abs(p1) * (abs(z1)**2 + abs(z2)**2))",
+        "parameters": {
+            "c0_re": 1.0,   # global complex amplitude (real part)
+            "c0_im": 0.0,   # global complex amplitude (imag part)
+            "p1": 0.25,     # envelope width; analytic Laughlin/disk anchor 1/4
+        },
+    }
+# EVOLVE-BLOCK-END
+```
+Use the same token conventions as the proven island_1 solution through the evaluator. If the evaluator's symbol table provides `z12`, `z1`, `z2`, `abs`, `exp`, this parses identically. (Substitute `np.abs`/`np.exp` only if bare names are unavailable — keep structure unchanged.)
+
+**Hedge (only if the executor judges accuracy is at risk):** replace with V1
+```python
+        "expression": ("c0 * z12**3 * (1 + p3 * abs(z12)**2) * "
+                       "exp(-abs(p1) * (abs(z1)**2 + abs(z2)**2))"),
+        "parameters": {"c0_re": 1.0, "c0_im": 0.0, "p1": 0.25, "p3": 0.0},
+```
+Initializing `p3 = 0` makes the *first* evaluated candidate identical to V0 (monotone-safe).
+
+**Executor robustness rules:** keep `abs(p1)` inside `exp` so finiteness holds for any fitted sign; never add a polynomial series `(1 + p3|z12|² + p4|z12|⁴ + …)` beyond one term (accuracy is saturated and extra terms only inflate the penalty); do NOT access the test split, evaluator source, logs, or datasets; do NOT hard-code a presumed final answer.
+
+---
+
+**Expected Performance Improvement:**
+1. **Complexity penalty recovery** (primary): complexity ~23 → ~9 ⇒ `complexity_penalty 0.9945 → ≈0.998–1.0`.
+2. **Accuracy held ~0.999**: the M=3 Laughlin core + Gaussian envelope alone carries >99.9% of the fidelity (the removed p2/p3 corrections are tiny: |p2|≈0.014, p3≈0.038 relative to the fitted envelope).
+3. **Net score:** from island_0's parent `0.004894` → expected `≈0.996–1.0`, i.e. **> 0.993708 (island_1 record)**, reproducibly and with guaranteed-valid physics (exchange_error = 0, M = 3, finite_fraction = 1.0).

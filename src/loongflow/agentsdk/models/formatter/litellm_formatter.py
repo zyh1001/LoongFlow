@@ -177,12 +177,20 @@ class LiteLLMFormatter(BaseFormatter):
         return "openai"
 
     def _is_deepseek_reasoner(self, model_name: str) -> bool:
-        """
-        check if the model name is deepseek-reasoner model
-        """
+        """Return whether the model requires DeepSeek reasoning replay."""
         if not model_name:
             return False
-        return "deepseek-reasoner" in model_name.lower()
+
+        name = model_name.lower()
+        return any(
+            model_id in name
+            for model_id in (
+                "deepseek-reasoner",
+                "deepseek-flash",
+                "deepseek-v4-flash",
+                "deepseek-v4-pro",
+            )
+    )
 
     def _convert_messages(self, messages: List[Message], model_name: str) -> List[Dict[str, Any]]:
         """
