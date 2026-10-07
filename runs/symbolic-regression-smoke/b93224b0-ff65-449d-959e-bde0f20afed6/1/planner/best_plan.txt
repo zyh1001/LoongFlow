@@ -1,0 +1,146 @@
+### Final Child Solution Generation Plan
+
+**Objective:** Discover a compact analytic candidate Psi(z1,z2) that reproduces the target 2-electron fractional-quantum-Hall neural wavefunction (N=2, nu=1/3, disk radius a/l_B=sqrt(12), LL-mixing lambda=5) with **full-data fidelity high enough to reach score >= 1.0**. The parent `c0*z12` has fidelity ~2.2e-5 (essentially zero) because it lacks the Gaussian/confinement envelope and has the wrong relative power. We must make one large, physics-correct structural leap.
+
+**Selected Outline:** Plan 3 — *Nested Laughlin core × relative Jastrow correction (LL-mixing aware) with graceful degradation*. The selected concrete child is the 4-parameter nested model
+`F = c0 * z12**3 * exp( c1*(|z1|^2+|z2|^2) + c2*|z12|^2 )`,
+which reduces EXACTLY to the safe Laughlin baseline when c2 = 0.
+
+**Rationale for Selection:**
+1. It is **nested**: c2 = 0 recovers `c0*z12**3*exp(c1*(|z1|^2+|z2|^2))` exactly, so the fitted result can never be worse than the safe baseline at the initialization point — this removes "luck" from the parameter search.
+2. It fixes the two dominant physics defects of the parent in one structural edit: (a) the missing Gaussian envelope, (b) the wrong Laughlin relative power (1 -> 3 for nu=1/3, giving M=3).
+3. Antisymmetry and integer angular momentum are **structurally exact** (odd power of z12), not fitted, so those hard constraints cannot be violated.
+4. Finiteness is enforced by **hard bounds + a deterministic projection** on the Gaussian rates — a genuine "safety valve."
+5. It stays within the compact/low-complexity regime (4 params <= 10).
+
+---
+
+**Best Plan:**
+
+**Phase 1 — Mathematical Definition (Variables, Constraints, Objective)**
+
+* **System / coordinates (fixed convention):** z1 = x1 - i*y1, z2 = x2 - i*y2; z12 = z1 - z2; Z_cm = (z1+z2)/2. All lengths in units of l_B (dimensionless). Available variables in the expression namespace: `z1`, `z2`, `z12` (known to exist from the parent), plus numpy `abs`, `exp`. Complex-conjugate/radial invariants are built via `abs(...)**2`.
+* **Free variables (continuous, fitted):** X = (c0_re, c0_im, c1, c2) in R^4. Structural integer m = 3 is FIXED (it is the nu=1/3 Laughlin exponent; an odd integer is required for antisymmetry and cannot be a fitted real).
+* **Fixed structure (candidate expression):**
+  `F(z1,z2; X) = c0 * z12**3 * exp( c1 * (abs(z1)**2 + abs(z2)**2) + c2 * abs(z12)**2 )`, with c0 = c0_re + i*c0_im.
+  *Interpretation:* `z12**3` = antisymmetric relative-motion Laughlin factor (M=3); `exp(c1*(|z1|^2+|z2|^2))` = Gaussian confinement/Jastrow envelope (Laughlin value c1 = -1/4); `exp(c2*|z12|**2)` = rotationally invariant relative-correlation (LL-mixing) correction. Because `|z1|^2+|z2|^2 = 2|Z_cm|^2 + |z12|^2/2`, the pair (c1,c2) sets the relative rate (c1/2 + c2) and CM rate (2*c1) independently — an anisotropic-confinement generalization that still contains the isotropic Laughlin case (c2 = -c1/2).
+* **Objective f(X):** the evaluator minimizes the full-data normalized MSE
+  `f(X) = min_{s in C}  [ sum_k | s * F(x_k; X) - Psi_true(x_k) |^2 / sum_k | Psi_true(x_k) |^2 ]`,
+  where s is the jointly fitted complex global scale. We do not need to re-implement it; we only supply structure + a good initialization.
+* **Hard constraints C (enforced structurally / by projection):**
+  * (i) Fermionic antisymmetry F(r2,r1) = -F(r1,r2): guaranteed by the ODD power 3 of z12 (z12 -> -z12 => (-z12)^3 = -z12^3), all other factors are exchange-symmetric.
+  * (ii) Single integer angular momentum M: z_i -> e^{-i phi} z_i gives z12^3 -> e^{-3 i phi} z12^3, and every other factor depends only on |.|^2 (rotation invariant) => M = +3 exactly.
+  * (iii) Finiteness on the whole plane: require both Gaussian rates <= 0, i.e. c1 <= 0 and (c1/2 + c2) <= 0 => c2 <= -c1/2.
+  * (iv) Compactness: 4 parameters <= 10; no dataset access, no lookup tables, no index-dependent branches.
+
+**Phase 2 — The Optimization Loop (structure fixed; parameter init + multi-start pre-screen)**
+
+*We decouple the HARD part (structure) from the EASY part (parameters).* The structure is fixed in Phase 1; only 4 scalars are tuned, and this is a smooth, low-dimensional least-squares problem.
+
+1. **Set physics-informed initialization** (this is what goes into the submitted code as the parameter initial values): `c0_re = 1.0, c0_im = 0.0, c1 = -0.25, c2 = 0.0`. (c1 = -1/4 is exactly the Laughlin Gaussian rate; c2 = 0 keeps the model at the safe nested baseline until data pulls it away.)
+2. **Multi-start pre-screen (N = 20), executed locally in the workspace before submission** using `scipy.optimize.least_squares`:
+   * Sample 20 random initial points: `c1 ~ Uniform(-0.6, -0.05)`, `c2 ~ Uniform(-0.30, 0.10)`, `c0_re ~ Uniform(-2,2)`, `c0_im ~ Uniform(-2,2)` (fixed `numpy.random.default_rng(seed)` for reproducibility).
+   * Reference for pre-screening: build a synthetic target `Psi_ref = z12**3 * exp(-0.25*(|z1|^2+|z2|^2))` on a deterministic grid (e.g. n=2500 samples, z_i drawn from a N(0,1)-like cloud within |z|<6). This only validates the *conditioning/basin* of our model, never reads the dataset.
+   * Fit with `least_squares(residual_fn, x0, bounds=([-inf,-inf,-1.0,-0.9],[inf,inf,0.35,0.35]), method='trf', max_nfev=500)`.
+   * Keep the (c1,c2) that minimizes residual; clip into feasible ranges (below). Record the robust init.
+3. **Selection rule:** the model is run for the real dataset by the evaluator with our chosen init. Because the structure is nested, even a failed second-stage fit (c2 -> 0) still recovers the Laughlin baseline.
+4. **Complexity discipline:** do NOT add new parameters in this iteration. Only if fidelity stalls do subsequent children (a) add the symmetric bracket `(1 + c3*|z12|**2)` (Plan 3 full form) or (b) introduce conjugate/CM corrections.
+
+**Phase 3 — The "Safety Valve" (CRITICAL deterministic validity enforcement)**
+
+This step runs deterministically and guarantees the submitted candidate is valid regardless of what the optimizer returns:
+
+1. **Analytic hard-constraint audit (no randomness):** confirm (a) exponent of z12 is the odd integer 3 (=> antisymmetry + M=3); (b) all other multiplicative factors are functions of |.|^2 only (=> rotation invariance, no M contamination). These are checkable by construction of the string.
+2. **Finiteness projection (exact repair):** after any parameter update, project the Gaussian rates into the feasible (non-growing) cone:
+   * `c1 = min(c1, 0.0)`
+   * `c2 = min(c2, -c1/2.0)`  (this is the only constraint that matters for decay at infinity; the CM rate 2*c1 <= 0 is implied by c1 <= 0).
+   This is a deterministic clamp that can never produce an invalid (blowing-up) expression.
+3. **Grid finiteness / magnitude probe (numpy):** evaluate F on a dense grid z1,z2 over [-6,6]^2; assert `np.all(np.isfinite(F))` and that the max magnitude is finite and bounded. If not, force c2 = 0 (fall back to the guaranteed core).
+4. **Fallback candidate (always valid):** if any check fails, return the guaranteed-safe candidate
+   `c0 * z12**3 * exp(c1*(abs(z1)**2 + abs(z2)**2))` with c1 <= 0.
+5. **Interface guarantee:** ensure the returned dict has exactly the keys `expression` and `parameters`, and that every parameter appearing in the expression string is present in `parameters` (mirrors the parent's interface `{c0_re, c0_im}`).
+
+**Phase 4 — Implementation Details (Code-Ready)**
+
+*Libraries (only standard):* `numpy`, `scipy.optimize.least_squares`. (No obscure packages.)
+
+**Submitted code (exact EVOLVE-BLOCK content, preserving everything outside):**
+
+```python
+# EVOLVE-BLOCK-START
+def candidate_spec():
+    # Nested Laughlin-core x relative-Jastrow model capturing the LL-mixing correction.
+    #   z12 = z1 - z2 ; |z|^2 = abs(z)**2 ; convention z = x - i*y (fixed by task).
+    #   F = c0 * z12**3 * exp( c1*(|z1|^2+|z2|^2) + c2*|z12|^2 )
+    # Odd power (3) -> exact fermionic antisymmetry + single angular momentum M = +3.
+    # c1 = -1/4 is the exact Laughlin Gaussian rate; c2 = 0 keeps the safe nested baseline.
+    # Hard constraints (applied by the design of the form + projection):
+    #   finiteness  <=>  c1 <= 0  and  c2 <= -c1/2   (both Gaussian rates <= 0).
+    c1 = -0.25          # Gaussian/confinement rate (Laughlin value)
+    c1 = min(c1, 0.0)   # finiteness projection
+    c2 = 0.0            # relative-Jastrow (LL-mixing) correction, off at init
+    c2 = min(c2, -c1 / 2.0)  # finiteness projection: c1/2 + c2 <= 0
+    return {
+        "expression": "c0 * z12**3 * exp(c1*(abs(z1)**2 + abs(z2)**2) + c2*abs(z12)**2)",
+        "parameters": {
+            "c0_re": 1.0,
+            "c0_im": 0.0,
+            "c1": c1,
+            "c2": c2,
+        },
+    }
+# EVOLVE-BLOCK-END
+```
+
+**Local validation harness (run in the workspace before submission — never touches the dataset):**
+
+```python
+import numpy as np
+
+def _check():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("ip", "initial_program.py")
+    ip = importlib.util.module_from_spec(spec); spec.loader.exec_module(ip)
+    cand = ip.candidate_spec()
+    expr, p = cand["expression"], cand["parameters"]
+    # 1) interface check
+    assert set(cand.keys()) == {"expression", "parameters"}
+    # 2) variable/finiteness check on a deterministic grid
+    g = np.linspace(-6, 6, 60)
+    X1, Y1, X2, Y2 = np.meshgrid(g, g, g, g, indexing="ij")
+    z1 = X1 - 1j * Y1; z2 = X2 - 1j * Y2
+    z12 = z1 - z2
+    ns = dict(exp=np.exp, abs=np.abs, np=np)
+    ns.update({k: v for k, v in p.items()})  # c0? see note below
+    # build c0 from re/im if needed
+    ns["c0"] = p.get("c0", p.get("c0_re", 1.0) + 1j * p.get("c0_im", 0.0))
+    ns.update({"z1": z1, "z2": z2, "z12": z12})
+    F = eval(expr, {"__builtins__": {}}, ns)
+    assert np.all(np.isfinite(F)), "non-finite values detected"
+    # 3) analytic antisymmetry (swap electrons)
+    ns2 = dict(ns); ns2["z1"], ns2["z2"] = z2, z1; ns2["z12"] = z2 - z1
+    Fs = eval(expr, {"__builtins__": {}}, ns2)
+    assert np.max(np.abs(Fs + F)) < 1e-8 * (np.max(np.abs(F)) + 1e-30), "antisymmetry broken"
+    # 4) angular momentum M=3 (rotate by phi)
+    phi = 0.37
+    e = np.exp(-1j * phi)
+    ns3 = dict(ns); ns3["z1"], ns3["z2"] = e * z1, e * z2; ns3["z12"] = e * z12
+    Fr = eval(expr, {"__builtins__": {}}, ns3)
+    assert np.max(np.abs(Fr - np.exp(-3j * phi) * F)) < 1e-8 * (np.max(np.abs(F)) + 1e-30), "M != 3"
+    return True
+
+print(_check())
+```
+
+*(Note: in the interface, `c0` is the complex parameter realized by the evaluator from `c0_re`,`c0_im`; the harness reconstructs it explicitly. If the evaluator namespace exposes `c0` directly, drop the reconstruction line.)*
+
+**Expected Performance Improvement:**
+1. Adding the Gaussian envelope `exp(c1*(|z1|^2+|z2|^2))` (absent in the parent) is the single largest fidelity defect; the parent's fidelity ~2.2e-5 should jump by orders of magnitude.
+2. Correcting the relative power to the nu=1/3 Laughlin value z12^3 gives the physically correct M=3 sector (the one supported by the nu=1/3, N=2 disk state).
+3. The nested form guarantees the fitted result is never worse than the Laughlin baseline; the `exp(c2*|z12|^2)` term then lets the fit capture strong Landau-level mixing (lambda=5).
+4. Score >= 1.0 is pursued by maximizing full-data fidelity while keeping complexity minimal; the safety valve guarantees the candidate is always finite, antisymmetric, and single-M — so it can never crash or produce an invalid result.
+
+**Follow-up structural probes (only if fidelity stalls; keep one idea per iteration):**
+- Add the symmetric bracket `* (1 + c3*abs(z12)**2)` (full Plan-3 form) for short-range pair correlation.
+- Allow an independent CM rate via `exp(c1*(|z1|^2+|z2|^2) + c2*abs(z12)**2)` fitted jointly (already present) and test sign/sector sensitivity of M via evaluator feedback.
+- Introduce conjugate/radial corrections (e.g. `abs(Z_cm)**2`) if evidence supports non-holomorphic LL-mixing structure.

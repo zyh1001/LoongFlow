@@ -1,0 +1,58 @@
+PLAN 2 — Factored relative/CM anisotropic Gaussian (decoupled relative vs center-of-mass rates)
+==============================================================================================
+
+GOAL / TASK
+-----------
+Same task as Plan 1. Goal: exceed the parent and approach score >= 1.0 by separating the
+relative-motion radial scale from the center-of-mass radial scale, which the disk confinement
+and finite lambda can renormalize independently.
+
+MATHEMATICAL FORMULATION
+------------------------
+Variables:
+  X = (c0_re, c0_im, c1, c2)  in R^4 (continuous, fitted).
+
+Expression (structure FIXED):
+  F = c0 * z12**3 * exp( c1 * ( |z1|^2 + |z2|^2 ) + c2 * abs(z12)**2 )
+
+  Note the identity  |z1|^2+|z2|^2 = 2|Z_cm|^2 + |z12|^2/2, so c1 and c2 together set the
+  relative (|z12|) and CM (|Z_cm|) Gaussian rates independently:
+      relative rate  = c1/2 + c2 ,   CM rate = 2*c1.
+
+Objective:
+  full_data_nmse = sum_k | s * F(x_k; X) - Psi_true(x_k) |^2 / sum_k | Psi_true(x_k) |^2  (minimize).
+
+Constraints C (hard):
+  (i)   Antisymmetry: odd power (3) of z12  => exact F(r2,r1) = -F(r1,r2).
+  (ii)  Angular momentum: single integer M = 3.
+  (iii) Finiteness: require BOTH Gaussian rates <= 0:
+           2*c1 <= 0            -> c1 <= 0
+           c1/2 + c2 <= 0       -> c2 <= -c1/2  (i.e. c2 <= -c1/2).
+  (iv)  Param count 4 <= 10.
+
+SOLVER STRATEGY
+---------------
+- Fixed topology; parameter tuning by evaluator scipy least-squares.
+- Init: c0 = (1.0, 0.0), c1 = -0.25 (Laughlin CM/overall), c2 = 0.0 (relative Jastrow off).
+- This is a NESTED model: c2=0 recovers Plan 1 exactly, so the optimizer cannot do worse than
+  Plan 1 at the initialization point.
+- Multi-start (local pre-screen): run scipy.optimize.least_squares from N=20 random inits
+  (c1 in [-0.6,-0.1], c2 in [-0.2,0.1]) against a synthetic analytic reference to verify the
+  basin is well conditioned and to report a robust initialization.
+
+VALIDITY MECHANISM
+------------------
+- Hard bounds implemented via bounds=[(-inf,-inf,-1.0,-0.5),(inf,inf,0.0,0.35)] on (c1,c2)
+  combined with the analytic constraint c2 <= -c1/2 checked/projected after optimization
+  (projection: if c2 > -c1/2, set c2 = -c1/2 - 1e-6).
+- Grid finiteness probe over [-6,6]^2 with numpy; assert all finite.
+- Fallback to c0*z12**3*exp(c1*(|z1|^2+|z2|^2)) if the 4-parameter fit is numerically unstable.
+
+WHY THIS SOLUTION
+-----------------
+Expected gain: it lets the model capture an anisotropic confinement (relative vs CM), a genuine
+LL-mixing signature while remaining rotationally invariant and analytic.
+Advantages: nested / strictly more expressive than Plan 1; still only 4 params; clear physical
+interpretation (independent relative and CM Gaussian rates).
+Disadvantages: one extra parameter adds mild overfitting risk; still holomorphic in the envelope
+rate (real exponents) so pure non-holomorphic corrections are not yet represented.

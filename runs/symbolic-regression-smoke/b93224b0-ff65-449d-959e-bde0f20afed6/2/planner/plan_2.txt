@@ -1,0 +1,78 @@
+OUTLINE 2: "Post-hoc Linear-Least-Squares Amplitude Recovery + 2-D Envelope Grid Refinement"
+=============================================================================================
+
+CONTEXT
+-------
+Same cold-start situation as Outline 1: parent "c0 * z12", score 0.002839.
+The parent already tells us the linear amplitude c0 is NOT the bottleneck
+(evaluator left it at init because it is degenerate with the global complex
+scale). The bottleneck is the SHAPE. Therefore the plan isolates shape control
+into a small number of real exponents and treats the complex amplitude
+analytically.
+
+MATHEMATICAL FORMULATION
+------------------------
+Choose the factored template
+    Psi(z1,z2; theta) = c0 * z12^3 * exp( -(p*|z1|^2 + q*|z2|^2) )
+                       = c0 * g(z1,z2; p,q)
+with z12 = z1 - z2 (odd power -> antisymmetric, M=3).
+Variables X:
+    real envelope exponents p,q >= p_min (>= 0.02, keeps decay, no overflow)
+    complex amplitude c0 = c0_re + i c0_im
+Constraints C: C1 exchange (odd power), C2 single M=3, C3 finite, C4 <=10 params.
+By the identity |z1|^2+|z2|^2 = 0.5|z12|^2 + 0.5|z1+z2|^2, symmetric choice
+p=q=a reproduces the LLL envelope a=0.25; asymmetry (p != q) probes
+Landau-level-mixing / center-of-mass effects.
+Objective f(X): maximize evaluator score (fidelity-dominated).
+
+KEY STRUCTURAL DECOUPLING
+-------------------------
+Given fixed (p,q), the model is LINEAR in c0:
+  For each sample k with target y_k and basis g_k = g(z1_k,z2_k),
+  minimize sum_k |c0 * g_k - y_k|^2.
+  Normal equations (2x2, complex):
+      c0* = ( sum_k conj(g_k) y_k ) / ( sum_k |g_k|^2 ).
+  This closed form is EXACT and requires no nonlinear iteration. The nonlinear
+  part reduces to a 2-D search over (p,q).
+
+SOLVER STRATEGY
+---------------
+  Step A (GRID PRE-SCAN, 2-D): evaluate the closed-form residual cost
+    R(p,q) = sum_k |y_k|^2 - |sum_k conj(g_k) y_k|^2 / sum_k |g_k|^2
+    on a coarse grid p,q in {0.125,0.1875,0.25,0.3125,0.375} around the LLL value
+    0.25. (This is the "multi-start" of envelope hypotheses.)
+  Step B (LOCAL REFINEMENT): take the best grid node and run
+    scipy.optimize.minimize(method='Nelder-Mead', x0=[p,q]) minimizing R(p,q),
+    with bounds enforced by a penalty (clamp p,q to [0.02, 1.0] each iteration).
+  Step C (FINAL SUBMISSION): compute c0* analytically at the refined (p,q),
+    round to machine precision, and emit the candidate with init values set to
+    the recovered (p,q, c0_re, c0_im).
+  NOTE: because local fitting to raw data is prohibited, Steps A-B are the
+    planned workflow IF a coarse in-memory residual check is available to the
+    executor; otherwise the same numbers are supplied to the evaluator as
+    high-quality INITIAL VALUES (init p=q=0.25, allow evaluator least-squares).
+
+VALIDITY MECHANISM
+------------------
+  1. Enforce p,q >= p_min by a PROJECTION step after every optimizer iteration:
+       p = max(p, 0.02); q = max(q, 0.02).
+     This guarantees the exponent is negative-definite -> exp() cannot overflow.
+  2. Guard the denominator: if sum_k |g_k|^2 < 1e-30, fall back to c0 = 0 and
+     then to template F.
+  3. Antisymmetry/rotation are structural (odd power) -> checked symbolically
+     once; no numeric risk.
+  4. Guaranteed-valid fallback F = "c0 * z12**3 * exp(-0.25*(abs(z1)**2+abs(z2)**2))".
+  5. If the 2x2 normal equations are ill-conditioned (cond > 1e10), shrink the
+     template to symmetric p=q (single exponent), which is always well-posed.
+
+WHY THIS SOLUTION
+-----------------
++ Uses an EXACT linear solve for the complex amplitude -> no wasted optimizer
+  effort on the easy parameter; search collapses to 2 real exponents.
++ Grid + Nelder-Mead is deterministic given a fixed grid and seed -> reproducible.
++ Projection step mathematically guarantees finite outputs.
+- Advantage: clean separation of convex (amplitude) and 2-D non-convex (envelope)
+  subproblems; very cheap.
+- Disadvantage: local grid fitting to data may be unavailable to the executor
+  (data-read ban), in which case it degenerates to supplying good init values;
+  slightly more code than Outline 1 and one extra dependency on the (p,q) search.

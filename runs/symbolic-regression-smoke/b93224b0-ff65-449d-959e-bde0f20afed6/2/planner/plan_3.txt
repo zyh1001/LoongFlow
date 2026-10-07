@@ -1,0 +1,65 @@
+OUTLINE 3: "Grammar-Guided Genetic Programming over Antisymmetric Expression Trees + Antisymmetry Projection"
+==============================================================================================================
+
+CONTEXT
+-------
+Cold start; only the parent "c0 * z12" (score 0.002839) exists. This outline
+explores the widest structural diversity to escape the current near-zero
+fidelity basin, but pays for it with higher search cost and higher complexity.
+
+MATHEMATICAL FORMULATION
+------------------------
+Variables X: expression trees T over the grammar
+    T -> c * T | T + T | T * T | z12^k (k odd in {1,3,5})
+       | exp(-(a*|z1|^2 + b*|z2|^2)) | exp(-b*|z12|^2) | (1 + d*|z12|^2)
+       | conj-correction terms
+with terminal symbols {z1,z2,z12} and radial invariants {|z1|^2,|z2|^2,|z12|^2}.
+Constraints C:
+    C1 every tree must contain an ODD power of z12 as an overall factor
+       (projection operator, see below) -> exchange antisymmetry by construction.
+    C2 single angular momentum M (all enumerated M=3 in the primary phase).
+    C3 tree depth <= 5, node count <= 15 (complexity budget).
+    C4 <= 10 fitted parameters.
+Objective f(X): evaluator score (fidelity-dominated, complexity-penalized).
+
+SOLVER STRATEGY
+---------------
+Grammar-guided GP with evaluator-in-the-loop:
+  - Population of N=8 candidate expressions (seeded with S0..S3 of Outline 1).
+  - Fitness = evaluator score returned by the Evolux evaluator.
+  - Selection: tournament (size 3, deterministic RNG seed).
+  - Variation: (a) subtree crossover, (b) mutation = insert/remove one envelope
+    or correction factor. Mutation is restricted so the ODD-power-of-z12 factor
+    is never removed (projection invariant).
+  - Elitism: keep the single best expression each generation.
+  - Budget: 4 generations (<= 32 evaluator calls), then stop.
+  - Multi-start: repeat the whole GP with 3 different RNG seeds; keep global best.
+
+VALIDITY MECHANISM ("antisymmetry projection operator")
+-------------------------------------------------------
+  For any generated sub-tree N_sym that is SYMMETRIC under z_rel -> -z_rel,
+  define the projected expression
+      Psi = c0 * z12 * N_sym        (contract the intended odd power down to 1)
+  and then verify the odd power is odd:
+      PROJECT(T): factor out all powers of z12; if the total exponent is even,
+      multiply by one extra z12 (odd-ify). If a factor 1/z12 appears
+      (negative exponent), reject the tree.
+  This deterministically enforces C1 regardless of what GP produced.
+  Additional checks:
+    - numeric exchange test (10^4 samples) -> assert ratio ~ -1
+    - numeric rotation test with M=3
+    - finiteness test on 10^5 points, |z|<=6
+    - complexity/depth bounds.
+  Guaranteed-valid fallback F =
+      "c0 * z12**3 * exp(-0.25*(abs(z1)**2 + abs(z2)**2))".
+
+WHY THIS SOLUTION
+-----------------
++ Maximum structural diversity -> best chance to escape a wrong-family basin.
++ Antisymmetry projection guarantees C1 no matter what mutation does.
+- Advantage: explores non-obvious forms (conjugate corrections, mixed
+  holomorphic/non-holomorphic), matching the task's "mixed structures" family.
+- Disadvantage: stochastic and expensive; needs multi-start to control variance;
+  riskier to implement correctly; may over-complicate the expression and raise
+  the complexity penalty. Least "code-ready" and most luck-dependent -> lowest
+  priority unless Outlines 1-2 stagnate.

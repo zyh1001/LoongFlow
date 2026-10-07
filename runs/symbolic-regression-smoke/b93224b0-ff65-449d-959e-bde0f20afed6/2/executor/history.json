@@ -1,0 +1,42 @@
+[
+  {
+    "round": 0,
+    "candidates": [
+      {
+        "round_idx": 0,
+        "candidate_idx": 0,
+        "random_idx": "_1a5",
+        "solution_file_path": "/home/ubuntu/symbolic_regression/LoongFlow/runs/symbolic-regression-smoke/b93224b0-ff65-449d-959e-bde0f20afed6/2/executor/0_0/solution_1a5.py",
+        "evaluation_file_path": "/home/ubuntu/symbolic_regression/LoongFlow/runs/symbolic-regression-smoke/b93224b0-ff65-449d-959e-bde0f20afed6/2/executor/0_0/evaluation_1a5.json",
+        "score": 0.0,
+        "reason": "{\n  \"status\": \"validation_failed\",\n  \"summary\": \"Candidate validation failed: The file must contain only the candidate_spec() function.\",\n  \"score\": 0.0,\n  \"metrics\": {\n    \"validity\": 0.0,\n    \"eval_time\": 0.0017328090034425259\n  },\n  \"artifacts\": {\n    \"error_type\": \"CandidateValidationError\",\n    \"reason\": \"Candidate validation failed: The file must contain only the candidate_spec() function.\"\n  }\n}",
+        "source": "disk"
+      }
+    ]
+  },
+  {
+    "round": 1,
+    "candidates": [
+      {
+        "round_idx": 1,
+        "candidate_idx": 0,
+        "random_idx": "_0ec",
+        "solution_file_path": "/home/ubuntu/symbolic_regression/LoongFlow/runs/symbolic-regression-smoke/b93224b0-ff65-449d-959e-bde0f20afed6/2/executor/1_0/solution_0ec.py",
+        "evaluation_file_path": "/home/ubuntu/symbolic_regression/LoongFlow/runs/symbolic-regression-smoke/b93224b0-ff65-449d-959e-bde0f20afed6/2/executor/1_0/evaluation_0ec.json",
+        "score": 0.9981066378739916,
+        "reason": "{\n  \"status\": \"success\",\n  \"summary\": \"score=0.998107; full_data_fidelity=0.998106; full_data_nmse=0.00189426; exchange_error=0; rotation_error=4.04e-16 at M=3; finite=1.0000; complexity=12; fitted={'c0_re': -4.066815442692731, 'c0_im': -1.2531422292683412, 'a': 0.26371975118486735}\",\n  \"score\": 0.9981066378739916,\n  \"metrics\": {\n    \"validity\": 1.0,\n    \"full_data_nmse\": 0.001894258613379453,\n    \"full_data_fidelity\": 0.9981057413866203,\n    \"exchange_error\": 0.0,\n    \"rotation_error\": 4.04360527351474e-16,\n    \"inferred_angular_momentum\": 3,\n    \"finite_fraction\": 1.0,\n    \"expression_complexity\": 12,\n    \"parameter_count\": 3,\n    \"accuracy_component\": 0.9981066378739921,\n    \"physics_factor\": 0.9999999999999994,\n    \"complexity_penalty\": 1.0,\n    \"eval_time\": 0.7478722200030461\n  },\n  \"artifacts\": {\n    \"expression\": \"c0 * z12**3 * exp(-a * (abs(z1)**2 + abs(z2)**2))\",\n    \"fitted_parameters\": {\n      \"c0_re\": -4.066815442692731,\n      \"c0_im\": -1.2531422292683412,\n      \"a\": 0.26371975118486735\n    },\n    \"global_scale\": {\n      \"real\": 0.005560956393857674,\n      \"imag\": 0.02592160545491414\n    },\n    \"optimizer\": {\n      \"attempted\": true,\n      \"success\": true,\n      \"nfev\": 16,\n      \"message\": \"`xtol` termination condition is satisfied.\",\n      \"residual_cost\": 94.7129306689726\n    },\n    \"evaluation_mode\": \"all_finite_samples_fit_and_score\",\n    \"samples_used\": 50000,\n    \"dataset\": \"/home/ubuntu/symbolic_regression/LoongFlow/../datasets/disk_n2_Q6_kapa_1/dataset_50000.npz\"\n  }\n}",
+        "source": "disk"
+      },
+      {
+        "round_idx": 1,
+        "candidate_idx": 1,
+        "random_idx": "_99c",
+        "solution_file_path": "/home/ubuntu/symbolic_regression/LoongFlow/runs/symbolic-regression-smoke/b93224b0-ff65-449d-959e-bde0f20afed6/2/executor/1_1/solution_99c.py",
+        "evaluation_file_path": "/home/ubuntu/symbolic_regression/LoongFlow/runs/symbolic-regression-smoke/b93224b0-ff65-449d-959e-bde0f20afed6/2/executor/1_1/evaluation_99c.json",
+        "score": 0.9981066378739916,
+        "reason": "{\n  \"status\": \"success\",\n  \"summary\": \"score=0.998107; full_data_fidelity=0.998106; full_data_nmse=0.00189426; exchange_error=0; rotation_error=4.04e-16 at M=3; finite=1.0000; complexity=12; fitted={'c0_re': -4.066815442692731, 'c0_im': -1.2531422292683412, 'a': 0.26371975118486735}\",\n  \"score\": 0.9981066378739916,\n  \"metrics\": {\n    \"validity\": 1.0,\n    \"full_data_nmse\": 0.001894258613379453,\n    \"full_data_fidelity\": 0.9981057413866203,\n    \"exchange_error\": 0.0,\n    \"rotation_error\": 4.04360527351474e-16,\n    \"inferred_angular_momentum\": 3,\n    \"finite_fraction\": 1.0,\n    \"expression_complexity\": 12,\n    \"parameter_count\": 3,\n    \"accuracy_component\": 0.9981066378739921,\n    \"physics_factor\": 0.9999999999999994,\n    \"complexity_penalty\": 1.0,\n    \"eval_time\": 0.6554555549955694\n  },\n  \"artifacts\": {\n    \"expression\": \"c0 * z12**3 * exp(-a * (abs(z1)**2 + abs(z2)**2))\",\n    \"fitted_parameters\": {\n      \"c0_re\": -4.066815442692731,\n      \"c0_im\": -1.2531422292683412,\n      \"a\": 0.26371975118486735\n    },\n    \"global_scale\": {\n      \"real\": 0.005560956393857674,\n      \"imag\": 0.02592160545491414\n    },\n    \"optimizer\": {\n      \"attempted\": true,\n      \"success\": true,\n      \"nfev\": 16,\n      \"message\": \"`xtol` termination condition is satisfied.\",\n      \"residual_cost\": 94.7129306689726\n    },\n    \"evaluation_mode\": \"all_finite_samples_fit_and_score\",\n    \"samples_used\": 50000,\n    \"dataset\": \"/home/ubuntu/symbolic_regression/LoongFlow/../datasets/disk_n2_Q6_kapa_1/dataset_50000.npz\"\n  }\n}",
+        "source": "disk"
+      }
+    ]
+  }
+]

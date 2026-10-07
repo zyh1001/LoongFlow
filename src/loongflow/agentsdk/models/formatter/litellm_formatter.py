@@ -177,12 +177,19 @@ class LiteLLMFormatter(BaseFormatter):
         return "openai"
 
     def _is_deepseek_reasoner(self, model_name: str) -> bool:
-        """
-        check if the model name is deepseek-reasoner model
-        """
+        """Return whether a model requires DeepSeek reasoning replay."""
         if not model_name:
             return False
-        return "deepseek-reasoner" in model_name.lower()
+        name = model_name.lower()
+        return any(
+            model_id in name
+            for model_id in (
+                "deepseek-reasoner",
+                "deepseek-flash",
+                "deepseek-v4-flash",
+                "deepseek-v4-pro",
+            )
+        )
 
     def _convert_messages(self, messages: List[Message], model_name: str) -> List[Dict[str, Any]]:
         """
@@ -222,10 +229,14 @@ class LiteLLMFormatter(BaseFormatter):
                 continue
 
             # 3. Standard text or structured message
-            if content_texts or structured_items:
+            if content_texts or structured_items or thinking_content:
                 converted.append(
                     self._convert_standard_message(
-                        role, content_texts, structured_items
+                        role,
+                        content_texts,
+                        structured_items,
+                        thinking_content,
+                        model_name,
                     )
                 )
 
@@ -356,13 +367,22 @@ class LiteLLMFormatter(BaseFormatter):
         role: str,
         content_texts: list[str],
         structured_items: list[dict[str, Any]],
+        thinking_content: list[str],
+        model_name: str,
     ) -> dict[str, Any]:
         """Convert standard (non-tool) message."""
         if structured_items:
             content_field = structured_items
         else:
             content_field = "\n".join(content_texts).strip()
-        return {"role": role, "content": content_field}
+        message: dict[str, Any] = {"role": role, "content": content_field}
+        if (
+            role == "assistant"
+            and thinking_content
+            and self._is_deepseek_reasoner(model_name)
+        ):
+            message["reasoning_content"] = "\n".join(thinking_content)
+        return message
 
     def _parse_full_response(self, raw: ModelResponse) -> CompletionResponse:
         """

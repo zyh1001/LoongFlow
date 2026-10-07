@@ -1,0 +1,57 @@
+PLAN 3 — Nested Laughlin core x Jastrow/radial correction (LL-mixing aware) with graceful degradation
+=======================================================================================================
+
+GOAL / TASK
+-----------
+Same task. Goal: maximize full-data fidelity by combining the exact Laughlin core (Gaussian +
+z12^3) with symmetric, rotationally invariant correction factors that model Landau-level mixing
+(lambda=5). Structure chosen to CONTAIN Plan 1 and Plan 2 as special cases (nested), so the search
+can never perform worse than the safe baseline at initialization.
+
+MATHEMATICAL FORMULATION
+------------------------
+Variables:
+  X = (c0_re, c0_im, c1, c2, c3)  in R^5 (continuous, fitted).  (5 <= 10)
+
+Expression (structure FIXED):
+  F = c0 * z12**3
+        * exp( c1 * ( |z1|^2 + |z2|^2 ) + c2 * abs(z12)**2 )
+        * ( 1 + c3 * abs(z12)**2 )
+
+  - Leading factor  z12**3            : guarantees antisymmetry and M = 3.
+  - Gaussian/Jastrow exponents c1,c2  : real, rotation-invariant (depend only on |.|^2).
+  - Polynomial bracket (1 + c3|z12|^2): a compact symmetric pair-correlation correction that
+    multiplies the antisymmetric core (physically: LLL-mixing / short-range relative correction).
+
+Objective:
+  full_data_nmse = sum_k | s*F(x_k;X) - Psi_true(x_k) |^2 / sum_k |Psi_true(x_k)|^2  -> minimize.
+
+Constraints C (hard):
+  (i)   Antisymmetry: odd power (3) of z12 => exact.
+  (ii)  Angular momentum: single M = 3 (all factors are functions of |.|^2 or powers of z12).
+  (iii) Finiteness: require Gaussian rates <= 0  (c1<=0 and c1/2+c2<=0); bracket is polynomial,
+        growth/shrink controlled by the Gaussian which dominates at infinity.
+  (iv)  Param count 5 <= 10; no data access, no row branching.
+
+SOLVER STRATEGY
+---------------
+- Fixed topology; evaluator scipy least-squares does continuous fitting.
+- Nested init: c0=(1,0), c1=-0.25, c2=0.0, c3=0.0 -> reduces EXACTLY to Plan 1.
+- Multi-start (N=20) local pre-screen with scipy.optimize.least_squares to (a) confirm the
+  nested model fits, (b) order of magnitude of c2,c3, (c) pick a robust init for submission.
+
+VALIDITY MECHANISM
+------------------
+- Bounds: c1 in [-1.0, 0.0]; c2 in [-0.5, 0.35]; project c2 <- min(c2, -c1/2).
+- c3 bounded in [-1.0, 1.0]; grid finiteness probe over [-6,6]^2 with numpy (assert finite).
+- "Safety valve": after local fit, if the improved model's local residual is NOT better than the
+  Plan-1 core residual (on a synthetic reference), reset c2=c3=0 (graceful degradation to core).
+- Final fallback candidate always available: c0 * z12**3 * exp(c1*(|z1|^2+|z2|^2)).
+
+WHY THIS SOLUTION
+-----------------
+Expected gain: largest fidelity potential because it captures the Laughlin core PLUS LL-mixing
+corrections in a rotationally and exchange symmetric way, while remaining compact and analytic.
+Advantages: nested (contains Plans 1 and 2), physically interpretable, robust to optimizer failure
+by construction. Disadvantages: 5 params (mild overfitting risk) and higher expression complexity;
+needs the bracket correction to be genuinely supported by evidence (else it degrades to core).

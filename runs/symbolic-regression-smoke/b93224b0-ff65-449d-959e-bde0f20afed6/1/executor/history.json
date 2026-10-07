@@ -1,0 +1,77 @@
+[
+  {
+    "round": 0,
+    "candidates": [
+      {
+        "round_idx": 0,
+        "candidate_idx": 0,
+        "random_idx": null,
+        "solution_file_path": "",
+        "evaluation_file_path": "",
+        "score": 0.0,
+        "reason": "Object of type CompletionResponse is not JSON serializable",
+        "source": "llm"
+      }
+    ]
+  },
+  {
+    "round": 1,
+    "candidates": [
+      {
+        "round_idx": 1,
+        "candidate_idx": 0,
+        "random_idx": null,
+        "solution_file_path": "",
+        "evaluation_file_path": "",
+        "score": 0.0,
+        "reason": "Object of type CompletionResponse is not JSON serializable",
+        "source": "llm"
+      },
+      {
+        "round_idx": 1,
+        "candidate_idx": 1,
+        "random_idx": null,
+        "solution_file_path": "",
+        "evaluation_file_path": "",
+        "score": 0.0,
+        "reason": "Object of type CompletionResponse is not JSON serializable",
+        "source": "llm"
+      }
+    ]
+  },
+  {
+    "round": 2,
+    "candidates": [
+      {
+        "round_idx": 2,
+        "candidate_idx": 0,
+        "random_idx": null,
+        "solution_file_path": "",
+        "evaluation_file_path": "",
+        "score": 0.0,
+        "reason": "Object of type CompletionResponse is not JSON serializable",
+        "source": "llm"
+      },
+      {
+        "round_idx": 2,
+        "candidate_idx": 1,
+        "random_idx": null,
+        "solution_file_path": "",
+        "evaluation_file_path": "",
+        "score": 0.0,
+        "reason": "Object of type CompletionResponse is not JSON serializable",
+        "source": "llm"
+      },
+      {
+        "round_idx": 2,
+        "candidate_idx": 2,
+        "random_idx": null,
+        "solution_file_path": "",
+        "evaluation_file_path": "",
+        "score": 0.0,
+        "reason": "Object of type CompletionResponse is not JSON serializable",
+        "source": "llm"
+      }
+    ]
+  }
+]

@@ -1,0 +1,106 @@
+# Final Child Solution Generation Plan (Phase 1 → Phase 2 handoff)
+
+**Task objective:** recover a compact, physically interpretable analytic expression for the complete complex two-electron ν=1/3 fractional-quantum-Hall wavefunction in disk geometry, and drive the Evolux composite score from the parent's 0.002839 toward ≥ 1.0 (fidelity-dominated). The parent `c0 * z12` (score 0.002839, fidelity 2.19e-05, exchange_error 0, rotation_error ~0 at M=1, finite 1.0, complexity 2) has correct symmetry but is **missing the two structural ingredients that carry the physics**: the correct odd relative-motion order `(z1−z2)^3` and the Landau-level Gaussian envelope `exp(−(|z1|²+|z2|²)/4)`.
+
+**Selected outline:** *Physics-Primed Structure-Bank + Evaluator Least-Squares + Deterministic Validity Guard* (Outline 1, augmented with Outline 2's exact linear-amplitude solve).
+
+**Rationale for selection (vs. Outlines 2 and 3):**
+1. It is the **least luck-dependent**: a fixed, physically enumerated structure bank (S0–S3) with no stochastic tree search; reproducibility is guaranteed.
+2. It obeys the **mandated structure/parameter decoupling**: the discrete "hard" part (which template) is enumerated; the "easy" part (complex amplitude + envelope exponents) is fit by the evaluator's nonlinear least-squares, and the complex amplitude is, in fact, a *linear* subproblem (exact normal-equation closed form) → well-conditioned and cheap.
+3. Its **safety valve** (analytic validator + provably-antisymmetric fallback F) mathematically guarantees C1–C5, so it cannot crash or emit an invalid candidate.
+4. Outline 2's envelope grid search is data-dependent (risk under the data-read ban) and Outline 3 (GP) is stochastic, expensive, and least code-ready.
+
+---
+
+## Global-perspective justification
+Database query returned an **empty evolution memory** (iteration 0, no island divergence, no children of the parent, `best_score = 0`). Global-perspective Strategy **1 and 3** therefore apply: the search is stuck at a near-zero-fidelity warm start, so the child must be a **structurally new candidate** (not a fit-constant nudge). The dominant feature of the target — for N=2, ν=1/3, Φ = NΦ₀/ν ⇒ total angular momentum M = m·N(N−1)/2 = 3·2·1/2 = **3** — is the Laughlin-like relative factor `(z1−z2)^3` dressed by the Gaussian Landau envelope. Both are absent from the parent.
+
+---
+
+## Phase 1: Mathematical Definition
+
+**Symbols / inputs (fixed by the task):** `z1, z2` complex with `z_i = x_i − i·y_i`; `z12 = z1 − z2`; radial invariants `|z1|², |z2|², |z12|², |z1+z2|²`. (All dimensionless, in l_B units.)
+
+**Decision variables:**
+- Discrete structure `S ∈ {S0, S1, S2, S3}` (which analytic template).
+- Continuous vector `θ = (c0_re, c0_im, a, [b], [d], [c])` — complex amplitude plus ≤2 real envelope exponents.
+
+**Objective `f(X)`:** maximize the evaluator composite
+`score = accuracy_component · physics_factor · complexity_penalty`, where `accuracy_component` is driven by `full_data_fidelity` (target → 1.0), `physics_factor` by `(exchange_error=0, rotation_error=0, finite_fraction=1)`, and `complexity_penalty` favors low expression complexity.
+
+**Hard constraints `C`:**
+- **C1 Exchange:** `Psi(z2,z1) = −Psi(z1,z2)`. (Up to an overall sign convention this is enforced transparently by an **odd** overall power of `z12`.)
+- **C2 Angular momentum:** `Psi(e^{−iφ}z1, e^{−iφ}z2) = e^{−iMφ}Psi(z1,z2)` for a **single** integer `M`; target sector **M = 3**.
+- **C3 Finiteness:** finite everywhere on the sampled domain (all envelope exponents strictly positive ⇒ negative-definite Gaussian).
+- **C4 Budget:** ≤ 10 fitted numerical parameters.
+- **C5 Interface:** `candidate_spec()` name/signature preserved; only the `EVOLVE-BLOCK` edited; returns `{"expression": str, "parameters": {name: value}}` with complex amplitudes encoded as `name_re`/`name_im`.
+
+**Candidate bank (each obeys C1/C2 by construction — odd power of `z12`; envelope negative-definite ⇒ C3):**
+- **S0 (primary, M=3 Laughlin + LLL envelope):**
+  `expr = "c0 * z12**3 * exp(-a * (abs(z1)**2 + abs(z2)**2))"`
+  `parameters = {"c0_re": 1.0, "c0_im": 0.0, "a": 0.25}`
+- **S1 (Landau-level-mixing radial exponential correction, λ=5 > 0):**
+  `expr = "c0 * z12**3 * exp(-a*(abs(z1)**2+abs(z2)**2) - b*abs(z12)**2)"`
+  `parameters = {"c0_re": 1.0, "c0_im": 0.0, "a": 0.25, "b": 0.0}`
+- **S2 (polynomial correction softening the relative-motion zero):**
+  `expr = "c0 * z12**3 * exp(-a*(abs(z1)**2+abs(z2)**2)) * (1 + d*abs(z12)**2)"`
+  `parameters = {"c0_re": 1.0, "c0_im": 0.0, "a": 0.25, "d": 0.0}`
+- **S3 (center-of-mass split envelope, using |z1|²+|z2|² = 0.5|z12|² + 0.5|z1+z2|²):**
+  `expr = "c0 * z12**3 * exp(-a*abs(z12)**2 - c*abs(z1+z2)**2)"`
+  `parameters = {"c0_re": 1.0, "c0_im": 0.0, "a": 0.125, "c": 0.125}`
+
+All parameter initializations are chosen at the physical optimum neighborhood (a = 0.25 = 1/4 is the exact LLL value; b = d = 0 are the "no correction" limits) so the evaluator's least-squares converges in few iterations.
+
+---
+
+## Phase 2: The Optimization Loop (structure enumeration = multi-start; parameters fitted exactly/by evaluator)
+
+**Step 2.1 — Structural multi-start.** Iterate over the ordered structure list `[S0, S1, S2, S3]`. This discrete enumeration *is* the non-convex "multi-start" over the structural space; it eliminates dependence on any single hypothesis.
+
+**Step 2.2 — Exact linear amplitude solve (decoupling).** For a *fixed* structure and fixed real envelope exponents, `c0` enters **linearly**: with target values `y_k` and basis `g_k = z12_k^3 · exp(−envelope_k)`, the minimizing amplitude has the closed form
+`c0* = Σ_k conj(g_k) y_k / Σ_k |g_k|²` (a 2×2 complex normal equation). This is exact, needs no iteration, and is what makes the "easy part" trivial. (In Evolux the actual data fit is performed by the **evaluator**; we supply `c0` and exponent inits to seed and accelerate that fit.)
+
+**Step 2.3 — Refinement of envelope exponents (1–2 smooth nonlinear params).** The envelope exponents (`a`, and optionally `b`/`d`/`c`) are the only nonlinear parameters. The evaluator applies nonlinear least-squares (`scipy.optimize.least_squares`, trust-region/LM) starting from our physically motivated inits. Recommended initialization grid for the evaluator, rung by rung: `a ∈ {0.25}`, then `b ∈ {0.0, 0.25, 0.5}`, then `d ∈ {0.0, ±0.25}`.
+
+**Step 2.4 — Local pre-screen (no data access required).** Before any evaluator submission, run the **analytic validator** of Phase 3 on the candidate string; reject early if any constraint fails. This conserves evaluator budget.
+
+**Step 2.5 — Selection.** Submit each valid structure to the evaluator and keep the one with the **highest score**; ties broken by **lower `expression_complexity`**. If the best score < ~0.9, extend the bank with the conjugate/radial-correction variants (e.g., `* exp(-b*abs(z12)**2)` combined with `*(1+d*abs(z12)**2)`), changing exactly one structural idea at a time.
+
+---
+
+## Phase 3: The "Safety Valve" (CRITICAL — deterministic post-processing that strictly enforces validity)
+
+Implement a deterministic function `validate(expr_str, params_dict) -> (ok, repaired_expr)` that runs **before** submission and is the guarantee of C1–C5:
+
+1. **Parse & allow-list.** `sympy.sympify(expr_str)` over an allow-list of symbols only: `{z1, z2, z12, abs, exp, I, pi}` plus the declared parameter names. Any other name ⇒ reject (prevents illegal/obscure constructs; no file/subprocess/network access).
+2. **Exchange test (C1).** Draw 10⁴ random complex `(z1,z2)` inside `|z_i| ≤ 6`. Assert `|Psi(z2,z1) + Psi(z1,z2)| / (|Psi(z1,z2)| + 1e-12) < 1e-8`. If it fails, apply the **repair**: force the overall odd `z12` power (odd-ify any even exponent; reject negative exponents) — this is the antisymmetry projection operator.
+3. **Rotation test (C2).** With random `φ`, assert `|Psi(e^{−iφ}z1, e^{−iφ}z2) − e^{−i·3·φ}Psi(z1,z2)| / (|Psi| + 1e-12) < 1e-6`.
+4. **Finiteness test (C3).** Assert `np.isfinite` on 10⁵ random points in `|z_i| ≤ 6`. If a Gaussian overflows, **clamp** all envelope exponents to `≥ 0.02` (projection step) and re-evaluate.
+5. **Budget test (C4).** Count fitted parameters ≤ 10.
+6. **Guaranteed-valid fallback F.** If any check fails, or if the evaluator returns `status != "success"`, or if the recovered result leaves the score below the parent's baseline, return the provably-valid template
+   `F = "c0 * z12**3 * exp(-0.25*(abs(z1)**2 + abs(z2)**2))"` with `{"c0_re": 1.0, "c0_im": 0.0}`.
+   Because `(z12)^3` is **odd**, F is **exactly antisymmetric** (C1), has a single **M = 3** quantum number (C2), and its negative-definite Gaussian is **finite everywhere** (C3) ⇒ `physics_factor = 1` and `exchange_error = 0` by construction. This makes a hard crash or an invalid submission impossible.
+
+---
+
+## Phase 4: Implementation Details (exact, code-ready)
+
+- **Language/libs:** pure `numpy` (random sampling + `np.isfinite`/`np.allclose`) and, if available, `sympy` for parsing; no other dependencies. No data-file, checkpoint, log, or network access anywhere.
+- **Interface:** edit only between `EVOLVE-BLOCK-START/END`; keep `candidate_spec()` name and signature; return
+  `{"expression": <S0 string>, "parameters": {"c0_re": 1.0, "c0_im": 0.0, "a": 0.25}}` (switch to S1/S2/S3 or F only per Phase 2.5 / Phase 3.6).
+- **Variable-name safety:** the parent uses `z12`, confirming `z12` (and `z1, z2`) are available; the modulus is expressed with `abs(...)`. If a helper symbol (`Zcm`, `r12`) is unavailable, the plan uses only `z1, z2, z12` and `abs(...)`, so S0–S3 remain implementable.
+- **Numerical hygiene:** keep every Gaussian exponent strictly positive (projection clamp `≥ 0.02`) so `exp()` never overflows; evaluate the exchange/rotation ratios with a `1e-12` denominator guard.
+- **Complexity control:** S0 has one real exponent plus the complex amplitude (parameter_count ≤ 3) → the complexity penalty stays at 1.0, matching the parent's regime while adding the decisive physics.
+
+---
+
+## Expected performance improvement
+- Adding the correct odd order `(z1−z2)^3` (M=3) plus the Gaussian Landau envelope addresses exactly the two structures the parent lacks; full-data fidelity is expected to rise from 2.19e-05 toward O(1), moving the composite score far above the parent's 0.002839.
+- S1 (LLM exponential), S2 (polynomial radial), S3 (CM-split) provide controlled, physically motivated non-holomorphic corrections consistent with λ = 5.
+- The **safety valve + fallback F** make a score regression or invalid candidate impossible to submit, guaranteeing robustness of the evolutionary loop.
+
+## Self-review
+- **Relies on math, not luck:** yes — fixed structure bank, exact linear amplitude solve, deterministic validator.
+- **Library check:** only `numpy` (and optionally `sympy`); no obscure/non-existent packages.
+- **Randomness check:** any randomized numeric sampling inside validation is a fixed-seed *check*, not the search; the structural search has no randomness (multi-start is the deterministic enumeration S0→S3).
+- **Implementable:** yes — a single editable expression string + parameter dict, with a small validator and a hardcoded safe fallback.

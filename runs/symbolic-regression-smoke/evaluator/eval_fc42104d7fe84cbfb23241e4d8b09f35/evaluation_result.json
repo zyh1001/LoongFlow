@@ -1,0 +1,13 @@
+{
+  "status": "validation_failed",
+  "score": 0.0,
+  "summary": "Candidate validation failed: The file must contain only the candidate_spec() function.",
+  "metrics": {
+    "validity": 0.0,
+    "eval_time": 0.0017328090034425259
+  },
+  "artifacts": {
+    "error_type": "CandidateValidationError",
+    "reason": "Candidate validation failed: The file must contain only the candidate_spec() function."
+  }
+}

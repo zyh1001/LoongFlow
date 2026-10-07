@@ -1,0 +1,42 @@
+{
+  "status": "success",
+  "summary": "score=0.998107; full_data_fidelity=0.998106; full_data_nmse=0.00189426; exchange_error=0; rotation_error=4.04e-16 at M=3; finite=1.0000; complexity=12; fitted={'c0_re': -4.066815442692731, 'c0_im': -1.2531422292683412, 'a': 0.26371975118486735}",
+  "score": 0.9981066378739916,
+  "metrics": {
+    "validity": 1.0,
+    "full_data_nmse": 0.001894258613379453,
+    "full_data_fidelity": 0.9981057413866203,
+    "exchange_error": 0.0,
+    "rotation_error": 4.04360527351474e-16,
+    "inferred_angular_momentum": 3,
+    "finite_fraction": 1.0,
+    "expression_complexity": 12,
+    "parameter_count": 3,
+    "accuracy_component": 0.9981066378739921,
+    "physics_factor": 0.9999999999999994,
+    "complexity_penalty": 1.0,
+    "eval_time": 0.7478722200030461
+  },
+  "artifacts": {
+    "expression": "c0 * z12**3 * exp(-a * (abs(z1)**2 + abs(z2)**2))",
+    "fitted_parameters": {
+      "c0_re": -4.066815442692731,
+      "c0_im": -1.2531422292683412,
+      "a": 0.26371975118486735
+    },
+    "global_scale": {
+      "real": 0.005560956393857674,
+      "imag": 0.02592160545491414
+    },
+    "optimizer": {
+      "attempted": true,
+      "success": true,
+      "nfev": 16,
+      "message": "`xtol` termination condition is satisfied.",
+      "residual_cost": 94.7129306689726
+    },
+    "evaluation_mode": "all_finite_samples_fit_and_score",
+    "samples_used": 50000,
+    "dataset": "/home/ubuntu/symbolic_regression/LoongFlow/../datasets/disk_n2_Q6_kapa_1/dataset_50000.npz"
+  }
+}

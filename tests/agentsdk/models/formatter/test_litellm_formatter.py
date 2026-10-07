@@ -55,7 +55,7 @@ def test_format_request_basic(formatter, sample_messages):
 
     assert result["model"] == "gpt-4o-mini"
     assert result["messages"][0]["role"] == "user"
-    assert any(c["type"] == "text" for c in result["messages"][0]["content"])
+    assert result["messages"][0]["content"] == "Hello"
     assert result["temperature"] == 0.7
     assert result["top_p"] == 0.9
 
@@ -89,7 +89,7 @@ async def test_format_request_text_only(formatter):
     assert kwargs["stream"] is False
     assert isinstance(kwargs["messages"], list)
     assert kwargs["messages"][0]["role"] == "user"
-    assert kwargs["messages"][0]["content"][0]["text"] == "Hello, world!"
+    assert kwargs["messages"][0]["content"] == "Hello, world!"
 
 
 @pytest.mark.asyncio
@@ -238,8 +238,36 @@ def test_extract_elements_from_choices_text_and_tool(formatter):
 
 def test_convert_messages_with_mixed_elements(formatter, sample_messages):
     """Ensure mixed content types are correctly converted"""
-    converted = formatter._convert_messages(sample_messages)
+    converted = formatter._convert_messages(sample_messages, "gpt-4o-mini")
     msg = converted[0]
     assert msg["role"] == "user"
-    types = [c["type"] for c in msg["content"]]
-    assert {"text", "tool_call"} & set(types)
+    assert msg["content"] == "Hello"
+    assert msg["tool_calls"][0]["function"]["name"] == "get_weather"
+
+
+def test_deepseek_reasoning_content_is_replayed(formatter):
+    """DeepSeek thinking content must survive both tool and standard turns."""
+    model_name = "openai/deepseek-flash"
+    messages = [
+        Message(
+            role="assistant",
+            content=[
+                ThinkElement(content="tool reasoning"),
+                ToolCallElement(target="demo", arguments={"x": 1}),
+            ],
+        ),
+        Message(
+            role="assistant",
+            content=[
+                ThinkElement(content="standard reasoning"),
+                ContentElement(mime_type=MimeType.TEXT_PLAIN, data="done"),
+            ],
+        ),
+    ]
+
+    tool_message, standard_message = formatter._convert_messages(
+        messages, model_name
+    )
+
+    assert tool_message["reasoning_content"] == "tool reasoning"
+    assert standard_message["reasoning_content"] == "standard reasoning"
