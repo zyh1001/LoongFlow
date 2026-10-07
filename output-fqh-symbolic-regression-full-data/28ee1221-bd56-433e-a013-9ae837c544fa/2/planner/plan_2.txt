@@ -1,0 +1,58 @@
+================================================================================
+PLAN 2  —  STRUCTURAL RESET: "Coherent two-component LL-mixed hybrid"
+================================================================================
+Island: 0.  A genuinely different ARCHITECTURE (sum of two components sharing a
+single J^3 prefactor) rather than a product of independent factors.
+
+--------------------------------------------------------------------------------
+1. MATHEMATICAL FORMULATION
+--------------------------------------------------------------------------------
+Structural objects:
+    J = prod_{i<j}(z_i - z_j) ;  S = sum_i |z_i|^2 ;  Z = sum_i z_i ; G=|Z|^2
+
+VARIABLES
+  X_struct (discrete): two components, both carrying the SAME core J^3
+      comp_1 = exp(-alpha1 S)                       (holomorphic Laughlin)
+      comp_2 = |J|^{2 eta} exp(-alpha2 S - gamma G + 1j lam S)  (screened)
+  X_cont: theta = (alpha1, alpha2, gamma, lam, eta, c)  in R^6  (c = mixing amp)
+
+CANDIDATE
+  Psi = J^3 * [ exp(-alpha1 S) + c * |J|^{2 eta} exp(-alpha2 S - gamma G
+                                                   + 1j lam S) ]
+
+CONSTRAINTS C
+  C1 ANTISYMMETRY: both bracket terms are exchange-invariant; J^3 is odd =>
+     Psi antisymmetric.                                                [PROVED]
+  C2 SINGLE M: J^3 carries M=45; both components invariant => pure M=45. [PROVED]
+  C3 FINITENESS: alpha1, alpha2 > 0 defaults => decay at large |z|.
+  C4 LEGALITY: integer literals {2,3}, 1j; named finite defaults; no decimals.
+
+OBJECTIVE f: maximize accuracy = fidelity * finite_fraction ; minimize 1-fidelity.
+
+--------------------------------------------------------------------------------
+2. SOLVER STRATEGY
+--------------------------------------------------------------------------------
+Discrete: choose the two-component topology (fixed) and the shared core exponent
+m in {1,3,5} (select m=3).  Continuous: evaluator least-squares over theta, with
+a deterministic sign enumeration c in {+1,-1} (2 restarts, no randomness).
+Seed defaults at the global-best effective values (alpha1~1.38, eta~10.07,
+alpha2~1.38, gamma~0.26, lam~0.49, c=1.0).
+
+--------------------------------------------------------------------------------
+3. VALIDITY MECHANISM
+--------------------------------------------------------------------------------
+  1. Both components share J^3 => antisymmetry & M=45 trivially hold.
+  2. Grid finiteness assert with defaults.
+  3. Fallback: if c=0 is selected by the fit, the model reduces exactly to the
+     pure holomorphic Laughlin component (guaranteed finite, M=45).
+
+--------------------------------------------------------------------------------
+4. WHY THIS SOLUTION
+--------------------------------------------------------------------------------
+Expected: can represent the target as a COHERENT interference of a holomorphic
+Laughlin component and a non-holomorphic screened component - a mechanism the
+product ansatz of island_1 cannot express.  Advantages: new architecture =>
+diversity, still provably valid, same complexity class.  Disadvantages: risk of
+catastrophic cancellation and normalization instability between the two
+components; the non-convex fit over 6 params is more fragile than Plan 1 and may
+converge to a worse basin.

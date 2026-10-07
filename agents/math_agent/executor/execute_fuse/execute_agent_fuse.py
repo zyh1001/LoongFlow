@@ -642,6 +642,9 @@ class EvolveExecuteAgentFuse(Worker):
                 continue
 
             score = float(eval_data.get("score", 0.0))
+            fitted_program = eval_data.get("artifacts", {}).get("fitted_program")
+            if isinstance(fitted_program, str) and fitted_program:
+                Path(s_path).write_text(fitted_program, encoding="utf-8")
 
             cr = CandidateResult(
                 round_idx=round_idx,

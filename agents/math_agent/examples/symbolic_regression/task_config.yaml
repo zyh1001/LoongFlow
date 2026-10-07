@@ -14,9 +14,9 @@ llm_config:
   url: "https://api.deepseek.com"
   api_key: "YOUR_API_KEY"
   model: "openai/deepseek-flash"
-  temperature: 0.7
+  temperature: 0.9
   context_length: 128000
-  max_tokens: 12000
+  max_tokens: 128000
   top_p: 1.0
   timeout: 1200
 
@@ -57,43 +57,32 @@ summarizers:
 evolve:
 
   task: |
-    You are a mathematical physicist studying symbolic representations of
-    complex fractional-quantum-Hall wavefunctions in disk geometry.
+    You are a mathematical physicist searching for compact analytic representations
+    of a complex fractional-quantum-Hall many-body wavefunction in disk geometry.
 
     Scientific objective
     --------------------
-    Discover compact and physically meaningful analytic candidates for the
-    complete complex many-body wavefunction Psi.
+    Discover compact, physically interpretable analytic candidates for the
+    complex many-body wavefunction Psi.
 
-    The candidate expression represents the full physical wavefunction,
-    including its spatial envelope and correlation structure.
+    This is a structure-discovery problem, not merely numerical curve fitting.
+    Candidates must define genuine analytic functions over the coordinate domain
+    and must not memorize or encode individual samples.
 
-    This is a structure-discovery task. Search for analytic expressions that
-    generalize to unseen electron coordinates.
-
-    Do not memorize, interpolate, or otherwise encode individual data rows.
-
-    The goal is not merely to minimize a numerical loss. The goal is to
-    discover simple analytic structures that can be interpreted and tested
-    as physical hypotheses.
+    No standard fractional-quantum-Hall trial-state form is assumed. Structural
+    properties must be inferred from evaluator evidence.
 
 
     Physical system
     ---------------
-    The target state describes six fully spin-polarized interacting electrons
-    confined to an infinite two-dimensional plane.
+    The target state contains N fully spin-polarized interacting electrons in a
+    two-dimensional plane with Coulomb interactions and a perpendicular uniform
+    magnetic field.
 
-    The electrons interact through the Coulomb interaction.
+    A uniformly positively charged arrying totalcharge +Ne disk
+    is placed parallel to the electron plane at
 
-    A spatially uniform magnetic field B is applied perpendicular to the
-    electron plane.
-
-    Parallel to the electron plane, at distance
-
-        d = 0.1 l_B,
-
-    there is a uniformly positively charged disk of radius a carrying total
-    charge +Ne.
+        d = 0.1 l_B
 
     The positive background disk provides both charge neutralization and a
     rotationally symmetric confining potential.
@@ -123,153 +112,72 @@ evolve:
 
     With
 
-        N  = 6,
+        N  = number of electrons,
         nu = 1/3,
 
 
-    Since all coordinates supplied to candidate expressions are measured in
-    units of l_B, the dimensionless disk radius used in the symbolic
-    regression problem is therefore
+    All coordinates supplied to candidate expressions are measured in
+    units of l_B.
 
-        a / l_B = sqrt(36)
+    The dimensionless disk radius used in the symbolic regression problem is therefore
+
+        a / l_B = sqrt(6*N)
 
     The Landau-level-mixing parameter of the target state is
 
-        lambda = 1,
+        kappa = 100,
 
-    where lambda is the ratio between the Coulomb interaction energy scale
+    where kappa is the ratio between the Coulomb interaction energy scale
     and the cyclotron energy scale.
 
-    That is, lambda = \[ \boxed{ \kappa = \frac{e^2m^\ast}{4\pi\epsilon_0\epsilon_r\hbar^2} \sqrt{\frac{\hbar}{eB}} } \] in SI units.
 
-    The target neural-network wavefunction lives in the full real-space
-    Hilbert space.
+    In SI units, \[ \boxed{ \kappa = \frac{e^2m^\ast}{4\pi\epsilon_0\epsilon_r\hbar^2} \sqrt{\frac{\hbar}{eB}} } \].
 
-    It is NOT assumed to be exactly projected into the lowest Landau level.
+    corresponding to an extreme strong-Landau-level-mixing regime.
 
-    Therefore, exact holomorphicity must not be imposed as a hard constraint.
-
-    Holomorphic expressions remain an important physically motivated baseline
-    in the weak-Landau-level-mixing regime, but non-holomorphic corrections
-    are allowed when supported by evaluator evidence.
+    The target neural-network wavefunction belongs to the full real-space Hilbert
+    space and is not assumed to be projected into the lowest Landau level.
+    Both holomorphic and non-holomorphic structures are therefore allowed; neither
+    is assumed a priori.
 
 
-    Units and scaling
-    -----------------
-    All electron coordinates supplied to candidate expressions are
-    dimensionless and measured in magnetic-length units:
+    Coordinates and symmetries
+    --------------------------
+    Use throughout
 
-        r -> r / l_B.
+         z_j = x_j - i*y_j
 
-    Therefore x_i, y_i, z_i, relative distances, center-of-mass coordinates,
-    and fitted length scales appearing in candidate expressions are all
-    dimensionless.
-
-    The candidate expression represents the complete wavefunction, including
-    any spatial envelope required by the physical state.
-
-    Do not mix dimensional and dimensionless quantities.
-
-
-    Complex-coordinate convention
-    -----------------------------
-    IMPORTANT: use the following convention throughout the entire search:
-
-        z_j = x_j - i*y_j,    j = 1, ..., 6
-
-    This is the convention used by the target data and evaluator.
-
-    Do not change this convention.
-
-    Define
+    and define
 
         z_ij = z_i - z_j
-        Z_cm = (z1 + z2 + z3 + z4 + z5 + z6) / 6
+        Z_cm = (z1 + ... + zN) / N
         r_ij = |z_ij|.
 
-    In candidate expressions, pair variables use explicit indices, for
-    example z12, z13, ..., z56 and r12, r13, ..., r56. Their squared-distance
-    and conjugate forms use suffixes such as r12_sq, z12_bar, and z12_conj.
+    You can also think about consecutive multiplications and sums
+    Build pair differences, conjugates, distances, center-of-mass coordinates,
+    and other rotational invariants directly from the z_j arguments.
 
-    Complex-conjugate variables and other radial invariants may also be used
-    when physically motivated.
+    The wavefunction must satisfy fermionic exchange antisymmetry,
 
-
-    Electron exchange
-    -----------------
-    The six electrons are identical spin-polarized fermions.
-
-    Therefore the candidate wavefunction must satisfy fermionic exchange
-    antisymmetry:
-
-        Psi(..., r_i, ..., r_j, ...) = -Psi(..., r_j, ..., r_i, ...)
+        Psi(..., r_i, ..., r_j, ...) = -Psi(..., r_j, ..., r_i, ...),
 
     for every pair i != j.
 
-    Under exchange of any two electrons, the corresponding pair difference
-    changes sign while Z_cm and symmetric functions of all pair differences
-    remain unchanged. Use these transformation properties when constructing
-    candidate expressions.
+    Under a counterclockwise rotation,
 
-    Prefer structures in which antisymmetry is transparent from the analytic
-    form rather than being produced accidentally by fitted numerical
-    coefficients.
+        z_i     -> exp(-i*phi) z_i
+        z_i_bar -> exp(+i*phi) z_i_bar.
 
+    The target is expected to belong to a single integer total-angular-momentum
+    sector M:
 
-    Rotational symmetry
-    -------------------
-    The Hamiltonian and confining potential are invariant under continuous
-    rotations around the center of the disk.
-
-    With the convention
-
-        z_i = x_i - i*y_i,
-
-    a counterclockwise physical rotation of all electron coordinates by an
-    angle phi transforms
-
-        z_i -> exp(-i*phi) z_i.
-
-    ----------------------------------------------------------------------
-    ANGULAR-MOMENTUM CONDITION:
-
-    The target state is expected to be an eigenstate of the total
-    z-component angular-momentum operator.
-
-    Search only for candidate structures that are compatible with a
-    well-defined integer total angular momentum
-
-        M in Z.
-
-    Because
-
-        z_i = x_i - i*y_i
-
-    transforms under a counterclockwise physical rotation as
-
-        z_i -> exp(-i*phi) z_i,
-
-    an angular-momentum eigenstate should transform as
-
-        Psi(
-            exp(-i*phi) z1,
-            ...,
-            exp(-i*phi) z6
-        )
+        Psi({exp(-i*phi) z_i})
         =
-        exp(-i*M*phi) Psi(z1, z2, ...)
+        exp(-i*M*phi) Psi({z_i}).
 
-    for some integer M.
-
-    Different structural candidates may correspond to different integer
-    angular-momentum sectors.
-
-    Use evaluator feedback to infer which sector is supported by the target
-    wavefunction.
-
-    Prefer candidates that transform with a single well-defined integer M
-    rather than superpositions of unrelated angular-momentum sectors.
-    ----------------------------------------------------------------------
+    The value of M is not assumed beforehand and should be inferred from evaluator
+    feedback. Candidates should avoid superpositions of unrelated angular-momentum
+    sectors.
 
 
     Candidate interface
@@ -282,205 +190,144 @@ evolve:
 
         EVOLVE-BLOCK-END.
 
-    Preserve the function
+    Preserve the wavefunction() interface defined in initial_program.py. For the
+    current N=2 problem, its first two required arguments must be z1 and z2.
 
-        candidate_spec()
+    wavefunction() must directly return the vectorized analytic wavefunction.
+    Do not return a dictionary or an expression string. Any fitted real-valued
+    parameters must follow z1 and z2 as positional arguments with finite numeric
+    defaults, for example
 
-    exactly as specified in initial_program.py.
+        def wavefunction(z1, z2, alpha=1.0):
+            return (z1 - z2) * np.exp(-alpha * (np.abs(z1)**2 + np.abs(z2)**2))
 
-    candidate_spec() must return one candidate expression together with its
-    numerical parameter initialization using the exact interface documented
-    in initial_program.py.
+    The evaluator fits those defaulted parameters. Complex coefficients can be
+    represented by separate real and imaginary parameters. The function body
+    must contain one return statement. Vectorized numpy calls np.exp, np.sqrt,
+    np.abs, np.conj, np.conjugate, np.real, np.imag, np.log, np.sin, np.cos, and
+    np.tanh are available, as are abs(...) and np.pi.
 
-    Do not change:
-
-    - function names;
-    - function arguments;
-    - imports;
-    - evaluator code;
-    - code outside the evolution block.
-
-
-    Physical requirements
-    ---------------------
-    Prefer candidates that:
-
-    1. satisfy fermionic antisymmetry under exchange of any two electrons;
-
-    2. belong to a well-defined total-angular-momentum sector consistent
-       with the rotational symmetry of the disk;
-
-    3. remain finite throughout the sampled physical domain except at points
-       where a singular analytic representation is explicitly physically
-       justified;
-
-    4. respect the stated complex-coordinate convention;
-
-    5. treat holomorphic expressions as important baseline candidates but do
-       not assume exact lowest-Landau-level projection;
-
-    6. allow conjugate or radial variables when they produce genuine
-       full-data improvement or a simpler physical description;
-
-    7. admit a clear interpretation in terms of relative motion,
-       center-of-mass motion, pair correlations, radial corrections, or
-       Landau-level-mixing corrections.
+    Do not modify the function name, the names or order of z1 and z2, imports,
+    evaluator code, or code outside the evolution block. You may add, remove, or
+    rename the fitted parameters that follow z1 and z2.
 
 
-    Search space
-    ------------
-    Begin with structurally simple candidate families.
+    Allowed structures
+    ------------------
+    Search broadly over compact, mathematically distinct fermionic
+    representations.
 
-    Prioritize:
+    Relevant representation classes include:
 
-    - low-degree polynomials in relative and center-of-mass variables;
+    - determinants or small sums of determinants;
+    - general pair-product structures whose powers and functions are inferred
+    from data;
+    - antisymmetric factors multiplied by symmetric functions;
+    - explicitly antisymmetrized pair or cluster structures;
+    - compact pairing or Pfaffian-like structures when appropriate;
+    - relative-coordinate and center-of-mass structures;
+    - mixed z and conjugate-z expressions;
+    - functions of rotational invariants such as |z_i|^2 and |z_i-z_j|^2;
+    - small sums of structurally distinct antisymmetric components;
+    - compact non-holomorphic structures associated with Landau-level mixing.
 
-    - factored expressions;
+    These are possible representation classes, not preferred answers.
 
-    - products and small integer powers;
+    Products, sums, determinants, antisymmetrization, polynomial, rational, and
+    compact transcendental structures may all be considered when physically and
+    numerically well behaved.
 
-    - antisymmetric factors multiplied by symmetric corrections;
+    Exponentials may be used when supported by evaluator evidence, but adding
+    increasingly complicated functions inside an exponential must not become the
+    default mechanism for improving a candidate.
 
-    - simple rational functions;
-
-    - simple functions of rotationally meaningful radial invariants.
-
-    Exponentials of compact radial functions are physically meaningful
-    Jastrow-like candidate structures and may be explored.
-
-    However, avoid deeply nested transcendental expressions unless simpler
-    candidate families have clearly failed.
-
-    Prefer compact expressions whose physical transformation properties can
-    be understood analytically.
-
-    Use at most 10 fitted numerical parameters.
-
-    Do not manually search arbitrary decimal constants when an
-    evaluator-fitted numerical parameter can be used instead.
-
-
-    Hypothesis families
-    -------------------
-    Maintain structural diversity across the search.
-
-    Useful hypothesis families include:
-
-    - predominantly holomorphic relative-coordinate expressions;
-
-    - factored antisymmetric expressions;
-
-    - symmetric corrections multiplying an antisymmetric factor;
-
-    - relative-coordinate dominated expressions;
-
-    - center-of-mass corrections;
-
-    - radial corrections;
-
-    - conjugate-coordinate corrections;
-
-    - mixed holomorphic and non-holomorphic structures associated with
-      Landau-level mixing.
-
-    These are search directions, not assumed answers.
-
-    Do not assume beforehand which family is correct.
+    Use at most 15 fitted numerical parameters. Numerical parameters should be
+    fitted by the evaluator rather than manually searched through arbitrary
+    decimal constants.
 
 
-    Search strategy
-    ---------------
-    Treat each new candidate as a physical hypothesis.
+    Exploration strategy
+    --------------------
+    Treat every candidate as a physical hypothesis.
 
-    Change one important structural idea at a time whenever possible.
+    Use two complementary types of evolutionary moves:
 
-    Use evaluator feedback to determine whether the next modification should
-    improve:
+    1. LOCAL REFINEMENT:
+    simplify or improve a promising candidate while retaining its main
+    architecture.
 
-    - predictive accuracy;
-    - complex-wavefunction fidelity;
-    - exchange antisymmetry;
-    - rotational/angular-momentum consistency;
-    - numerical stability;
-    - or analytic simplicity.
+    2. STRUCTURAL RESET:
+    construct a candidate from a qualitatively different representation,
+    without preserving the dominant algebraic skeleton of its parent.
 
-    Do not repeatedly modify only fitted numerical constants.
+    No factor or motif appearing in a high-scoring parent is protected.
 
-    Numerical parameters are fitted by the evaluator; the evolutionary search
-    should focus primarily on analytic structure.
+    A high score for a complete expression is not evidence that each of its
+    individual factors is physically correct.
 
-    When an expression performs well, investigate whether individual terms
-    can be removed while retaining its full-data fit quality.
+    Maintain diversity at the level of complete algebraic architecture. If several
+    recent high-performing candidates share the same dominant motif, deliberately
+    test an underrepresented representation family rather than repeatedly adding
+    corrections to that motif.
 
-    When progress stagnates, explore a qualitatively different structural
-    family rather than indefinitely increasing the complexity of the current
-    candidate.
+    A modest temporary reduction in score is acceptable when testing a genuinely
+    different low-complexity structure.
+
+    The evolutionary search should primarily modify analytic structure rather than
+    fitted numerical constants.
+
+    For promising candidates, also test whether terms or parameters can be removed
+    without materially degrading the fit.
 
 
     Evaluation
     ----------
-    All finite neural-network samples belong to one full-data pool.
+    All finite neural-network samples form one uniformly sampled full-data pool.
+    Numerical parameters are fitted and candidates are scored on this pool.
 
-    Numerical parameters are fitted on this complete pool, and the same pool
-    is used to score candidate expressions. There is no held-out validation
-    or test split in this task.
+    Relevant evaluator signals include:
 
-    Evolution uses full-data metrics such as:
-
-    - full-data normalized error;
-    - complex-wavefunction fidelity;
-    - electron-exchange error;
-    - angular-momentum or rotation error;
+    - normalized complex-wavefunction error;
+    - wavefunction fidelity;
+    - fermionic-exchange error;
+    - angular-momentum or rotational-consistency error;
     - non-finite output fraction;
     - expression complexity.
 
-    The complete data pool is uniformly sampled over the coordinate domain.
+    Prefer the simpler expression when two candidates have comparable numerical
+    quality. A small improvement in numerical error does not justify a large
+    increase in analytic complexity.
 
-    Prefer a simpler formula when two candidates have similar full-data
-    quality.
-
-    A small reduction in numerical error does not justify a large increase
-    in analytic complexity.
 
     Prohibited behavior
     -------------------
-    Candidate code must not:
+    Candidate code must not read datasets, evaluator source code, checkpoints,
+    logs, or previous output files directly.
 
-    - read dataset files directly;
-    - inspect evaluator source code;
-    - inspect checkpoints;
-    - inspect logs;
-    - inspect previous output files;
-    - use lookup tables;
-    - use nearest-neighbor interpolation;
-    - memorize individual samples;
-    - use row-dependent branches;
-    - use random predictions;
-    - launch subprocesses;
-    - access the network;
-    - dynamically generate executable code.
+    Do not use lookup tables, nearest-neighbor interpolation, sample-dependent
+    branches, memorized samples, random predictions, subprocesses, network access,
+    or dynamically generated executable code.
 
     Do not hard-code an expected analytic solution.
 
-    Physical knowledge should be used to constrain and organize the search,
-    not to insert a presumed final answer.
+    Physical knowledge should constrain and organize the search, not insert a
+    presumed answer.
 
 
     Success criterion
     -----------------
-    A successful search should produce a small collection of low-complexity
-    analytic formulas with:
+    The goal is a small collection of compact analytic candidates that combine:
 
     - strong full-data fidelity;
-    - low full-data error;
-    - correct fermionic exchange behavior;
-    - correct rotational/angular-momentum behavior;
-    - stable finite numerical values;
-    - reproducible structures across independent runs;
+    - correct fermionic antisymmetry;
+    - a well-defined angular-momentum sector;
+    - stable finite numerical behavior;
+    - low analytic complexity;
+    - reproducibility across independent runs;
     - and a clear physical interpretation.
 
-    The final objective is to identify compact analytic structures that can
-    be tested as physical hypotheses for the neural-network wavefunction.
+    The primary objective is to discover testable analytic structure rather than
+    to obtain the lowest possible numerical loss at arbitrary complexity.
 
 
   # --------------------------------------------------------------------------
@@ -515,7 +362,7 @@ evolve:
 
   database:
     storage_type: "in_memory"
-    num_islands: 3
-    population_size: 90
+    num_islands: 6
+    population_size: 45
     checkpoint_interval: 5
-    sampling_weight_power: 2
+    sampling_weight_power: 0.8

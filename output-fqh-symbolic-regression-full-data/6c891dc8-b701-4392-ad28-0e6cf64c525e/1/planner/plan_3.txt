@@ -1,0 +1,46 @@
+PLAN 3
+=====================================================================
+Title: Physics-Seeded Genetic Symbolic Enumeration (PySR-style) with a
+       Hard Constraint Post-Filter and Deterministic Fallback
+=====================================================================
+
+1. MATHEMATICAL DEFINITION
+--------------------------
+Variables: expression trees T over the grammar
+   terminals {z1, z2, conj(z1), conj(z2), 1, 2, 3},
+   unary {exp, conj, square},
+   binary {+ , * , -}.
+Objective f(T) = fidelity(T)*finite_fraction(T) - 0*complexity(T)
+   (complexity is tracked only for the Pareto archive, not the scalar score).
+Constraints C:
+   C1 node count / parameter budget <= 15 fitted params, integer literals
+      |.|<=12, no decimal literals in the return.
+   C2 antisymmetry exch(Psi) = -Psi (checked symbolically per individual).
+   C3 single M sector (rot-check for some integer M).
+   C4 finite on the sampled grid.
+
+2. SOLVER STRATEGY
+------------------
+- Genetic programming: population 200, tournament selection, subtree
+  crossover p=0.7, mutation p=0.3, 40 generations, 5 independent seeds
+  (multi-start). Fitness = evaluator accuracy.
+- Primitive set chosen so that valid fermionic factors are more likely:
+  seed every island with (z1-z2)^3 to bias toward M=3.
+- Pareto archive on (complexity, accuracy) to retain diverse structures.
+
+3. VALIDITY MECHANISM (Safety Valve)
+------------------------------------
+- After each generation, run the sympy antisymmetry + rotation certificate
+  on every new individual; REJECT individuals that fail (hard filter).
+- Numeric finite gate; REJECT NaN/Inf.
+- Deterministic fallback = (z1-z2)^3 if the population dies or stalls.
+
+4. WHY THIS PLAN
+----------------
++ Broadest structural coverage (can discover unforeseen motifs).
++ Pareto archive naturally maintains architectural diversity across islands.
+- High variance, sample-inefficient, expensive; many candidates wasted.
+- Slower to converge to the physically obvious Laughlin-like optimum; the
+  discrete search is stochastic (needs many restarts to remove luck).
+- Weakest "guarantee" of the three: relies on the search finding structure
+  rather than encoding it.

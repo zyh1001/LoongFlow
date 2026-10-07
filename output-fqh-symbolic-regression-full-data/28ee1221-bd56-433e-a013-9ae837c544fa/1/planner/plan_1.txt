@@ -1,0 +1,108 @@
+================================================================================
+CHILD SOLUTION GENERATION PLAN  —  island_0, iteration 1
+Outline #1  (SELECTED):  Physically-anchored Laughlin-core with analytic
+                         invariant envelope.
+================================================================================
+
+--------------------------------------------------------------------------------
+0. CONTEXT / DIAGNOSIS OF THE PARENT
+--------------------------------------------------------------------------------
+Parent = island_0 seed = J = prod_{i<j}(z_i - z_j)  (plain Vandermonde to the
+FIRST power, NO exponential envelope).  Score 3.53e-06  (fidelity 3.5e-06,
+finite_fraction 1.0, complexity 60).  The database is empty (iteration 0), so
+there is nothing to fuse; the correct evolutionary move is a LOCAL REFINEMENT
+that fixes the two structural defects:
+  (a) the exponent m of the Jastrow factor is 1 (wrong filling sector), and
+  (b) the guiding/wave-function envelope exp(-alpha*S) is entirely missing.
+Both defects are strongly indicated by the given physics (nu = 1/3).
+
+--------------------------------------------------------------------------------
+1. MATHEMATICAL FORMULATION
+--------------------------------------------------------------------------------
+VARIABLES
+  Discrete structural variable
+      m  in  {1, 3, 5, 7, 9}   (odd integers only; a NOT-fitted exponent).
+  Continuous fitted parameters (finite defaults, fitted by the evaluator)
+      alpha  (Gaussian / guiding envelope scale)
+      gamma  (center-of-mass invariant scale)
+
+STRUCTURAL BUILDING BLOCKS  (N = 6, 15 pairs)
+      d_ij = z_i - z_j ,  i < j
+      J    = prod_{i<j} d_ij                         (Vandermonde numerator)
+      S    = sum_i |z_i|^2                           (rotational invariant)
+      G    = |sum_i z_i|^2                           (CM rotational invariant)
+
+CANDIDATE FAMILY
+      Psi(z; alpha, gamma) = J^m * exp( -alpha*S - gamma*G )
+
+HARD CONSTRAINTS  C  (must hold for EVERY candidate)
+  C1  ANTISYMMETRY: exchange of electrons i<->j sends d_ij -> -d_ij, i.e. J -> -J.
+      With m odd, J^m -> -J^m, and the real envelope is exchange invariant, so
+      Psi(...,r_i,...,r_j,...) = -Psi(...,r_j,...,r_i,...).      [constructive]
+  C2  SINGLE ANGULAR-MOMENTUM SECTOR: z_i -> e^{-i phi} z_i  gives
+      J^m -> e^{-i phi * m * N(N-1)/2} J^m = e^{-i phi * m * 15} J^m; both S and G
+      are invariant, therefore Psi belongs to the single sector
+      M = m * N(N-1)/2 = m * 15  (for m = 3 => M = 45).           [constructive]
+  C3  FINITENESS: for alpha > 0 the Gaussian decays and J^m is a polynomial; the
+      expression is finite for every finite coordinate sample (finite_fraction=1).
+  C4  REPRESENTATION LEGALITY: the exponent m is an integer structural literal
+      (|m| <= 12); the invariants are built from integer powers and np.abs;
+      NO decimal literal appears in the return expression; no parameter encodes
+      only a global phase / global scale.
+
+OBJECTIVE FUNCTION
+  maximize   accuracy = fidelity * finite_fraction,
+             fidelity = |<Psi|Psi_target>|^2 / ( ||Psi||^2 * ||Psi_target||^2 )
+  on the uniformly sampled 50000-sample full pool.
+  Equivalent loss to minimize (conceptual):  L = 1 - fidelity.
+
+--------------------------------------------------------------------------------
+2. SOLVER STRATEGY  (decouple HARD structure from EASY parameters)
+--------------------------------------------------------------------------------
+HARD / DISCRETE PART  (structure finding, non-convex):
+  Enumerate the odd exponent  m in {1,3,5,7,9}.  Physics (Phi = N*Phi0/nu with
+  nu = 1/3) predicts the lowest-complexity matching topology is m = 3.  Submit the
+  m = 3 topology: it is the minimal odd exponent consistent with the filling
+  factor and therefore the minimal-complexity high-fidelity architecture.
+
+EASY / CONTINUOUS PART  (parameter tuning, delegate to the evaluator):
+  Provide physically exact defaults so that the evaluator's adaptive bounded
+  fit starts inside the correct basin:
+       alpha = 0.25   ( = 1/4, the exact lowest-Landau-level Gaussian scale )
+       gamma = 0.0    ( no center-of-mass distortion by default )
+  The evaluator refines (alpha, gamma) with its adaptive bound-expansion
+  refit.  gamma is made available to absorb a smooth LL-mixing (kappa = 100)
+  broadening of the envelope without changing the algebraic skeleton.
+
+MULTI-START EQUIVALENCE:
+  The discrete enumeration over m plus the physically-anchored default
+  (alpha, gamma) is a deterministic multi-start; no random initialisation is
+  used, so there is zero run-to-run variance.
+
+--------------------------------------------------------------------------------
+3. VALIDITY MECHANISM / SAFETY VALVE  (deterministic, non-negotiable)
+--------------------------------------------------------------------------------
+  (V1) Construction guarantees C1 (odd m), C2 (invariants), C3 (alpha>0).
+  (V2) Post-generation checklist (run BEFORE submitting):
+         - assert exponent literal is odd (m = 3);
+         - assert angular momentum M = m*N(N-1)/2 is a single integer;
+         - assert expression contains no decimal literal and no np.random;
+         - assert every non-structural constant is a named fitted parameter;
+         - assert return is a vectorized numpy array expression (not dict/string).
+  (V3) FALLBACK: if the m=3 + gamma fit scores WORSE than pure m=3 + gamma=0,
+       revert deterministically to the pure Laughlin state
+           Psi = J^3 * exp(-alpha*S)
+       which is analytically valid, compact and high fidelity.
+
+--------------------------------------------------------------------------------
+4. WHY THIS SOLUTION
+--------------------------------------------------------------------------------
+Expected improvement: the parent omits BOTH the correct Jastrow power and the
+Gaussian envelope, so its overlap with a nu = 1/3 state is ~1e-6.  Restoring the
+m = 3 power and the LLL Gaussian should raise fidelity from ~3e-6 towards unity.
+Advantages: analytically valid (antisymmetry + single M sector by construction),
+lowest complexity of the three outlines, physically interpretable, perfectly
+reproducible.
+Disadvantages: the leading ansatz is exact only in the LLL; strong LL mixing
+(kappa = 100) may leave a residual gap, which is handled by the fitted gamma term
+and, if needed, by the alternate plans 2 and 3.

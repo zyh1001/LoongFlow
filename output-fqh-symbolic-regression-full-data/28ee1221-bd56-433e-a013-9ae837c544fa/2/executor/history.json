@@ -1,0 +1,42 @@
+[
+  {
+    "round": 0,
+    "candidates": [
+      {
+        "round_idx": 0,
+        "candidate_idx": 0,
+        "random_idx": "_39b",
+        "solution_file_path": "output-fqh-symbolic-regression-full-data/28ee1221-bd56-433e-a013-9ae837c544fa/2/executor/0_0/solution_39b.py",
+        "evaluation_file_path": "output-fqh-symbolic-regression-full-data/28ee1221-bd56-433e-a013-9ae837c544fa/2/executor/0_0/evaluation_39b.json",
+        "score": 0.0,
+        "reason": "{\n  \"status\": \"validation_failed\",\n  \"summary\": \"Candidate validation failed: Expression exceeds the 864-node complexity limit.\",\n  \"score\": 0.0,\n  \"metrics\": {\n    \"validity\": 0.0,\n    \"eval_time\": 0.22137410705909133\n  },\n  \"artifacts\": {\n    \"error_type\": \"CandidateValidationError\",\n    \"reason\": \"Candidate validation failed: Expression exceeds the 864-node complexity limit.\"\n  }\n}",
+        "source": "disk"
+      }
+    ]
+  },
+  {
+    "round": 1,
+    "candidates": [
+      {
+        "round_idx": 1,
+        "candidate_idx": 0,
+        "random_idx": null,
+        "solution_file_path": "",
+        "evaluation_file_path": "",
+        "score": 0.0,
+        "reason": "{\n  \"content\": \"litellm.InternalServerError: InternalServerError: OpenAIException - Expecting value: line 4 column 1 (char 3)\"\n}",
+        "source": "llm"
+      },
+      {
+        "round_idx": 1,
+        "candidate_idx": 1,
+        "random_idx": "_c80",
+        "solution_file_path": "output-fqh-symbolic-regression-full-data/28ee1221-bd56-433e-a013-9ae837c544fa/2/executor/1_1/solution_c80.py",
+        "evaluation_file_path": "output-fqh-symbolic-regression-full-data/28ee1221-bd56-433e-a013-9ae837c544fa/2/executor/1_1/evaluation_c80.json",
+        "score": 0.8166003599372853,
+        "reason": "{\n  \"status\": \"success\",\n  \"summary\": \"accuracy=0.816600; full_data_fidelity=0.816600; full_data_nmse=0.1834; finite=1.0000; complexity=367; pareto_front=True; front_size=2; fitted={'alpha': -0.8433787833434213, 'beta': -0.02303626358022002, 'beta2': 0.00563229893634201, 'gamma': 1.5017818186715888, 'lam': 0.4780352313204935, 'eta': 10.070971295472923, 'delta': -0.48306953502626654}\",\n  \"score\": 0.8166003599372853,\n  \"metrics\": {\n    \"validity\": 1.0,\n    \"full_data_nmse\": 0.18339964006271592,\n    \"full_data_fidelity\": 0.8166003599372853,\n    \"finite_fraction\": 1.0,\n    \"expression_complexity\": 367,\n    \"parameter_count\": 7,\n    \"accuracy\": 0.8166003599372853,\n    \"pareto_front_member\": true,\n    \"pareto_bin_improved\": true,\n    \"pareto_front_size\": 2,\n    \"optimizer_boundary_expansions\": 0,\n    \"optimizer_boundary_hit\": false,\n    \"eval_time\": 12.879995896946639\n  },\n  \"artifacts\": {\n    \"candidate_id\": \"dfbe300fc3f784c128e6\",\n    \"expression\": \"((z1 - z2) * (z1 - z3) * ((z1 - z4) * (z1 - z5)) * ((z1 - z6) * (z2 - z3) * ((z2 - z4) * (z2 - z5))) * ((z2 - z6) * (z3 - z4) * ((z3 - z5) * (z3 - z6)) * ((z4 - z5) * (z4 - z6) * (z5 - z6)))) ** 3 * np.abs((z1 - z2) * (z1 - z3) * ((z1 - z4) * (z1 - z5)) * ((z1 - z6) * (z2 - z3) * ((z2 - z4) * (z2 - z5))) * ((z2 - z6) * (z3 - z4) * ((z3 - z5) * (z3 - z6)) * ((z4 - z5) * (z4 - z6) * (z5 - z6)))) ** (2 * eta) * np.abs(z1 * z2 * z3 * z4 * z5 * z6) ** (2 * delta) * np.exp(-alpha * (np.abs(z1) ** 2 + np.abs(z2) ** 2 + np.abs(z3) ** 2 + np.abs(z4) ** 2 + np.abs(z5) ** 2 + np.abs(z6) ** 2) - beta * (np.abs(z1) ** 4 + np.abs(z2) ** 4 + np.abs(z3) ** 4 + np.abs(z4) ** 4 + np.abs(z5) ** 4 + np.abs(z6) ** 4) - beta2 * (np.abs(z1 - z2) ** 4 + np.abs(z1 - z3) ** 4 + np.abs(z1 - z4) ** 4 + np.abs(z1 - z5) ** 4 + np.abs(z1 - z6) ** 4 + np.abs(z2 - z3) ** 4 + np.abs(z2 - z4) ** 4 + np.abs(z2 - z5) ** 4 + np.abs(z2 - z6) ** 4 + np.abs(z3 - z4) ** 4 + np.abs(z3 - z5) ** 4 + np.abs(z3 - z6) ** 4 + np.abs(z4 - z5) ** 4 + np.abs(z4 - z6) ** 4 + np.abs(z5 - z6) ** 4) - gamma * np.abs(z1 + z2 + z3 + z4 + z5 + z6) ** 2 + 1j * lam * (np.abs(z1) ** 2 + np.abs(z2) ** 2 + np.abs(z3) ** 2 + np.abs(z4) ** 2 + np.abs(z5) ** 2 + np.abs(z6) ** 2))\",\n    \"fitted_parameters\": {\n      \"alpha\": -0.8433787833434213,\n      \"beta\": -0.02303626358022002,\n      \"beta2\": 0.00563229893634201,\n      \"gamma\": 1.5017818186715888,\n      \"lam\": 0.4780352313204935,\n      \"eta\": 10.070971295472923,\n      \"delta\": -0.48306953502626654\n    },\n    \"global_scale\": {\n      \"real\": -1.6598234154301868e-237,\n      \"imag\": -3.873289144807721e-239\n    },\n    \"optimizer\": {\n      \"attempted\": true,\n      \"success\": true,\n      \"nfev\": 33,\n      \"message\": \"`ftol` termination condition is satisfied.\",\n      \"residual_cost\": 9169.982003135774,\n      \"adaptive_bounds\": true,\n      \"boundary_expansions\": 0,\n      \"boundary_hit\": false,\n      \"boundary_parameters\": [],\n      \"initial_span\": {\n        \"alpha\": 23.817999999999998,\n        \"beta\": 20.0,\n        \"beta2\": 20.0,\n        \"gamma\": 20.0,\n        \"lam\": 20.0,\n        \"eta\": 110.71,\n        \"delta\": 20.0\n      },\n      \"final_span\": {\n        \"alpha\": 23.817999999999998,\n        \"beta\": 20.0,\n        \"beta2\": 20.0,\n        \"gamma\": 20.0,\n        \"lam\": 20.0,\n        \"eta\": 110.71,\n        \"delta\": 20.0\n      },\n      \"attempts\": [\n        {\n          \"attempt\": 1,\n          \"nfev\": 33,\n          \"cost\": 9169.982003135774,\n          \"span\": {\n            \"alpha\": 23.817999999999998,\n            \"beta\": 20.0,\n            \"beta2\": 20.0,\n            \"gamma\": 20.0,\n            \"lam\": 20.0,\n            \"eta\": 110.71,\n            \"delta\": 20.0\n          },\n          \"boundary_parameters\": []\n        }\n      ]\n    },\n    \"pareto\": {\n      \"archive_path\": \"output-fqh-symbolic-regression-full-data/pareto_archive.json\",\n      \"csv_path\": \"output-fqh-symbolic-regression-full-data/pareto_archive.csv\",\n      \"improved_complexity_bin\": true,\n      \"on_pareto_front\": true,\n      \"front_size\": 2,\n      \"complexity_bin_best_accuracy\": 0.8166003599372853,\n      \"selections\": {\n        \"max_accuracy_id\": \"dfbe300fc3f784c128e6\",\n        \"knee_id\": \"dfbe300fc3f784c128e6\",\n        \"pysr_score_id\": \"dfbe300fc3f784c128e6\"\n      },\n      \"front\": [\n        {\n          \"id\": \"4c4eaac4ea9392aac9bd\",\n          \"complexity\": 59,\n          \"accuracy\": 7.240655251147682e-06,\n          \"expression\": \"(z1 - z2) * ((z1 - z3) * (z1 - z4)) * ((z1 - z5) * (z1 - z6) * ((z2 - z3) * (z2 - z4))) * ((z2 - z5) * (z2 - z6) * ((z3 - z4) * (z3 - z5)) * ((z3 - z6) * (z4 - z5) * ((z4 - z6) * (z5 - z6))))\"\n        },\n        {\n          \"id\": \"dfbe300fc3f784c128e6\",\n          \"complexity\": 367,\n          \"accuracy\": 0.8166003599372853,\n          \"expression\": \"((z1 - z2) * (z1 - z3) * ((z1 - z4) * (z1 - z5)) * ((z1 - z6) * (z2 - z3) * ((z2 - z4) * (z2 - z5))) * ((z2 - z6) * (z3 - z4) * ((z3 - z5) * (z3 - z6)) * ((z4 - z5) * (z4 - z6) * (z5 - z6)))) ** 3 * np.abs((z1 - z2) * (z1 - z3) * ((z1 - z4) * (z1 - z5)) * ((z1 - z6) * (z2 - z3) * ((z2 - z4) * (z2 - z5))) * ((z2 - z6) * (z3 - z4) * ((z3 - z5) * (z3 - z6)) * ((z4 - z5) * (z4 - z6) * (z5 - z6)))) ** (2 * eta) * np.abs(z1 * z2 * z3 * z4 * z5 * z6) ** (2 * delta) * np.exp(-alpha * (np.abs(z1) ** 2 + np.abs(z2) ** 2 + np.abs(z3) ** 2 + np.abs(z4) ** 2 + np.abs(z5) ** 2 + np.abs(z6) ** 2) - beta * (np.abs(z1) ** 4 + np.abs(z2) ** 4 + np.abs(z3) ** 4 + np.abs(z4) ** 4 + np.abs(z5) ** 4 + np.abs(z6) ** 4) - beta2 * (np.abs(z1 - z2) ** 4 + np.abs(z1 - z3) ** 4 + np.abs(z1 - z4) ** 4 + np.abs(z1 - z5) ** 4 + np.abs(z1 - z6) ** 4 + np.abs(z2 - z3) ** 4 + np.abs(z2 - z4) ** 4 + np.abs(z2 - z5) ** 4 + np.abs(z2 - z6) ** 4 + np.abs(z3 - z4) ** 4 + np.abs(z3 - z5) ** 4 + np.abs(z3 - z6) ** 4 + np.abs(z4 - z5) ** 4 + np.abs(z4 - z6) ** 4 + np.abs(z5 - z6) ** 4) - gamma * np.abs(z1 + z2 + z3 + z4 + z5 + z6) ** 2 + 1j * lam * (np.abs(z1) ** 2 + np.abs(z2) ** 2 + np.abs(z3) ** 2 + np.abs(z4) ** 2 + np.abs(z5) ** 2 + np.abs(z6) ** 2))\"\n        }\n      ]\n    },\n    \"evaluation_mode\": \"full_data_accuracy_complexity_pareto\",\n    \"samples_used\": 50000,\n    \"n_electrons\": 6,\n    \"dataset\": \"/home/ubuntu/symbolic_regression/LoongFlow/datasets/disk_n6_Q18_kapa100/dataset_uniform.npz\"\n  }\n}",
+        "source": "disk"
+      }
+    ]
+  }
+]

@@ -1,0 +1,77 @@
+[
+  {
+    "round": 0,
+    "candidates": [
+      {
+        "round_idx": 0,
+        "candidate_idx": 0,
+        "random_idx": "_8ce",
+        "solution_file_path": "output-fqh-symbolic-regression-full-data/f89e9c53-0d65-4495-970b-6a2534640239/1/executor/0_0/solution_8ce.py",
+        "evaluation_file_path": "output-fqh-symbolic-regression-full-data/f89e9c53-0d65-4495-970b-6a2534640239/1/executor/0_0/evaluation_8ce.json",
+        "score": 0.0,
+        "reason": "{\n  \"status\": \"validation_failed\",\n  \"summary\": \"Candidate validation failed: wavefunction() must contain one return statement.\",\n  \"score\": 0.0,\n  \"metrics\": {\n    \"validity\": 0.0,\n    \"eval_time\": 0.0009283380350098014\n  },\n  \"artifacts\": {\n    \"error_type\": \"CandidateValidationError\",\n    \"reason\": \"Candidate validation failed: wavefunction() must contain one return statement.\"\n  }\n}",
+        "source": "disk"
+      }
+    ]
+  },
+  {
+    "round": 1,
+    "candidates": [
+      {
+        "round_idx": 1,
+        "candidate_idx": 0,
+        "random_idx": "_45a",
+        "solution_file_path": "output-fqh-symbolic-regression-full-data/f89e9c53-0d65-4495-970b-6a2534640239/1/executor/1_0/solution_45a.py",
+        "evaluation_file_path": "output-fqh-symbolic-regression-full-data/f89e9c53-0d65-4495-970b-6a2534640239/1/executor/1_0/evaluation_45a.json",
+        "score": 0.0,
+        "reason": "{\n  \"status\": \"validation_failed\",\n  \"summary\": \"Candidate validation failed: wavefunction() must contain one return statement.\",\n  \"score\": 0.0,\n  \"metrics\": {\n    \"validity\": 0.0,\n    \"eval_time\": 0.0009053869871422648\n  },\n  \"artifacts\": {\n    \"error_type\": \"CandidateValidationError\",\n    \"reason\": \"Candidate validation failed: wavefunction() must contain one return statement.\"\n  }\n}",
+        "source": "disk"
+      },
+      {
+        "round_idx": 1,
+        "candidate_idx": 1,
+        "random_idx": "_447",
+        "solution_file_path": "output-fqh-symbolic-regression-full-data/f89e9c53-0d65-4495-970b-6a2534640239/1/executor/1_1/solution_447.py",
+        "evaluation_file_path": "output-fqh-symbolic-regression-full-data/f89e9c53-0d65-4495-970b-6a2534640239/1/executor/1_1/evaluation_447.json",
+        "score": 0.0,
+        "reason": "{\n  \"status\": \"validation_failed\",\n  \"summary\": \"Candidate validation failed: wavefunction() must contain one return statement.\",\n  \"score\": 0.0,\n  \"metrics\": {\n    \"validity\": 0.0,\n    \"eval_time\": 0.0008116969838738441\n  },\n  \"artifacts\": {\n    \"error_type\": \"CandidateValidationError\",\n    \"reason\": \"Candidate validation failed: wavefunction() must contain one return statement.\"\n  }\n}",
+        "source": "disk"
+      }
+    ]
+  },
+  {
+    "round": 2,
+    "candidates": [
+      {
+        "round_idx": 2,
+        "candidate_idx": 0,
+        "random_idx": "_31c",
+        "solution_file_path": "output-fqh-symbolic-regression-full-data/f89e9c53-0d65-4495-970b-6a2534640239/1/executor/2_0/solution_31c.py",
+        "evaluation_file_path": "output-fqh-symbolic-regression-full-data/f89e9c53-0d65-4495-970b-6a2534640239/1/executor/2_0/evaluation_31c.json",
+        "score": 0.0,
+        "reason": "{\n  \"status\": \"validation_failed\",\n  \"summary\": \"Candidate validation failed: wavefunction() must contain one return statement.\",\n  \"score\": 0.0,\n  \"metrics\": {\n    \"validity\": 0.0,\n    \"eval_time\": 0.0007857910823076963\n  },\n  \"artifacts\": {\n    \"error_type\": \"CandidateValidationError\",\n    \"reason\": \"Candidate validation failed: wavefunction() must contain one return statement.\"\n  }\n}",
+        "source": "disk"
+      },
+      {
+        "round_idx": 2,
+        "candidate_idx": 1,
+        "random_idx": "_cf5",
+        "solution_file_path": "output-fqh-symbolic-regression-full-data/f89e9c53-0d65-4495-970b-6a2534640239/1/executor/2_1/solution_cf5.py",
+        "evaluation_file_path": "output-fqh-symbolic-regression-full-data/f89e9c53-0d65-4495-970b-6a2534640239/1/executor/2_1/evaluation_cf5.json",
+        "score": 0.0,
+        "reason": "{\n  \"status\": \"validation_failed\",\n  \"summary\": \"Candidate validation failed: Parameter name 'r1' is reserved by the evaluator.\",\n  \"score\": 0.0,\n  \"metrics\": {\n    \"validity\": 0.0,\n    \"eval_time\": 0.040774644003249705\n  },\n  \"artifacts\": {\n    \"error_type\": \"CandidateValidationError\",\n    \"reason\": \"Candidate validation failed: Parameter name 'r1' is reserved by the evaluator.\"\n  }\n}",
+        "source": "disk"
+      },
+      {
+        "round_idx": 2,
+        "candidate_idx": 2,
+        "random_idx": "_95d",
+        "solution_file_path": "output-fqh-symbolic-regression-full-data/f89e9c53-0d65-4495-970b-6a2534640239/1/executor/2_2/solution_95d.py",
+        "evaluation_file_path": "output-fqh-symbolic-regression-full-data/f89e9c53-0d65-4495-970b-6a2534640239/1/executor/2_2/evaluation_95d.json",
+        "score": 0.0,
+        "reason": "{\n  \"status\": \"validation_failed\",\n  \"summary\": \"Candidate validation failed: wavefunction() must contain one return statement.\",\n  \"score\": 0.0,\n  \"metrics\": {\n    \"validity\": 0.0,\n    \"eval_time\": 0.0008831580635160208\n  },\n  \"artifacts\": {\n    \"error_type\": \"CandidateValidationError\",\n    \"reason\": \"Candidate validation failed: wavefunction() must contain one return statement.\"\n  }\n}",
+        "source": "disk"
+      }
+    ]
+  }
+]

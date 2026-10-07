@@ -253,24 +253,21 @@ LoongFlow 保存较好的公式
 `initial_program.py` 可以先使用非常简单的形式：
 
 ```python
+import numpy as np
+
+
 # EVOLVE-BLOCK-START
-def candidate_spec():
-    return {
-        "expression": "c0 * z12",
-        "parameters": {
-            "c0_re": 1.0,
-            "c0_im": 0.0,
-        },
-    }
+def wavefunction(z1, z2, c0_re=1.0, c0_im=0.0):
+    return (c0_re + 1j * c0_im) * (z1 - z2)
 # EVOLVE-BLOCK-END
 ```
 
 这里：
 
-- `z12` 表示 `z1 - z2`；
-- 大模型修改 `expression`，寻找更好的公式；
-- `c0_re` 和 `c0_im` 是复系数的实部和虚部；
-- 具体常数由评估程序拟合。
+- `z1` 和 `z2` 是复坐标，函数直接返回波函数值；
+- 大模型修改 `return` 后的解析表达式，寻找更好的公式；
+- 带数值默认值的附加参数由评估程序拟合；
+- `c0_re` 和 `c0_im` 分别表示复系数的实部和虚部。
 
 第一轮只允许这些运算：
 

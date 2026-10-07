@@ -1,0 +1,13 @@
+{
+  "status": "validation_failed",
+  "summary": "Candidate validation failed: Expression exceeds the 864-node complexity limit.",
+  "score": 0.0,
+  "metrics": {
+    "validity": 0.0,
+    "eval_time": 0.22137410705909133
+  },
+  "artifacts": {
+    "error_type": "CandidateValidationError",
+    "reason": "Candidate validation failed: Expression exceeds the 864-node complexity limit."
+  }
+}

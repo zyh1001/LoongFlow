@@ -1,0 +1,204 @@
+=== FINAL CHILD SOLUTION GENERATION PLAN (island_0) ===
+
+OBJECTIVE
+---------
+Maximize the evaluator accuracy = full_data_fidelity * finite_fraction for the N=2,
+nu=1/3, kappa=100 fractional-quantum-Hall target, using a compact, single-angular-
+momentum (M=3), fermionic-antisymmetric analytic Psi(z1,z2).  Target accuracy >= 1.0.
+
+SELECTED OUTLINE
+----------------
+Single-M relative expansion: Laughlin holomorphic anchor + non-holomorphic LL-mixing
+term + relative/center-of-mass coupling, with a common symmetric Gaussian envelope.
+(Multi-Start nested: deterministic discrete-structure lattice + EXACT linear inner solve
+ + nonlinear outer solve over the 2 envelope scalars.)
+
+RATIONALE FOR SELECTION
+-----------------------
+1. Contains Plan-1's Laughlin anchor (a0*d^3) as a special case -> cannot score worse
+   than the pure-Laughlin baseline; the extra terms are only useful additions.
+2. Decouples STRUCTURE (discrete term subset, non-convex) from PARAMETERS (linear,
+   exact) -> the hard part is a tiny deterministic enumeration and the easy part is an
+   exact numpy.linalg.lstsq, so no reliance on luck.
+3. Antisymmetry and single-M hold ALGEBRAICALLY by construction (every basis monomial is
+   exchange-odd and has angular weight p-q = 3), so it can never emit an invalid state.
+4. Captures the two physical structures forced by the problem: non-holomorphic LL mixing
+   (d^3 u^2, d^3 u) and the rotationally-symmetric disk confinement / relative-CM coupling
+   (d*Z^2). Plan 3 (LL determinants) is more general but far more complex and over-fit prone.
+
+====================================================================
+PHASE 1: MATHEMATICAL DEFINITION
+====================================================================
+Coordinates (l_B = 1).  With z_j = x_j - i y_j define
+    d      = z1 - z2                       (relative coordinate; ODD under exchange)
+    u      = |z1 - z2|^2 = d*conj(d)       (exchange-EVEN, angular weight M=0)
+    S      = |z1|^2 + |z2|^2               (exchange-EVEN, M=0)
+    Z      = z1 + z2                       (center-of-mass coordination, M=1);  Z^2 has M=2
+
+Design variables
+    CONTINUOUS  X = ( g, h, a0, a1, cnl_re, cnl_im, ccm_re, ccm_im )    (8 <= 15 budget)
+    DISCRETE    sigma = active subset of the basis { d^3, d^3*u, d^3*u^2, d*Z^2 } (M=3)
+
+Ansatz (single angular-momentum sector M=3, fermionic)
+    Psi(z1,z2) = [ a0*d^3
+                   + a1*d^3*u
+                   + (cnl_re + 1j*cnl_im)*d^3*u^2
+                   + (ccm_re + 1j*ccm_im)*d*Z^2 ] * exp( -( g*S + h*u ) )
+
+Constraints C
+    C1 FERMIONIC ANTISYMMETRY  Psi(z2,z1) = -Psi(z1,z2):
+        d^3, d^3*u, d^3*u^2 are products of an ODD factor (d^3) with EVEN invariants;
+        d*Z^2 is ODD because d flips sign while Z^2 is even.  The envelope exp(-(g S + h u))
+        is exchange-EVEN.  Hence Psi is exchange-ODD identically.  (No fitting can break it.)
+    C2 SINGLE ANGULAR MOMENTUM M=3:
+        under z_i -> e^{-i phi} z_i:  d -> e^{-i phi} d, so d^3 -> e^{-3 i phi} d^3;
+        u, S -> unchanged;  d*Z^2 -> e^{-i phi} e^{-2 i phi} = e^{-3 i phi}.
+        Every monomial carries M=3 -> Psi transforms as e^{-i*3*phi} Psi.
+    C3 FINITE / WELL-BEHAVED:
+        enforce g > 0 and h >= 0 so the Gaussian is a bounded decaying envelope; all exponents
+        are the small integers 1,2,3.
+    C4 INTERFACE BUDGET:
+        <= 15 fitted parameters; ONE return statement; NO decimal literals inside the return;
+        integer structural literals with |.| <= 12 and 1j only.
+
+Objective f(X,sigma)
+    maximize  accuracy(Psi) = full_data_fidelity * finite_fraction,
+    where full_data_fidelity = |<Psi_target | Psi>|^2 / (<Psi|Psi> <Psi_target|Psi_target>)
+    (the evaluator removes the 2 global complex-normalisation dof analytically, so only the
+    RELATIVE complex coefficients are physical and are kept as separate (re,im) parameters).
+
+====================================================================
+PHASE 2: THE OPTIMIZATION LOOP  (structure <-> parameters, multi-start)
+====================================================================
+STEP 2.1  DISCRETE STRUCTURE LATTICE (deterministic, no randomness).
+    Enumerate the M=3 basis subsets in this fixed order (start richest, then prune):
+        sigma_0 = {d^3, d^3*u, d^3*u^2, d*Z^2}    (full hybrid)
+        sigma_1 = {d^3, d^3*u, d*Z^2}
+        sigma_2 = {d^3, d*Z^2}                    (Laughlin + CM coupling)
+        sigma_3 = {d^3, d^3*u^2}                  (Laughlin + non-holomorphic)
+        sigma_4 = {d^3}                           (pure Laughlin baseline / fallback)
+    For each sigma submit one child and read back (accuracy, fitted params) from the evaluator.
+
+STEP 2.2  EXACT INNER SOLVE (convex / linear, no local minima).
+    If the executor has access to the reference samples (target Psi_t on the pool):
+        - assemble the design matrix  A = [ T_1, T_2, ... ] evaluated on the fixed envelope
+          for the CURRENT (g,h), with T_k the active basis monomials TIMES exp(-(g S + h u));
+        - build the Gram/overlap matrices  G = A^H A  and  b = A^H Psi_t;
+        - solve the GENERALISED Rayleigh problem  G c = lambda (A^H A) c  ->  c = argmax fidelity
+          exactly via numpy.linalg.eig (or numpy.linalg.lstsq for the unnormalised fit).
+    This gives the globally optimal coefficients for a fixed envelope in ONE step (no gradient loop).
+    If the executor has NO data access, provide the physically motivated defaults in the code
+    (a0=1, others small) and let the evaluator's adaptive-bound fitter do the same linear solve.
+
+STEP 2.3  OUTER NONLINEAR SEARCH over the TWO envelope scalars (g, h).
+    - Coarse deterministic grid: g in {0.05,0.125,0.25,0.5,0.75,1.0}, h in {0.0,0.125,0.25,0.5,0.75}
+      (30 points); at each, run the exact inner solve of Step 2.2 and record fidelity.
+    - Local polish from the best grid point with
+      scipy.optimize.minimize(fun = 1 - fidelity, x0 = (g*,h*), method='Nelder-Mead',
+                              options={'xatol':1e-4,'fatol':1e-8,'maxiter':200}).
+    - MULTI-START MANDATE: if any randomised init is used, run N = 20 independent restarts
+      (numpy.random.default_rng(seed)) and keep the minimum-loss result.
+
+STEP 2.4  OCCAM PRUNING.
+    For the fitted sigma_0 coefficients, drop any correction term whose |coefficient| < 1e-3,
+    then re-run the exact inner solve on the reduced subsets.  Keep the lowest-complexity
+    candidate whose accuracy is within 0.5% of the best -> improves the Pareto front position.
+    Never remove the a0*d^3 anchor (it is the Laughlin backbone and the guaranteed fallback).
+
+STEP 2.5  STOPPING / PROMOTION.
+    Accept the child if accuracy > parent accuracy (parent = 2.21e-5).  Prefer higher accuracy;
+    break ties by lower expression complexity.  If no term helps, fall back to sigma_4.
+
+====================================================================
+PHASE 3: THE "SAFETY VALVE"  (deterministic validity enforcement - CRITICAL)
+====================================================================
+STEP 3.1  ALGEBRAIC GUARANTEE (primary).
+    The chosen ansatz is antisymmetric and single-M BY CONSTRUCTION (Phase-1 C1, C2).
+    No post-hoc repair can be needed for these two hard requirements: they are identities
+    in z1,z2, not numerical targets.
+
+STEP 3.2  DETERMINISTIC NUMERIC SELF-TEST (post-processing guard, run before submission).
+    Evaluate the compiled Psi on a FIXED (non-random) grid of complex points, e.g.
+        P = [(1+2j, 0.3-0.7j), (0.0,0.0), (2-1j, 2-1j), (-1.5+0.5j, 3+2j),
+             (0.7+0.7j, -0.7-0.7j), (4-3j, 4-3j)]
+    and assert (with np.allclose, atol=1e-9):
+        (A) Psi(z2,z1) == -Psi(z1,z2)                     # antisymmetry
+        (B) Psi(exp(-i*phi)z) == exp(-i*3*phi)*Psi(z)     # single M=3 sector, phi=0.37
+        (C) np.all(np.isfinite(Psi))                      # no NaN/Inf
+    Additionally assert the return statement has <=15 fitted parameters and contains no decimal
+    literal (regex r'\d+\.\d+' on the return expression must be empty except parameter defaults
+    in the SIGNATURE).
+
+STEP 3.3  FALLBACK ("repair").
+    If ANY assertion in 3.2 fails, or any fitted |coefficient| exceeds 1e3, or the evaluator
+    reports non-finite / non-positive fidelity, RETURN the Plan-1 minimal guaranteed form:
+        wavefunction(z1, z2, g=0.25, h=0.0):
+            d = z1 - z2;  S = |z1|**2 + |z2|**2;  u = |d|**2
+            return d**3 * np.exp(-(g*S + h*u))
+    This form is antisymmetric, single-M=3, finite, and strictly better than the parent seed.
+
+====================================================================
+PHASE 4: IMPLEMENTATION DETAILS  (code-ready, standard libraries only)
+====================================================================
+Library check: ONLY numpy (and scipy.optimize / scipy for the optional offline Phase-2 search).
+No obscure packages.  Candidate runtime is O(1) per call.
+
+(4.1) THE CHILD CANDIDATE (write exactly between EVOLVE-BLOCK-START / END):
+
+    import numpy as np
+
+
+    # EVOLVE-BLOCK-START
+    def wavefunction(z1, z2, g=0.25, h=0.25,
+                     a0=1.0, a1=0.0,
+                     cnl_re=0.0, cnl_im=0.0,
+                     ccm_re=0.0, ccm_im=0.0):
+        d = z1 - z2
+        S = np.abs(z1) ** 2 + np.abs(z2) ** 2
+        u = np.abs(d) ** 2
+        Z = z1 + z2
+        env = np.exp(-(g * S + h * u))
+        pref = (a0 * d ** 3
+                + a1 * d ** 3 * u
+                + (cnl_re + 1j * cnl_im) * d ** 3 * u ** 2
+                + (ccm_re + 1j * ccm_im) * d * Z ** 2)
+        return pref * env
+    # EVOLVE-BLOCK-END
+
+    Interface checks:
+      - function name `wavefunction` unchanged; first two args are exactly z1, z2.
+      - exactly ONE return statement; returns the vectorized array directly (not a dict/string).
+      - fitted params follow z1,z2 as positional args with FINITE numeric defaults.
+      - return expression uses only integer literals (3, 3, 2, 3, 2, 1) and 1j; NO decimals.
+      - 8 fitted parameters <= 15; complex coefficients split into (re,im) pairs.
+
+(4.2) OPTIONAL OFFLINE FITTER (only if reference samples are accessible; must NOT be placed in
+      the candidate and must NOT read prohibited files). Uses numpy.linalg only:
+        def fit(basis, g, h, z1, z2, psi_t):     # linear-in-c solve for a fixed envelope
+            A = np.stack([T(z1, z2) for T in basis], axis=0) * np.exp(-(g*(...)+h*(...)))
+            G = A.conj() @ A.T ; b = A.conj() @ psi_t
+            w, V = np.linalg.eig(np.linalg.solve(G, outer(b,b)))  # or lstsq
+            return V[:, np.argmax(w.real)]
+      Outer loop: scipy.optimize.minimize(method='Nelder-Mead') over (g,h); N=20 multi-starts.
+
+(4.3) SUBMISSION SEQUENCE for the executor:
+      1. Compile+validate (Phase 3.2) the sigma_0 hybrid above.
+      2. Run Phase 2.3 outer search to set the defaults (g,h) to the best grid/polished values;
+         set a0=1 and the correction defaults from the exact inner solve (or 0 if no data).
+      3. Submit; read evaluator accuracy.  If accuracy improved, KEEP; if a correction term is
+         negligible (<1e-3) or the fit is unstable, drop it (Phase 2.4) and resubmit the reduced
+         sigma.  If anything non-finite, use the Phase 3.3 fallback.
+
+====================================================================
+EXPECTED PERFORMANCE IMPROVEMENT
+====================================================================
+- Parent accuracy = 2.21e-5 (fidelity ~ 0).  The Laughlin anchor a0*d^3 exp(-(g S + h u)) alone
+  should raise fidelity to the 0.8-1.0 range (the N=2, nu=1/3 ground state is Laughlin-dominated);
+  the added LL-mixing (d^3 u^2) and relative/CM (d*Z^2) terms target the kappa=100 residual and
+  can push fidelity closer to 1.0.
+- Guaranteed: antisymmetry, single M=3 sector, finiteness -> finite_fraction = 1.0, so
+  accuracy == fidelity.
+- Low analytic complexity, exact (linear) coefficient solve, and a deterministic fallback make
+  the child robust across runs and independent of luck.
+
+END OF PLAN

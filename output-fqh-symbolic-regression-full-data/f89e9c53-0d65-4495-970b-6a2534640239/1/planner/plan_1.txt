@@ -1,0 +1,57 @@
+PLAN 1  --  "Laughlin-anchored holomorphic relative power with fitted symmetric Gaussian envelope"
+(island_0 local refinement: keep the holomorphic relative-coordinate motif but raise its power and add a physical envelope)
+
+TASK OBJECTIVE
+--------------
+N=2 spin-polarized electrons, disk geometry, nu=1/3, strong LL mixing (kappa=100).
+We must return a compact analytic vectorized Psi(z1,z2) that maximizes
+    accuracy = full_data_fidelity * finite_fraction
+while (a) being fermionic-antisymmetric, (b) living in ONE angular-momentum sector M,
+(c) being finite and low complexity. Score>=1.0 is the target.
+
+MATHEMATICAL FORMULATION
+------------------------
+Coordinates: z1,z2 in C.  Define
+    d  = z1 - z2                     (relative coordinate, odd under exchange)
+    u  = |z1 - z2|^2 = d*conj(d)     (exchange-symmetric relative invariant, M=0)
+    S  = |z1|^2 + |z2|^2             (exchange-symmetric global invariant, M=0)
+Variables X = continuous coefficients {m (structural integer), g, h, c_k}.
+Structural ansatz (holomorphic anchor + radial correction, single M):
+    Psi(z1,z2) = d^m * ( c0 + sum_k c_k * (u^k) ) * exp( -( g*S + h*u ) )
+with m in {1,3,5} (odd -> antisymmetry), PRIMARY m = 3 (nu=1/3 Laughlin exponent).
+Constraints C
+    C1 antisymmetry: Psi(z2,z1) = -Psi(z1,z2).  Guaranteed because d^m is odd for odd m
+        and (c0 + sum c_k u^k) and exp(-(g S + h u)) are both exchange-even.
+    C2 single M sector: every monomial has angular weight M = m
+        (u and S carry M=0; d^m carries M=m).
+    C3 finiteness: enforce g>0 and h>=0 (bounded Gaussian); integer exponents only.
+    C4 budget: <=15 fitted parameters, no decimal literals in the return, integer literals |.|<=12.
+Objective f(X) = accuracy = fidelity * finite_fraction  ->  maximize.
+
+SOLVER STRATEGY
+---------------
+Structure finding (discrete, deterministic, NON-convex): enumerate m in {1,3,5} and a small
+nested-family of correction subsets {u^1}, {u^1,u^2}, {1+u} -> a deterministic grid of ~4 skeletons.
+Parameter tuning (continuous, convex given the skeleton): with (g,h) FIXED, the map
+coefficients c_k -> Psi is LINEAR, so the overlap/variance objective is a linear least-squares
+(equivalently a small generalized eigenvalue) problem solved EXACTLY with numpy.linalg.lstsq.
+Outer loop over (g,h) on a coarse grid + scipy.optimize.minimize(method='Nelder-Mead').
+If randomness is used anywhere, run N=20 multi-starts and keep the min-loss result.
+No library beyond numpy/scipy is required.
+
+VALIDITY MECHANISM
+------------------
+Algebraic guarantee: odd m + even envelope => antisymmetry and single-M hold identically.
+Safety valve: a deterministic validator evaluates Psi on a FIXED complex grid
+  {(z1,z2)} = {(1+2j, 0.3-0.7j), (0,0), (2-1j,2-1j), (-1.5+0.5j, 3+2j), ...}
+and asserts (i) Psi(z2,z1) == -Psi(z1,z2) to 1e-9, (ii) Psi(e^{-i phi} z) == e^{-i m phi} Psi(z) for phi=0.37,
+(iii) all outputs finite. If any assertion fails -> FALLBACK to the guaranteed-valid minimal form
+  Psi = d**3 * exp(-(g*S + h*u)) with g=0.25,h=0.0.
+
+WHY THIS SOLUTION
+-----------------
+Expected performance: enormous jump over the parent (fidelity ~0 -> likely 0.8-1.0) because the
+nu=1/3 two-electron ground state is Laughlin-dominated. Advantages: lowest complexity, fewest
+parameters, guaranteed validity, physically interpretable. Disadvantages: pure holomorphic form
+may cap fidelity below 1 if the target has strong LL mixing (no non-holomorphic/CM terms), and
+the fitter may be flat along the correction directions when their defaults are 0.

@@ -1,0 +1,68 @@
+{
+  "status": "success",
+  "summary": "accuracy=0.954488; full_data_fidelity=0.954488; full_data_nmse=0.0455125; finite=1.0000; complexity=45; pareto_front=True; front_size=2; fitted={'a': 0.18564289905551554, 'b': 0.6254947465053895, 'c': 19.999999997306542, 'd': -0.6952512343983872}",
+  "score": 0.9544875449625873,
+  "metrics": {
+    "validity": 1.0,
+    "full_data_nmse": 0.04551245503741369,
+    "full_data_fidelity": 0.9544875449625873,
+    "finite_fraction": 1.0,
+    "expression_complexity": 45,
+    "parameter_count": 4,
+    "accuracy": 0.9544875449625873,
+    "pareto_front_member": true,
+    "pareto_bin_improved": true,
+    "pareto_front_size": 2,
+    "eval_time": 2.299415127024986
+  },
+  "artifacts": {
+    "candidate_id": "0650dadc412e65c1bcd4",
+    "expression": "(z1 - z2) ** 3 * (1 + c * np.abs(z1 - z2) ** 2 + d * np.abs(z1 - z2) ** 4) * np.exp(-a * np.abs(z1 - z2) ** 2 - b * np.abs(z1 + z2) ** 2)",
+    "fitted_parameters": {
+      "a": 0.18564289905551554,
+      "b": 0.6254947465053895,
+      "c": 19.999999997306542,
+      "d": -0.6952512343983872
+    },
+    "global_scale": {
+      "real": 0.0013128154692665936,
+      "imag": 1.739893843544147e-05
+    },
+    "optimizer": {
+      "attempted": true,
+      "success": true,
+      "nfev": 14,
+      "message": "`ftol` termination condition is satisfied.",
+      "residual_cost": 2275.6227518706837
+    },
+    "pareto": {
+      "archive_path": "/home/ubuntu/symbolic_regression/LoongFlow/output/n2_kapa100_test/pareto_archive.json",
+      "improved_complexity_bin": true,
+      "on_pareto_front": true,
+      "front_size": 2,
+      "complexity_bin_best_accuracy": 0.9544875449625873,
+      "selections": {
+        "max_accuracy_id": "0650dadc412e65c1bcd4",
+        "knee_id": "0650dadc412e65c1bcd4",
+        "pysr_score_id": "0650dadc412e65c1bcd4"
+      },
+      "front": [
+        {
+          "id": "09d51be2ad327894a218",
+          "complexity": 3,
+          "accuracy": 3.856002582973692e-05,
+          "expression": "z1 - z2"
+        },
+        {
+          "id": "0650dadc412e65c1bcd4",
+          "complexity": 45,
+          "accuracy": 0.9544875449625873,
+          "expression": "(z1 - z2) ** 3 * (1 + c * np.abs(z1 - z2) ** 2 + d * np.abs(z1 - z2) ** 4) * np.exp(-a * np.abs(z1 - z2) ** 2 - b * np.abs(z1 + z2) ** 2)"
+        }
+      ]
+    },
+    "evaluation_mode": "full_data_accuracy_complexity_pareto",
+    "samples_used": 50000,
+    "dataset": "/home/ubuntu/symbolic_regression/LoongFlow/datasets/disk_n2_Q6_kapa_100/dataset_uniform.npz"
+  }
+}

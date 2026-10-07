@@ -1,0 +1,114 @@
+{
+  "status": "success",
+  "summary": "accuracy=0.816600; full_data_fidelity=0.816600; full_data_nmse=0.1834; finite=1.0000; complexity=367; pareto_front=True; front_size=2; fitted={'alpha': -0.8433787833434213, 'beta': -0.02303626358022002, 'beta2': 0.00563229893634201, 'gamma': 1.5017818186715888, 'lam': 0.4780352313204935, 'eta': 10.070971295472923, 'delta': -0.48306953502626654}",
+  "score": 0.8166003599372853,
+  "metrics": {
+    "validity": 1.0,
+    "full_data_nmse": 0.18339964006271592,
+    "full_data_fidelity": 0.8166003599372853,
+    "finite_fraction": 1.0,
+    "expression_complexity": 367,
+    "parameter_count": 7,
+    "accuracy": 0.8166003599372853,
+    "pareto_front_member": true,
+    "pareto_bin_improved": true,
+    "pareto_front_size": 2,
+    "optimizer_boundary_expansions": 0,
+    "optimizer_boundary_hit": false,
+    "eval_time": 12.879995896946639
+  },
+  "artifacts": {
+    "candidate_id": "dfbe300fc3f784c128e6",
+    "expression": "((z1 - z2) * (z1 - z3) * ((z1 - z4) * (z1 - z5)) * ((z1 - z6) * (z2 - z3) * ((z2 - z4) * (z2 - z5))) * ((z2 - z6) * (z3 - z4) * ((z3 - z5) * (z3 - z6)) * ((z4 - z5) * (z4 - z6) * (z5 - z6)))) ** 3 * np.abs((z1 - z2) * (z1 - z3) * ((z1 - z4) * (z1 - z5)) * ((z1 - z6) * (z2 - z3) * ((z2 - z4) * (z2 - z5))) * ((z2 - z6) * (z3 - z4) * ((z3 - z5) * (z3 - z6)) * ((z4 - z5) * (z4 - z6) * (z5 - z6)))) ** (2 * eta) * np.abs(z1 * z2 * z3 * z4 * z5 * z6) ** (2 * delta) * np.exp(-alpha * (np.abs(z1) ** 2 + np.abs(z2) ** 2 + np.abs(z3) ** 2 + np.abs(z4) ** 2 + np.abs(z5) ** 2 + np.abs(z6) ** 2) - beta * (np.abs(z1) ** 4 + np.abs(z2) ** 4 + np.abs(z3) ** 4 + np.abs(z4) ** 4 + np.abs(z5) ** 4 + np.abs(z6) ** 4) - beta2 * (np.abs(z1 - z2) ** 4 + np.abs(z1 - z3) ** 4 + np.abs(z1 - z4) ** 4 + np.abs(z1 - z5) ** 4 + np.abs(z1 - z6) ** 4 + np.abs(z2 - z3) ** 4 + np.abs(z2 - z4) ** 4 + np.abs(z2 - z5) ** 4 + np.abs(z2 - z6) ** 4 + np.abs(z3 - z4) ** 4 + np.abs(z3 - z5) ** 4 + np.abs(z3 - z6) ** 4 + np.abs(z4 - z5) ** 4 + np.abs(z4 - z6) ** 4 + np.abs(z5 - z6) ** 4) - gamma * np.abs(z1 + z2 + z3 + z4 + z5 + z6) ** 2 + 1j * lam * (np.abs(z1) ** 2 + np.abs(z2) ** 2 + np.abs(z3) ** 2 + np.abs(z4) ** 2 + np.abs(z5) ** 2 + np.abs(z6) ** 2))",
+    "fitted_parameters": {
+      "alpha": -0.8433787833434213,
+      "beta": -0.02303626358022002,
+      "beta2": 0.00563229893634201,
+      "gamma": 1.5017818186715888,
+      "lam": 0.4780352313204935,
+      "eta": 10.070971295472923,
+      "delta": -0.48306953502626654
+    },
+    "global_scale": {
+      "real": -1.6598234154301868e-237,
+      "imag": -3.873289144807721e-239
+    },
+    "optimizer": {
+      "attempted": true,
+      "success": true,
+      "nfev": 33,
+      "message": "`ftol` termination condition is satisfied.",
+      "residual_cost": 9169.982003135774,
+      "adaptive_bounds": true,
+      "boundary_expansions": 0,
+      "boundary_hit": false,
+      "boundary_parameters": [],
+      "initial_span": {
+        "alpha": 23.817999999999998,
+        "beta": 20.0,
+        "beta2": 20.0,
+        "gamma": 20.0,
+        "lam": 20.0,
+        "eta": 110.71,
+        "delta": 20.0
+      },
+      "final_span": {
+        "alpha": 23.817999999999998,
+        "beta": 20.0,
+        "beta2": 20.0,
+        "gamma": 20.0,
+        "lam": 20.0,
+        "eta": 110.71,
+        "delta": 20.0
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "nfev": 33,
+          "cost": 9169.982003135774,
+          "span": {
+            "alpha": 23.817999999999998,
+            "beta": 20.0,
+            "beta2": 20.0,
+            "gamma": 20.0,
+            "lam": 20.0,
+            "eta": 110.71,
+            "delta": 20.0
+          },
+          "boundary_parameters": []
+        }
+      ]
+    },
+    "pareto": {
+      "archive_path": "output-fqh-symbolic-regression-full-data/pareto_archive.json",
+      "csv_path": "output-fqh-symbolic-regression-full-data/pareto_archive.csv",
+      "improved_complexity_bin": true,
+      "on_pareto_front": true,
+      "front_size": 2,
+      "complexity_bin_best_accuracy": 0.8166003599372853,
+      "selections": {
+        "max_accuracy_id": "dfbe300fc3f784c128e6",
+        "knee_id": "dfbe300fc3f784c128e6",
+        "pysr_score_id": "dfbe300fc3f784c128e6"
+      },
+      "front": [
+        {
+          "id": "4c4eaac4ea9392aac9bd",
+          "complexity": 59,
+          "accuracy": 7.240655251147682e-06,
+          "expression": "(z1 - z2) * ((z1 - z3) * (z1 - z4)) * ((z1 - z5) * (z1 - z6) * ((z2 - z3) * (z2 - z4))) * ((z2 - z5) * (z2 - z6) * ((z3 - z4) * (z3 - z5)) * ((z3 - z6) * (z4 - z5) * ((z4 - z6) * (z5 - z6))))"
+        },
+        {
+          "id": "dfbe300fc3f784c128e6",
+          "complexity": 367,
+          "accuracy": 0.8166003599372853,
+          "expression": "((z1 - z2) * (z1 - z3) * ((z1 - z4) * (z1 - z5)) * ((z1 - z6) * (z2 - z3) * ((z2 - z4) * (z2 - z5))) * ((z2 - z6) * (z3 - z4) * ((z3 - z5) * (z3 - z6)) * ((z4 - z5) * (z4 - z6) * (z5 - z6)))) ** 3 * np.abs((z1 - z2) * (z1 - z3) * ((z1 - z4) * (z1 - z5)) * ((z1 - z6) * (z2 - z3) * ((z2 - z4) * (z2 - z5))) * ((z2 - z6) * (z3 - z4) * ((z3 - z5) * (z3 - z6)) * ((z4 - z5) * (z4 - z6) * (z5 - z6)))) ** (2 * eta) * np.abs(z1 * z2 * z3 * z4 * z5 * z6) ** (2 * delta) * np.exp(-alpha * (np.abs(z1) ** 2 + np.abs(z2) ** 2 + np.abs(z3) ** 2 + np.abs(z4) ** 2 + np.abs(z5) ** 2 + np.abs(z6) ** 2) - beta * (np.abs(z1) ** 4 + np.abs(z2) ** 4 + np.abs(z3) ** 4 + np.abs(z4) ** 4 + np.abs(z5) ** 4 + np.abs(z6) ** 4) - beta2 * (np.abs(z1 - z2) ** 4 + np.abs(z1 - z3) ** 4 + np.abs(z1 - z4) ** 4 + np.abs(z1 - z5) ** 4 + np.abs(z1 - z6) ** 4 + np.abs(z2 - z3) ** 4 + np.abs(z2 - z4) ** 4 + np.abs(z2 - z5) ** 4 + np.abs(z2 - z6) ** 4 + np.abs(z3 - z4) ** 4 + np.abs(z3 - z5) ** 4 + np.abs(z3 - z6) ** 4 + np.abs(z4 - z5) ** 4 + np.abs(z4 - z6) ** 4 + np.abs(z5 - z6) ** 4) - gamma * np.abs(z1 + z2 + z3 + z4 + z5 + z6) ** 2 + 1j * lam * (np.abs(z1) ** 2 + np.abs(z2) ** 2 + np.abs(z3) ** 2 + np.abs(z4) ** 2 + np.abs(z5) ** 2 + np.abs(z6) ** 2))"
+        }
+      ]
+    },
+    "evaluation_mode": "full_data_accuracy_complexity_pareto",
+    "samples_used": 50000,
+    "n_electrons": 6,
+    "dataset": "/home/ubuntu/symbolic_regression/LoongFlow/datasets/disk_n6_Q18_kapa100/dataset_uniform.npz"
+  }
+}

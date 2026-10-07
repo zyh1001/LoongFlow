@@ -1,0 +1,48 @@
+PLAN 3  --  "Antisymmetrized Landau-level determinant / relative-Hamiltonian eigenbasis expansion"
+(island_0 structural reset: build Psi from single-particle Landau orbitals instead of a bare power)
+
+TASK OBJECTIVE
+--------------
+Same: maximize accuracy=fidelity*finite_fraction for N=2, nu=1/3, kappa=100, with strict
+fermionic antisymmetry and a single angular-momentum sector M.
+
+MATHEMATICAL FORMULATION
+------------------------
+Single-particle disk Landau orbitals (in l_B=1 units; z = x - i y) with fitted radial nodes:
+    phi_{n,l}(z) = z^l * L_n( |z|^2 / 2 ) * exp( - |z|^2 / 4 )
+where L_n are the lowest Laguerre polynomials L_0=1, L_1(t)=1-t, L_2(t)=1-2t+t^2/2 (integer-lit form).
+Variables X = { beta (radial scale), and the determinant/expansion coefficients c_{ab} }.
+Ansatz: a Slater determinant of two orbitals, projected onto M and then summed over a few
+LL-mixed configurations:
+    Psi(z1,z2) = sum_{ (a,b) in M=3 sector } c_{ab} * det[ phi_{n_a,l_a}(z1) phi_{n_a,l_a}(z2) ;
+                                                       phi_{n_b,l_b}(z1) phi_{n_b,l_b}(z2) ]
+with l_a+l_b = M = 3 and (n_a,n_b) a small LL index set.
+Constraints C
+    C1 antisymmetry: a single Slater determinant is antisymmetric by construction; a sum of
+        determinants sharing the SAME total M is antisymmetric.
+    C2 single M: restrict every determinant to l_a + l_b = M = 3.
+    C3 finite: exp(-|z|^2/4) with fitted beta>0 keeps it bounded.
+    C4 <=15 params; Laguerre coefficients written as integer literals (1/2 -> 1/2 integer division).
+Objective f(X) = accuracy -> maximize.
+
+SOLVER STRATEGY
+---------------
+Structure finding (discrete): enumerate the M=3 sector particle/hole configurations
+(l_a,l_b) in {(3,0),(1,2)} x LL indices n in {0,1} -> a small deterministic lattice (<= 6 skeletons).
+Parameter tuning: for FIXED beta the coefficients c_{ab} enter linearly -> exact
+numpy.linalg.lstsq. Outer nonlinear search over beta via coarse grid + Nelder-Mead; if randomized,
+N=20 multi-starts.
+
+VALIDITY MECHANISM
+------------------
+Determinant antisymmetry is exact; M is exact by the l_a+l_b=3 restriction. Safety valve: fixed-grid
+validator checking Psi(z2,z1)==-Psi(z1,z2), Psi(e^{-i phi}z)==e^{-i*3*phi}Psi, and finiteness.
+Fallback to Plan-1 minimal form if the determinant expansion degenerates or is non-finite.
+
+WHY THIS SOLUTION
+-----------------
+Expected improvement: most general representation; directly encodes the relative Landau-level
+mixing that kappa=100 produces. Advantages: physically grounded, can reach very high fidelity,
+antisymmetry is automatic. Disadvantages: highest complexity, Laguerre polynomial expansion
+increases node count (worse Pareto position), more parameters increase over-fit risk, and the
+determinant form is harder to keep compact -- risk of exceeding the intended low-complexity goal.

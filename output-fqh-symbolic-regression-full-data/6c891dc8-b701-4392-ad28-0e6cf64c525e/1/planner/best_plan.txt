@@ -1,0 +1,99 @@
+### Final Child Solution Generation Plan
+
+**Objective:** Maximize the evaluator scalar **accuracy = fidelity × finite_fraction** for a compact, genuine analytic **N=2 fermionic** wavefunction of a ν=1/3 fractional-quantum-Hall state with **extreme Landau-level mixing (κ=100)** in disk geometry (l_B = 1). Baseline to beat: parent `np.conj(z1 - z2)` → accuracy = 2.21e-5. Target: accuracy as close to 1.0 as achievable.
+
+**Selected Outline:** *Physics-Seeded Symmetry-Constructed Ansatz with a Symbolic Constraint Certificate and Decoupled Nonlinear/Convex Fitting* (Plan 1).
+
+**Rationale for Selection:**
+1. The parent lives in the **M = 1** angular-momentum sector (`(z1−z2)¹`), but N=2 at ν=1/3 selects the Laughlin sector **M = 3·N(N−1)/2 = 3** → the parent is *structurally orthogonal* to the target, which fully explains the ~0 fidelity. We must open the physically correct sector.
+2. Constraints C1 (fermionic antisymmetry) and C2 (single-angular-momentum sector) are encoded **in the algebraic structure**, so *no numerical optimizer move can ever violate them*.
+3. The coefficient sub-problem is **convex** (c,d enter linearly relative to a fixed Gaussian core) → unique global optimum, minimal multi-start variance.
+4. A hard, **provably-valid fallback** guarantees the child can never crash or return an invalid expression.
+
+---
+
+**Best Plan:**
+
+**Phase 1 — Mathematical Definition (Model: Variables / Constraints / Objective)**
+
+*Coordinates (given):* `z1, z2`, with `z_j = x_j − i y_j`. Derived rotational invariants:
+- `r2 = |z1 − z2|² = (z1−z2)·conj(z1−z2)` (relative)
+- `R2 = |z1 + z2|²` (center-of-mass)
+
+*Free variables (fitted, defaults finite, ≤15 params):* `X = (a, b, c, d) ∈ ℝ⁴`
+- `a` = relative Gaussian scale (default 0.25)
+- `b` = center-of-mass Gaussian scale (default 0.25)
+- `c` = first LL-mixing radial coefficient (default 0.0)
+- `d` = second LL-mixing radial coefficient (default 0.0)
+
+*Fixed structure (topology):*
+```
+Psi(z1,z2) = (z1 - z2)^3 · (1 + c·r2 + d·r2^2) · exp( -a·r2 - b·R2 )
+```
+
+*Constraints C (must hold for ALL X):*
+- **C1 Antisymmetry:** `Psi(z2,z1) = −Psi(z1,z2)`. *Proof by construction:* exchange sends `(z1−z2) → −(z1−z2)`, so `(z1−z2)³ → −(z1−z2)³`; `r2`, `R2` and both Gaussians are exchange-invariant.
+- **C2 Single angular-momentum sector M = 3:** under rotation `z_j → t·z_j`, `conj(z_j) → t⁻¹·conj(z_j)` with `t = exp(−iφ)`, the factor `(z1−z2)³ → t³(z1−z2)³` while `r2, R2` are invariant ⇒ `Psi → exp(−3iφ)·Psi`.
+- **C3 Finiteness:** polynomial × Gaussian is entire in `(z1,z2)`, finite on ℂ², norm > 0 for `a,b > 0`.
+- **C4 Syntax budget:** ≤15 fitted params; integer structural literals `|value| ≤ 12`; **no decimal literal in the return** (decimals only in the signature defaults); exactly **one** return statement; vectorized numpy only.
+
+*Objective:* `f(X) = fidelity(X) · finite_fraction(X) → maximize`.
+
+*Decoupling (key idea):* for **fixed `(a,b)`**, `Psi` is **linear** in `(c,d)`; this is a convex least-squares sub-problem with a unique global optimum. Only the 2-D `(a,b)` Gaussian scales form the genuine non-convex search.
+
+**Phase 2 — The Optimization Loop (structure enumeration + multi-start)**
+
+1. **Ranked skeleton list** (executor emits the first one the evaluator reports finite and improving):
+   - `S1` Laughlin-LLL: `(z1−z2)³ · exp(−a·r2 − b·R2)` (c = d = 0)
+   - `S2` + 1 LL-mixing term: `(z1−z2)³ · (1 + c·r2) · exp(...)`
+   - `S3` + 2 LL-mixing terms: `(z1−z2)³ · (1 + c·r2 + d·r2²) · exp(...)`
+   - `S4` sector fallback (only if S1–S3 all ≈ 0): repeat with exponent **5**, then **1**.
+2. **Multi-start over `(a,b)`:** deterministic grid `a ∈ {0.10, 0.25, 0.40, 0.60}` × `b ∈ {0.10, 0.25, 0.40, 0.60}`. For each `(a,b)`, obtain `(c,d)` in **closed form** by ordinary least squares: `X_cd = np.linalg.lstsq(A, y)` (optionally with a `1e-8·I` ridge for conditioning), where columns of `A` are the two core directions.
+3. **Select** the `(a,b,c,d)` with maximal accuracy → this is the child.
+4. **Complexity-reduction sweep:** set `c → 0`, then `d → 0`, re-fit the remainder; accept the reduced form if accuracy drops < 2%. (Complexity does not multiply the scalar score, but a compact Pareto front is a stated success criterion.)
+
+**Phase 3 — The "Safety Valve" (deterministic validity enforcement — CRITICAL)**
+
+1. **Sympy symbolic certificate** (run OFFLINE by the executor; never imported inside the candidate):
+```
+import sympy as sp
+z1, z2, c1, c2, t = sp.symbols('z1 z2 c1 c2 t')
+a, b, c, d = sp.symbols('a b c d', positive=True)   # c1=conj(z1), c2=conj(z2)
+r2 = (z1 - z2) * (c1 - c2);  R2 = (z1 + z2) * (c1 + c2)
+Psi = (z1 - z2)**3 * (1 + c*r2 + d*r2**2) * sp.exp(-a*r2 - b*R2)
+exch = Psi.subs([(z1, z2), (z2, z1), (c1, c2), (c2, c1)], simultaneous=True)
+assert sp.simplify(exch + Psi) == 0                      # C1
+rot = Psi.subs([(z1, t*z1), (z2, t*z2), (c1, c1/t), (c2, c2/t)])
+assert sp.simplify(rot - t**3 * Psi) == 0                # C2, M = 3
+```
+Both identities must simplify to 0 for arbitrary `X` — the constraints are structural.
+2. **Numeric gate:** evaluate `Psi` on a 200×200 grid of the sampled region; require `np.all(np.isfinite(Psi))` and norm > 0. Any NaN/Inf ⇒ reject.
+3. **Hard FALLBACK (guaranteed valid):**
+```
+def wavefunction(z1, z2):
+    return (z1 - z2)**3
+```
+Antisymmetric (parity 3 odd), single-sector M = 3, finite, complexity-3, provably valid. Used only if all certificates/gates fail.
+
+**Phase 4 — Implementation Details (exact code the executor must emit)**
+
+```
+# EVOLVE-BLOCK-START
+def wavefunction(z1, z2, a=0.25, b=0.25, c=0.0, d=0.0):
+    return ((z1 - z2)**3
+            * (1 + c * np.abs(z1 - z2)**2 + d * np.abs(z1 - z2)**4)
+            * np.exp(-a * np.abs(z1 - z2)**2 - b * np.abs(z1 + z2)**2))
+# EVOLVE-BLOCK-END
+```
+- Exactly one return statement; vectorized numpy; integer structural literals only (`3, 1, 4`); decimals appear **only** in the parameter defaults.
+- Libraries: **numpy** inside the candidate function; **scipy** (`numpy.linalg.lstsq`, optional `scipy.optimize.least_squares`) and **sympy** only in the executor's offline fitting/verification scripts.
+
+**Verification Checklist (self-audit before final submission):**
+- [x] Constraints encoded in structure — no optimizer move can break antisymmetry or the M = 3 sector.
+- [x] `(c,d)` sub-problem is convex ⇒ unique global optimum, low variance.
+- [x] Multi-start over a fixed `(a,b)` grid + M fallbacks ⇒ deterministic, luck-free.
+- [x] Libraries limited to standard `numpy` (candidate) / `scipy`, `sympy` (offline).
+- [x] Symbolic certificate + numeric finite gate + provably-valid fallback ⇒ cannot crash or emit an invalid candidate.
+- [x] Physically interpretable: Laughlin pair factor (M = 3), LLL/CM Gaussians, and a radial LL-mixing polynomial that is exactly the `(z1−z2)^{3+j}(z̄1−z̄2)^j` family (all M = 3, odd parity).
+
+**Expected Performance Improvement:** By opening the physically correct M = 3 sector and seeding the Laughlin-LLL form (defaults `a=b=0.25, c=d=0`), the child should attain a dramatically higher fidelity than the parent's 2.21e-5, with the LL-mixing radial polynomial (`c, d`) providing the convex, low-variance lift toward the strongly LL-mixed target.

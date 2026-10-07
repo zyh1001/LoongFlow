@@ -1,0 +1,13 @@
+{
+  "status": "validation_failed",
+  "summary": "Candidate validation failed: Parameter name 'r1' is reserved by the evaluator.",
+  "score": 0.0,
+  "metrics": {
+    "validity": 0.0,
+    "eval_time": 0.040774644003249705
+  },
+  "artifacts": {
+    "error_type": "CandidateValidationError",
+    "reason": "Candidate validation failed: Parameter name 'r1' is reserved by the evaluator."
+  }
+}

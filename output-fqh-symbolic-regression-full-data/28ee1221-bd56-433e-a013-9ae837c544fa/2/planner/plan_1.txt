@@ -1,0 +1,84 @@
+================================================================================
+PLAN 1  —  FUSION: "Compact non-holomorphic Laughlin hybrid with two-body
+            quartic Jastrow"  (island_0 holomorphic core  +  island_1 motif)
+================================================================================
+Island: 0        Parent: holomorphic Vandermonde product * symmetric sum
+                 (score ~7.4e-07, m=1 Jastrow, no envelope) -> near random.
+Global context: only island_1 holds a real solution (fidelity 0.8143); islands
+0,2,3,4,5 are empty.  Gap >10%  =>  Strategy 2 (FUSION) is the correct move:
+fuse island_0's holomorphic Vandermonde with island_1's non-holomorphic
+modulus-screening motif, and ADD a genuinely new structural degree of freedom.
+
+--------------------------------------------------------------------------------
+1. MATHEMATICAL FORMULATION
+--------------------------------------------------------------------------------
+Structural objects (N=6 -> 15 pairs):
+    d_ij = z_i - z_j ,  i<j ;   J = prod_{i<j} d_ij  (Vandermonde)
+    S = sum_i |z_i|^2 ;  Q = sum_i |z_i|^4 ;  Z = sum_i z_i ;  G = |Z|^2
+    P = prod_i z_i ;  r_ij = |d_ij| ;  R4 = sum_{i<j} r_ij^4  (NEW two-body)
+
+VARIABLES
+  X_struct (DISCRETE, not fitted): factor set
+      F = { J^3 (fixed core) ,  pair-power  prod_{i<j} r_ij^{2 eta},
+            product-modulus |P|^{2 delta},  Gaussian exp(-alpha S),
+            one-body quartic exp(-beta Q),
+            TWO-BODY quartic exp(-beta2 R4),          <-- NEW structure
+            centre-of-mass exp(-gamma G),  phase exp(1j lam S) }
+  X_cont (CONTINUOUS, fitted by the evaluator):
+      theta = (alpha, beta, beta2, gamma, lam, eta, delta)  in R^7
+
+CANDIDATE
+  Psi(theta) = J^3 * prod_{i<j} r_ij^{2 eta} * |P|^{2 delta}
+               * exp( -alpha S - beta Q - beta2 R4 - gamma G + 1j lam S )
+
+CONSTRAINTS C (hard, satisfied CONSTRUCTIVELY)
+  C1 ANTISYMMETRY: J^3 is odd under any exchange i<->j (J->-J).  Every other
+     factor is a REAL function of |z_i|, |Z|, |P|, r_ij  -> exchange invariant.
+     Hence Psi(r_i<->r_j) = -Psi.                                  [PROVED]
+  C2 SINGLE M-SECTOR: z_i -> e^{-i phi} z_i gives J^3 -> e^{-i phi * 3*15} J^3;
+     all other factors are rotational invariants (M=0).  => M = 3*N(N-1)/2 = 45.
+                                                                     [PROVED]
+  C3 FINITENESS: alpha default > 0 gives Gaussian decay; coordinates confined to
+     disk radius a = sqrt(2N/nu) = sqrt(12) ~ 3.464  => finite on the pool.
+  C4 LEGALITY: return expression uses only integer literals {2,3,4} (<=12), 1j;
+     every non-structural constant is a NAMED fitted parameter with a finite
+     default; NO decimal literal in the return; vectorized numpy return.
+
+OBJECTIVE f(X): maximize  accuracy = fidelity * finite_fraction  on the fixed
+50000-sample pool; equivalently minimize  L(theta) = 1 - fidelity(theta).
+
+--------------------------------------------------------------------------------
+2. SOLVER STRATEGY
+--------------------------------------------------------------------------------
+Decoupled two-level search (structure != parameters):
+  (a) HARD/discrete: deterministic enumeration of the Jastrow exponent
+      m in {1,3,5} and of factor subsets; the physically anchored choice m=3
+      (nu=1/3) is selected.  NO randomness.
+  (b) EASY/continuous: delegated to the evaluator's adaptive-bounded
+      least-squares refit (Levenberg-Marquardt / SLSQP style) over theta.
+Seeding: defaults are set to the known-good fitted values of the global best
+  (alpha=1.3818, gamma=0.2577, eta=10.071, delta=-0.8372, beta=0.01231,
+   lam=0.4903) with the NEW parameter beta2 = 0.0.  The search therefore STARTS
+  inside the proven 0.814 basin and can only improve -> monotone non-regression.
+
+--------------------------------------------------------------------------------
+3. VALIDITY MECHANISM
+--------------------------------------------------------------------------------
+  1. Algebraic antisymmetry / M-sector proof done at plan time (C1, C2).
+  2. Synthetic-grid finiteness assert: evaluate Psi on a locally built grid
+     z_i = a + 1j*b, a,b in linspace(-3.464,3.464, ...), with DEFAULT params and
+     assert np.all(np.isfinite(Psi)); never reads the dataset.
+  3. Superset fallback: setting beta2=0 and delta=0 recovers the VERIFIED global
+     best form J^3|J|^{2 eta} exp(-alpha S - beta Q - gamma G + 1j lam S).
+
+--------------------------------------------------------------------------------
+4. WHY THIS SOLUTION
+--------------------------------------------------------------------------------
+Expected performance: fidelity >= 0.814 (seeded at the known optimum) with an
+upside from the new two-body quartic term R4; pass only if it also >= parent.
+Advantages: (i) hard constraints hold BY CONSTRUCTION -> cannot crash or emit an
+invalid candidate; (ii) J is computed ONCE (complexity ~1/3 of the 378-node
+winner) giving a better Pareto point; (iii) physically interpretable LL-mixed
+two-body Jastrow; (iv) zero run-to-run variance (fully deterministic).
+Disadvantages: the continuous fit is non-convex; large eta carries overflow risk
+(mitigated by alpha default > 0 and the finiteness check).

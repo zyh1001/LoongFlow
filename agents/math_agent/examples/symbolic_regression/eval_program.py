@@ -1,8 +1,9 @@
-"""Evaluator for the six-electron FQH symbolic-regression task.
+"""Evaluator for the two-electron FQH symbolic-regression task.
 
-The evolutionary program supplies only a literal ``candidate_spec()``.  Its
-expression is evaluated by a small AST interpreter, so candidate code cannot
-read the dataset, evaluator internals, or the network.
+The evolutionary program supplies a vectorized ``wavefunction()`` with numeric
+defaults for fitted parameters.  Its return expression is evaluated by a small
+AST interpreter, so candidate code cannot read the dataset, evaluator internals,
+or the network.
 
 This evaluator intentionally treats every finite neural-network sample as one
 full-data pool.  The same complete pool is used to fit numerical parameters and
@@ -16,7 +17,6 @@ import json
 import math
 import os
 from pathlib import Path
-import re
 import sys
 import time
 from typing import Any
@@ -27,7 +27,7 @@ from scipy.optimize import least_squares
 
 _REPOSITORY_ROOT = Path(__file__).resolve().parents[4]
 _DEFAULT_DATASET_RELATIVE_PATH = Path(
-    "datasets/disk_n6_Q18_kapa1/dataset_uniform_4096.npz"
+    "datasets/disk_n2_Q6_kapa_100/dataset_uniform.npz"
 )
 DEFAULT_DATASET = next(
     (
@@ -40,14 +40,13 @@ DEFAULT_DATASET = next(
     ),
     _REPOSITORY_ROOT / _DEFAULT_DATASET_RELATIVE_PATH,
 )
-MAX_PARAMETERS = 10
+MAX_PARAMETERS = 15
 MAX_EXPRESSION_LENGTH = 2000
 MAX_AST_NODES = 220
 MAX_OPTIMIZER_EVALUATIONS = int(os.environ.get("LOONGFLOW_SR_MAX_NFEV", "120"))
-N_ELECTRONS = 6
-ANGULAR_MOMENTA = range(-72, 73)
+N_ELECTRONS = 2
+ANGULAR_MOMENTA = range(-24, 25)
 ROTATION_ANGLES = (math.pi / 11.0, math.pi / 13.0)
-_NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 _EPS = np.finfo(np.float64).tiny
 
 
@@ -62,8 +61,8 @@ def _dataset_path() -> Path:
     return Path(configured).expanduser() if configured else DEFAULT_DATASET
 
 
-def _literal_candidate_spec(program_path: str | os.PathLike[str]) -> dict[str, Any]:
-    """Read a literal candidate_spec without executing candidate Python code."""
+def _wavefunction_spec(program_path: str | os.PathLike[str]) -> dict[str, Any]:
+    """Read a wavefunction definition without executing candidate Python code."""
 
     path = Path(program_path)
     if not path.is_file():
@@ -81,24 +80,69 @@ def _literal_candidate_spec(program_path: str | os.PathLike[str]) -> dict[str, A
     ) and isinstance(top_level[0].value.value, str):
         top_level = top_level[1:]
 
-    if len(top_level) != 1 or not isinstance(top_level[0], ast.FunctionDef):
+    if (
+        len(top_level) != 2
+        or not isinstance(top_level[0], ast.Import)
+        or len(top_level[0].names) != 1
+        or top_level[0].names[0].name != "numpy"
+        or top_level[0].names[0].asname != "np"
+        or not isinstance(top_level[1], ast.FunctionDef)
+    ):
         raise CandidateValidationError(
-            "The file must contain only the candidate_spec() function."
+            "The file must contain only 'import numpy as np' and wavefunction()."
         )
-    function = top_level[0]
-    if function.name != "candidate_spec" or function.decorator_list:
+    function = top_level[1]
+    if function.name != "wavefunction" or function.decorator_list:
         raise CandidateValidationError(
-            "The file must define an undecorated candidate_spec() function."
+            "The file must define an undecorated wavefunction() function."
         )
     args = function.args
     if (
         args.posonlyargs
-        or args.args
         or args.kwonlyargs
         or args.vararg is not None
         or args.kwarg is not None
     ):
-        raise CandidateValidationError("candidate_spec() must not accept arguments.")
+        raise CandidateValidationError(
+            "wavefunction() supports positional arguments only."
+        )
+
+    coordinate_names = [f"z{index}" for index in range(1, N_ELECTRONS + 1)]
+    argument_names = [argument.arg for argument in args.args]
+    if argument_names[:N_ELECTRONS] != coordinate_names:
+        raise CandidateValidationError(
+            "wavefunction() must begin with coordinate arguments "
+            + ", ".join(coordinate_names)
+            + "."
+        )
+    parameter_names = argument_names[N_ELECTRONS:]
+    if len(parameter_names) > MAX_PARAMETERS:
+        raise CandidateValidationError(
+            f"At most {MAX_PARAMETERS} fitted numerical parameters are allowed."
+        )
+    if len(args.defaults) != len(parameter_names):
+        raise CandidateValidationError(
+            "Every fitted parameter must have a numeric default value."
+        )
+
+    clean_parameters: dict[str, float] = {}
+    for name, default in zip(parameter_names, args.defaults, strict=True):
+        try:
+            value = ast.literal_eval(default)
+        except (ValueError, TypeError, SyntaxError) as exc:
+            raise CandidateValidationError(
+                f"Default value for {name!r} must be a real number."
+            ) from exc
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise CandidateValidationError(
+                f"Default value for {name!r} must be a real number."
+            )
+        numeric_value = float(value)
+        if not math.isfinite(numeric_value):
+            raise CandidateValidationError(
+                f"Default value for {name!r} must be finite."
+            )
+        clean_parameters[name] = numeric_value
 
     body = list(function.body)
     if body and isinstance(body[0], ast.Expr) and isinstance(
@@ -107,49 +151,19 @@ def _literal_candidate_spec(program_path: str | os.PathLike[str]) -> dict[str, A
         body = body[1:]
     if len(body) != 1 or not isinstance(body[0], ast.Return):
         raise CandidateValidationError(
-            "candidate_spec() must contain one literal return statement."
+            "wavefunction() must contain one return statement."
         )
-
-    try:
-        spec = ast.literal_eval(body[0].value)
-    except (ValueError, TypeError, SyntaxError) as exc:
-        raise CandidateValidationError(
-            "candidate_spec() must return a literal dictionary."
-        ) from exc
-    if not isinstance(spec, dict) or set(spec) != {"expression", "parameters"}:
-        raise CandidateValidationError(
-            "candidate_spec() must return exactly 'expression' and 'parameters'."
-        )
-    if not isinstance(spec["expression"], str) or not spec["expression"].strip():
-        raise CandidateValidationError("'expression' must be a non-empty string.")
-    if len(spec["expression"]) > MAX_EXPRESSION_LENGTH:
+    if body[0].value is None:
+        raise CandidateValidationError("wavefunction() must return an expression.")
+    expression = ast.unparse(body[0].value).strip()
+    if len(expression) > MAX_EXPRESSION_LENGTH:
         raise CandidateValidationError(
             f"Expression exceeds {MAX_EXPRESSION_LENGTH} characters."
         )
-    if not isinstance(spec["parameters"], dict):
-        raise CandidateValidationError("'parameters' must be a dictionary.")
-    if len(spec["parameters"]) > MAX_PARAMETERS:
-        raise CandidateValidationError(
-            f"At most {MAX_PARAMETERS} fitted numerical parameters are allowed."
-        )
-
-    clean_parameters: dict[str, float] = {}
-    for name, value in spec["parameters"].items():
-        if not isinstance(name, str) or not _NAME_RE.fullmatch(name):
-            raise CandidateValidationError(f"Invalid parameter name: {name!r}")
-        if isinstance(value, bool) or not isinstance(value, (int, float)):
-            raise CandidateValidationError(
-                f"Initial value for {name!r} must be a real number."
-            )
-        numeric_value = float(value)
-        if not math.isfinite(numeric_value):
-            raise CandidateValidationError(
-                f"Initial value for {name!r} must be finite."
-            )
-        clean_parameters[name] = numeric_value
 
     return {
-        "expression": spec["expression"].strip(),
+        "expression": expression,
+        "coordinates": coordinate_names,
         "parameters": clean_parameters,
     }
 
@@ -160,7 +174,7 @@ def _coordinate_environment(coordinates: np.ndarray) -> dict[str, Any]:
     if coordinates.ndim != 2 or coordinates.shape[1] != expected_columns:
         raise RuntimeError(
             "This evaluator requires features ordered as "
-            "x1,y1,x2,y2,x3,y3,x4,y4,x5,y5,x6,y6."
+            "x1,y1,x2,y2."
         )
 
     electrons = coordinates.reshape(-1, N_ELECTRONS, 2)
@@ -226,6 +240,7 @@ _FUNCTIONS = {
     "sqrt": np.sqrt,
     "abs": np.abs,
     "conj": np.conjugate,
+    "conjugate": np.conjugate,
     "real": np.real,
     "imag": np.imag,
     "log": np.log,
@@ -262,25 +277,35 @@ class _Expression:
                 self.complexity += 1
             elif isinstance(node, ast.Call):
                 if (
-                    not isinstance(node.func, ast.Name)
-                    or node.func.id not in _FUNCTIONS
+                    self._function_name(node.func) is None
                     or len(node.args) != 1
                     or node.keywords
                 ):
                     raise CandidateValidationError(
-                        "Only one-argument calls to "
+                        "Only abs(...) and one-argument np calls to "
                         + ", ".join(sorted(_FUNCTIONS))
                         + " are allowed."
                     )
                 self.complexity += 1
             elif isinstance(node, ast.Name):
-                if node.id not in allowed_names and node.id not in _FUNCTIONS:
+                if node.id not in allowed_names and node.id not in {"abs", "np"}:
                     raise CandidateValidationError(
                         f"Unknown variable or function: {node.id!r}"
                     )
+            elif isinstance(node, ast.Attribute):
+                if (
+                    not isinstance(node.value, ast.Name)
+                    or node.value.id != "np"
+                    or node.attr not in {*_FUNCTIONS, "pi"}
+                ):
+                    raise CandidateValidationError(
+                        "Only whitelisted numpy functions and np.pi are allowed."
+                    )
             elif isinstance(node, ast.Constant):
                 value = node.value
-                if isinstance(value, bool) or not isinstance(value, (int, float, complex)):
+                if isinstance(value, bool) or not isinstance(
+                    value, (int, float, complex)
+                ):
                     raise CandidateValidationError("Only numeric constants are allowed.")
             elif not isinstance(
                 node,
@@ -299,6 +324,19 @@ class _Expression:
                 raise CandidateValidationError(
                     f"Unsupported expression element: {type(node).__name__}"
                 )
+
+    @staticmethod
+    def _function_name(node: ast.AST) -> str | None:
+        if isinstance(node, ast.Name) and node.id == "abs":
+            return "abs"
+        if (
+            isinstance(node, ast.Attribute)
+            and isinstance(node.value, ast.Name)
+            and node.value.id == "np"
+            and node.attr in _FUNCTIONS
+        ):
+            return node.attr
+        return None
 
     def evaluate(self, environment: dict[str, Any]) -> Any:
         with np.errstate(all="ignore"):
@@ -324,40 +362,23 @@ class _Expression:
             if isinstance(node.op, ast.Div):
                 return left / right
             return left**right
+        if isinstance(node, ast.Attribute) and node.attr == "pi":
+            return math.pi
         if isinstance(node, ast.Call):
-            function = _FUNCTIONS[node.func.id]
+            function_name = self._function_name(node.func)
+            if function_name is None:
+                raise CandidateValidationError("Unsupported function call.")
+            function = _FUNCTIONS[function_name]
             return function(self._evaluate_node(node.args[0], environment))
         raise CandidateValidationError(
             f"Unsupported expression element: {type(node).__name__}"
         )
 
 
-def _parameter_aliases(
-    names: list[str], vector: np.ndarray, reserved_names: set[str]
-) -> dict[str, Any]:
-    values: dict[str, Any] = {
+def _parameter_values(names: list[str], vector: np.ndarray) -> dict[str, float]:
+    return {
         name: float(value) for name, value in zip(names, vector, strict=True)
     }
-    for name in names:
-        if not name.endswith("_re"):
-            continue
-        base = name[:-3]
-        imaginary_name = base + "_im"
-        if imaginary_name not in values:
-            continue
-        if base in values or base in reserved_names or base in _FUNCTIONS:
-            raise CandidateValidationError(
-                f"Complex parameter alias {base!r} collides with another name."
-            )
-        values[base] = values[name] + 1j * values[imaginary_name]
-    return values
-
-
-def _available_parameter_names(
-    parameter_names: list[str], reserved_names: set[str]
-) -> set[str]:
-    dummy = np.zeros(len(parameter_names), dtype=np.float64)
-    return set(_parameter_aliases(parameter_names, dummy, reserved_names))
 
 
 def _as_complex_vector(value: Any, size: int) -> np.ndarray:
@@ -385,9 +406,7 @@ def _candidate_values(
     vector: np.ndarray,
 ) -> np.ndarray:
     environment = dict(coordinate_environment)
-    environment.update(
-        _parameter_aliases(parameter_names, vector, set(coordinate_environment))
-    )
+    environment.update(_parameter_values(parameter_names, vector))
     value = expression.evaluate(environment)
     sample_count = len(coordinate_environment["x1"])
     return _as_complex_vector(value, sample_count)
@@ -694,7 +713,7 @@ def evaluate(program_path: str | os.PathLike[str]) -> dict[str, Any]:
 
     start_time = time.perf_counter()
     try:
-        spec = _literal_candidate_spec(program_path)
+        spec = _wavefunction_spec(program_path)
         data = _load_evolution_data(_dataset_path())
 
         coordinates = data["coordinates"]
@@ -704,13 +723,11 @@ def evaluate(program_path: str | os.PathLike[str]) -> dict[str, Any]:
         parameter_names = list(spec["parameters"])
         reserved_names = set(coordinate_environment)
         for name in parameter_names:
-            if name in reserved_names or name in _FUNCTIONS:
+            if name in reserved_names or name in _FUNCTIONS or name == "np":
                 raise CandidateValidationError(
                     f"Parameter name {name!r} is reserved by the evaluator."
                 )
-        allowed_names = reserved_names | _available_parameter_names(
-            parameter_names, reserved_names
-        )
+        allowed_names = set(spec["coordinates"]) | set(parameter_names) | {"np"}
         expression = _Expression(spec["expression"], allowed_names)
         initial = np.asarray(
             [spec["parameters"][name] for name in parameter_names],
@@ -766,7 +783,6 @@ def evaluate(program_path: str | os.PathLike[str]) -> dict[str, Any]:
             np.clip(
                 accuracy
                 * physics_factor
-                * finite_fraction**2
                 * complexity_penalty,
                 0.0,
                 1.0,

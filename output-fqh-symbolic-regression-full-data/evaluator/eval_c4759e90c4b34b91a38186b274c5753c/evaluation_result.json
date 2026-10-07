@@ -1,0 +1,84 @@
+{
+  "status": "success",
+  "score": 2.6140838171276113e-16,
+  "summary": "accuracy=0.000000; full_data_fidelity=0.000000; full_data_nmse=1; finite=1.0000; complexity=93; pareto_front=False; front_size=1; fitted={'alpha': 1.0}",
+  "metrics": {
+    "validity": 1.0,
+    "full_data_nmse": 0.9999999999999998,
+    "full_data_fidelity": 2.6140838171276113e-16,
+    "finite_fraction": 1.0,
+    "expression_complexity": 93,
+    "parameter_count": 1,
+    "accuracy": 2.6140838171276113e-16,
+    "pareto_front_member": false,
+    "pareto_bin_improved": true,
+    "pareto_front_size": 1,
+    "optimizer_boundary_expansions": 0,
+    "optimizer_boundary_hit": false,
+    "eval_time": 0.353004404110834
+  },
+  "artifacts": {
+    "candidate_id": "e99946b385977289823b",
+    "expression": "(z1 - z2) * ((z1 - z3) * (z1 - z4)) * ((z1 - z5) * (z1 - z6) * ((z2 - z3) * (z2 - z4))) * ((z2 - z5) * (z2 - z6) * ((z3 - z4) * (z3 - z5)) * ((z3 - z6) * (z4 - z5) * ((z4 - z6) * (z5 - z6)))) * np.exp(-alpha * (np.abs(z1) ** 2 + (np.abs(z2) ** 2 + np.abs(z3) ** 2) + (np.abs(z4) ** 2 + (np.abs(z5) ** 2 + np.abs(z6) ** 2))))",
+    "fitted_parameters": {
+      "alpha": 1.0
+    },
+    "global_scale": {
+      "real": 8.688871160357039e-07,
+      "imag": 1.6543638784393228e-06
+    },
+    "optimizer": {
+      "attempted": true,
+      "success": true,
+      "nfev": 1,
+      "message": "`gtol` termination condition is satisfied.",
+      "residual_cost": 49999.99999999994,
+      "adaptive_bounds": true,
+      "boundary_expansions": 0,
+      "boundary_hit": false,
+      "boundary_parameters": [],
+      "initial_span": {
+        "alpha": 20.0
+      },
+      "final_span": {
+        "alpha": 20.0
+      },
+      "attempts": [
+        {
+          "attempt": 1,
+          "nfev": 1,
+          "cost": 49999.99999999994,
+          "span": {
+            "alpha": 20.0
+          },
+          "boundary_parameters": []
+        }
+      ]
+    },
+    "pareto": {
+      "archive_path": "output-fqh-symbolic-regression-full-data/pareto_archive.json",
+      "csv_path": "output-fqh-symbolic-regression-full-data/pareto_archive.csv",
+      "improved_complexity_bin": true,
+      "on_pareto_front": false,
+      "front_size": 1,
+      "complexity_bin_best_accuracy": 2.6140838171276113e-16,
+      "selections": {
+        "max_accuracy_id": "4c4eaac4ea9392aac9bd",
+        "knee_id": "4c4eaac4ea9392aac9bd",
+        "pysr_score_id": "4c4eaac4ea9392aac9bd"
+      },
+      "front": [
+        {
+          "id": "4c4eaac4ea9392aac9bd",
+          "complexity": 59,
+          "accuracy": 7.240655251147682e-06,
+          "expression": "(z1 - z2) * ((z1 - z3) * (z1 - z4)) * ((z1 - z5) * (z1 - z6) * ((z2 - z3) * (z2 - z4))) * ((z2 - z5) * (z2 - z6) * ((z3 - z4) * (z3 - z5)) * ((z3 - z6) * (z4 - z5) * ((z4 - z6) * (z5 - z6))))"
+        }
+      ]
+    },
+    "evaluation_mode": "full_data_accuracy_complexity_pareto",
+    "samples_used": 50000,
+    "n_electrons": 6,
+    "dataset": "/home/ubuntu/symbolic_regression/LoongFlow/datasets/disk_n6_Q18_kapa100/dataset_uniform.npz"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "status": "validation_failed",
+  "summary": "Candidate validation failed: wavefunction() must contain one return statement.",
+  "score": 0.0,
+  "metrics": {
+    "validity": 0.0,
+    "eval_time": 0.0009283380350098014
+  },
+  "artifacts": {
+    "error_type": "CandidateValidationError",
+    "reason": "Candidate validation failed: wavefunction() must contain one return statement."
+  }
+}

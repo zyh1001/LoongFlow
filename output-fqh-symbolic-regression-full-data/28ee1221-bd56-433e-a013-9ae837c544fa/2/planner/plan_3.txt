@@ -1,0 +1,56 @@
+================================================================================
+PLAN 3  —  DIVERSITY RESET: "Paired (Pfaffian / Moore-Read-type) structure"
+================================================================================
+Island: 0.  Deliberately explores an UNDER-REPRESENTED representation family
+(pairing / Pfaffian) instead of further correcting the Jastrow motif.
+
+--------------------------------------------------------------------------------
+1. MATHEMATICAL FORMULATION
+--------------------------------------------------------------------------------
+Structural objects: define the skew matrix A_ij = 1/(z_i - z_j) (i<j),
+A_ji = -A_ij ;  the Pfaffian Pf(A) = sum over perfect matchings of
+sign * prod A_ij ;  J = prod_{i<j}(z_i - z_j).
+
+VARIABLES
+  X_struct (discrete): paired topology (fixed perfect-matching class) + J^2 core.
+  X_cont: theta = (alpha, gamma, eta, c)  in R^4.
+
+CANDIDATE (Moore-Read-like, N=6)
+  Psi = Pf( 1/(z_i - z_j) ) * J^2 * exp(-alpha S - gamma G) * |J|^{2 eta}
+
+CONSTRAINTS C
+  C1 ANTISYMMETRY: Pf * J^2 is antisymmetric under single-particle exchange
+     (standard MR property); |J|^{2 eta} and the exponentials are invariant.
+  C2 SINGLE M: J^2 -> e^{-i phi*2*15} = M=30 from J^2; the Pfaffian and modulus
+     factors must be shown to contribute a FIXED additional M (verified
+     algebraically by inspecting each term) so Psi stays in ONE integer sector.
+  C3 FINITENESS: alpha > 0; poles at coincident points are measure-zero.
+  C4 LEGALITY: integer literals {2}, 1j; named finite defaults; no decimals.
+
+OBJECTIVE f: maximize accuracy = fidelity * finite_fraction ; minimize 1-fidelity.
+
+--------------------------------------------------------------------------------
+2. SOLVER STRATEGY
+--------------------------------------------------------------------------------
+Discrete: fixed pairing topology; continuous: evaluator least-squares over theta
+with deterministic multi-start on the pairing sign.  Pfaffian evaluated by the
+explicit N=6 perfect-matching sum (15 matchings; polynomial O(N^3) at most).
+
+--------------------------------------------------------------------------------
+3. VALIDITY MECHANISM
+--------------------------------------------------------------------------------
+  1. Algebraic verification of the total angular momentum of Pf and of J^2.
+  2. Grid finiteness assert avoiding coincident points.
+  3. Fallback: if the pairing term destabilises numerics (non-finite fractions),
+     drop Pf and return the safe J^3 hybrid of Plan 1.
+
+--------------------------------------------------------------------------------
+4. WHY THIS SOLUTION
+--------------------------------------------------------------------------------
+Expected: tests whether the target has p-wave pairing structure that neither the
+Jastrow nor the coherent-hybrid families capture => maximum architectural
+diversity.  Advantages: explores an untested family; obeys the "maintain
+diversity" mandate.  Disadvantages: HIGH RISK - the Pfaffian's angular sector is
+subtle, the N=6 matching sum is code-heavy and error-prone, near coincident
+points cause numerical blow-up, and there is no evidence the target is paired.
+=> least robust of the three; NOT selected as the primary plan.

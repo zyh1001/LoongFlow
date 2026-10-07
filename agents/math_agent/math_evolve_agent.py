@@ -5,6 +5,7 @@ Math Evolve Agent Runner - Refactored to use BasePESRunner.
 """
 
 import argparse
+import importlib.util
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Tuple, Type
@@ -57,6 +58,45 @@ class MathPESAgent(BasePESRunner):
                     file=sys.stderr,
                 )
                 sys.exit(1)
+
+        # Optional per-island initial programs. Paths are relative to the task
+        # configuration file, so a task bundle remains relocatable.
+        evolve_config = config.setdefault("evolve", {})
+        metadata = evolve_config.setdefault("metadata", {})
+        seed_files = metadata.get("island_initial_files", [])
+        if seed_files:
+            task_directory = Path(args.config).resolve().parent
+            seed_codes = []
+            for relative_name in seed_files:
+                seed_path = (task_directory / relative_name).resolve()
+                if not seed_path.is_relative_to(task_directory):
+                    raise ValueError(
+                        f"Island seed escapes the task directory: {relative_name}"
+                    )
+                seed_codes.append(seed_path.read_text(encoding="utf-8"))
+            num_islands = evolve_config.get("database", {}).get("num_islands", 1)
+            if len(seed_codes) != num_islands:
+                raise ValueError(
+                    "evolve.metadata.island_initial_files must contain exactly "
+                    f"{num_islands} entries; received {len(seed_codes)}."
+                )
+            metadata["island_initial_codes"] = seed_codes
+        # Tasks can opt into dataset-dependent initialization supplied by their
+        # trusted evaluator. Candidate programs are never imported here.
+        if metadata.get("initialize_from_dataset"):
+            evaluator_path = Path(args.eval_file) if args.eval_file else (
+                Path(args.config).resolve().parent / "eval_program.py"
+            )
+            spec = importlib.util.spec_from_file_location("task_initializer", evaluator_path)
+            if spec is None or spec.loader is None:
+                raise ValueError(f"Cannot load task initializer: {evaluator_path}")
+            evaluator = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(evaluator)
+            evolve_config["initial_code"], metadata["island_initial_codes"] = (
+                evaluator.initialize_programs(
+                    evolve_config["initial_code"], metadata.get("island_initial_codes", [])
+                )
+            )
         return config
 
     def _get_process_name(self) -> str:

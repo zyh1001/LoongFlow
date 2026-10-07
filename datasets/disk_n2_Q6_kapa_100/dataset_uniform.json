@@ -1,0 +1,25 @@
+{
+  "run_directory": "/data/home/zyh/jaqmc/runs/final/disk_n2_Q6_kapa_100",
+  "checkpoint": "/data/home/zyh/jaqmc/runs/final/disk_n2_Q6_kapa_100/train_ckpt_099999.npz",
+  "checkpoint_step": 99999,
+  "sampling": "uniform",
+  "seed": 17,
+  "n_samples": 50000,
+  "n_base_samples": 50000,
+  "exchange_augmentations": 0,
+  "augmentation": "none",
+  "n_electrons": 2,
+  "features": [
+    "x1",
+    "y1",
+    "x2",
+    "y2"
+  ],
+  "disk_radius": 3.4641016151377544,
+  "flux": 6,
+  "nspins": [
+    2,
+    0
+  ],
+  "label_definition": "psi_scaled = exp(logpsi - max(real(logpsi)))"
+}

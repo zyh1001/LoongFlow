@@ -1,0 +1,52 @@
+PLAN 2  --  "Single-M relative expansion: holomorphic anchor + non-holomorphic LL-mixing + relative/CM coupling"
+(island_0 structural hybrid: keeps the holomorphic relative-coordinate seed but adds LL-mixing and CM terms)
+
+TASK OBJECTIVE
+--------------
+Same as Plan 1: maximize accuracy=fidelity*finite_fraction for the N=2, nu=1/3, kappa=100 state
+under fermionic antisymmetry and a single angular-momentum sector M.
+
+MATHEMATICAL FORMULATION
+------------------------
+Coordinates/invariants:
+    d = z1 - z2, u = |d|^2 (even, M=0), S = |z1|^2+|z2|^2 (even, M=0),
+    Z = z1 + z2  (CM, M=1), Z^2 (M=2).
+Variables X = { g, h, a0, a1, c_nl_re, c_nl_im, c_cm_re, c_cm_im } (<=15).
+Structural ansatz: a COMMON symmetric Gaussian envelope times a single-M (M=3) antisymmetric prefactor
+    Psi = [ a0*d^3  +  a1*d^3*u  +  (c_nl_re + i c_nl_im)*d^3*u^2
+            +  (c_cm_re + i c_cm_im)*d*Z^2 ] * exp( -( g*S + h*u ) )
+Constraints C
+    C1 antisymmetry: d^3, d^3*u, d^3*u^2, d*Z^2 are each EXCHANGE-ODD; envelope even => Psi odd.
+    C2 single M: d^3 (M=3), d^3*u (M=3), d^3*u^2 (M=3), d*Z^2 (M=1+2=3) => all M=3.
+    C3 finite: g>0, h>=0; only integer exponents 1,2,3.
+    C4 <=15 params, no decimal literals, integer literals |.|<=12.
+Objective f(X)= accuracy -> maximize. Complex relative coefficients keep genuine relative phases
+(the evaluator removes only the 2 global-phase dof, so c_nl/c_cm imaginary parts are physical).
+
+SOLVER STRATEGY
+---------------
+Structure finding (discrete, NON-convex, deterministic enumeration): select the active term subset
+from {d^3, d^3*u, d^3*u^2, d*Z^2} via a small deterministic lattice (start FULL, then prune terms
+whose fitted magnitude < 1e-3 -> Occam pruning).
+Parameter tuning: given the 2 envelope scalars (g,h), the coefficient map is LINEAR -> exact
+numpy.linalg.lstsq / generalized Rayleigh-quotient eigenproblem. Outer nonlinear search over (g,h):
+coarse 2-D grid in [0.05,1.0]x[0,1.0] + scipy.optimize.minimize(method='Nelder-Mead').
+If randomized, run N=20 multi-starts, keep best.  Complex coefficients are split into (re,im)
+parameter pairs so the inner problem stays real-linear.
+
+VALIDITY MECHANISM
+------------------
+Algebraic construction gives antisymmetry + single M identically (each basis monomial is odd and
+has p-q=3). Safety valve = deterministic validator on a fixed grid checking
+  Psi(z2,z1) == -Psi(z1,z2),  Psi(e^{-i phi}z)==e^{-i*3*phi}Psi, and finiteness.
+Fallback if the validator fails or the correction coeffs blow up (|c|>1e3):
+  Psi = d**3 * exp(-(g*S + h*u))   (Plan-1 minimal guaranteed form).
+
+WHY THIS SOLUTION
+-----------------
+Expected improvement: contains the Laughlin state as the a0 term (so it cannot do worse than the
+Laughlin baseline) while the non-holomorphic d^3 u^2 and the relative/CM d*Z^2 terms capture
+Landau-level mixing and the disk confining potential -> potentially higher fidelity than Plan 1.
+Advantages: richer physical coverage, still low complexity, exact inner parameter solve.
+Disadvantages: more parameters (risk of over-fit / fitting degeneracy), possible flat directions
+when all corrections default to 0, and a slightly larger expression tree.

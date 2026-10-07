@@ -1,0 +1,63 @@
+================================================================================
+CHILD SOLUTION GENERATION PLAN  —  island_0, iteration 1
+Outline #3:  Radially-generalised envelope (quartic/hexic invariant corrections).
+================================================================================
+
+--------------------------------------------------------------------------------
+1. MATHEMATICAL FORMULATION
+--------------------------------------------------------------------------------
+VARIABLES
+  Continuous fitted parameters: alpha, beta, gamma   (defaults 0.25, 0.0, 0.0).
+
+STRUCTURAL BUILDING BLOCKS
+      d_ij = z_i - z_j ;  J = prod_{i<j} d_ij .
+      S2 = sum_i |z_i|^4            (quartic radial invariant)
+      G  = |sum_i z_i|^2            (CM invariant)
+
+CANDIDATE FAMILY
+      Psi = J^3 * exp( -alpha*S - beta*S2 - gamma*G ),   S = sum_i |z_i|^2.
+
+HARD CONSTRAINTS  C
+  C1 ANTISYMMETRY: J^3 odd power => antisymmetric; envelope real & symmetric.
+  C2 SINGLE M SECTOR: S, S2, G are all rotationally invariant; only J^3 carries
+     weight => M = 3 * N(N-1)/2 = 45 (single sector).                    [constr.]
+  C3 FINITENESS: keep alpha > 0 and bound beta so that the envelope decays at
+     large |z|; the combined quadratic form must remain positive definite.
+  C4 LEGALITY: integer powers only; no decimal literal in the return expression;
+     alpha, beta, gamma are the only non-structural constants.
+
+OBJECTIVE
+  maximize accuracy = fidelity * finite_fraction (loss = 1 - fidelity).
+
+--------------------------------------------------------------------------------
+2. SOLVER STRATEGY
+--------------------------------------------------------------------------------
+  HARD/structure: fix the topology J^3 * exp( quadratic form in invariants )
+  (a STRUCTURAL RESET of the envelope: it tests whether the guiding envelope is
+  Gaussian (beta=0) or has quartic radial corrections induced by LL mixing).
+  EASY/parameters: delegate (alpha, beta, gamma) to the evaluator's adaptive
+  bounded fit from defaults (0.25, 0.0, 0.0).  beta = gamma = 0 reproduces the
+  plan-1 Gaussian exactly, so the fit is a monotone extension.
+  MULTI-START: deterministic seed set {(0.25,0,0)} plus the fixed discrete
+  variants {beta free}, {gamma free}; no random initialisation.
+
+--------------------------------------------------------------------------------
+3. VALIDITY MECHANISM / SAFETY VALVE
+--------------------------------------------------------------------------------
+  V1: analytic antisymmetry & single-M proofs by construction.
+  V2: checklist (odd power; M = 45; envelope bounded; no decimals; finite).
+  V3: FALLBACK / reduction: if the fitted beta, gamma do not improve fidelity,
+      deterministically reset beta = gamma = 0 to recover the plan-1 Gaussian
+      state, guaranteeing no regression relative to the selected candidate.
+
+--------------------------------------------------------------------------------
+4. WHY THIS SOLUTION
+--------------------------------------------------------------------------------
+Expected improvement: strong LL mixing (kappa = 100) generically reshapes the
+radial envelope away from a pure Gaussian; a quartic invariant term can absorb
+that reshaping while keeping the antisymmetric core untouched.
+Advantages: retains guaranteed-valid antisymmetry and single-M sector; the
+Gaussian is an exact special case (safe fallback); captures a physically distinct
+effect (envelope shape) rather than a new Jastrow structure.
+Disadvantages: highest complexity of the three outlines; extra parameters risk
+boundary hits / over-fitting; may be redundant if the envelope is indeed Gaussian.

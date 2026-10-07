@@ -1,0 +1,427 @@
+# ==============================================================================
+# Global directory configuration
+# ==============================================================================
+
+workspace_path: "./output-fqh-symbolic-regression-full-data"
+
+
+# ==============================================================================
+# Global LLM configuration
+# ==============================================================================
+
+# Do not commit a real API key to a public repository.
+llm_config:
+  url: "https://api.deepseek.com"
+  api_key: "YOUR_API_KEY"
+  model: "openai/deepseek-flash"
+  temperature: 0.9
+  context_length: 128000
+  max_tokens: 128000
+  top_p: 1.0
+  timeout: 1200
+
+
+# ==============================================================================
+# Planner
+# ==============================================================================
+
+planners:
+  evolve_planner:
+    react_max_steps: 10
+
+
+# ==============================================================================
+# Executor
+# ==============================================================================
+
+executors:
+  evolve_executor_fuse:
+    max_rounds: 3
+    react_max_steps: 15
+    score_threshold: 0.95
+
+
+# ==============================================================================
+# Summarizer
+# ==============================================================================
+
+summarizers:
+  evolve_summary:
+    react_max_steps: 6
+
+
+# ==============================================================================
+# Main evolution process
+# ==============================================================================
+
+evolve:
+
+  task: |
+    You are a mathematical physicist searching for compact analytic representations
+    of a complex fractional-quantum-Hall many-body wavefunction in disk geometry.
+
+    Scientific objective
+    --------------------
+    Discover compact, physically interpretable analytic candidates for the
+    complex many-body wavefunction Psi.
+
+    This is a structure-discovery problem, not merely numerical curve fitting.
+    Candidates must define genuine analytic functions over the coordinate domain
+    and must not memorize or encode individual samples.
+
+    No standard fractional-quantum-Hall trial-state form is assumed. Structural
+    properties must be inferred from the data and checked by algebraic reasoning.
+
+
+    Physical system
+    ---------------
+    The target state contains N fully spin-polarized interacting electrons in a
+    two-dimensional plane with Coulomb interactions and a perpendicular uniform
+    magnetic field.
+
+    A uniformly positively charged disk carrying total charge +Ne
+    is placed parallel to the electron plane at
+
+        d = 0.1 l_B
+
+    The positive background disk provides both charge neutralization and a
+    rotationally symmetric confining potential.
+
+    The disk radius is chosen such that the total magnetic flux through the
+    disk satisfies
+
+        Phi = B * pi * a^2 = N Phi_0 / nu,
+
+    where
+
+        Phi_0 = h / e
+
+    is the magnetic flux quantum.
+
+    Using
+
+        l_B^2 = hbar / (e B)
+
+    and
+
+        Phi_0 = 2*pi*hbar / e,
+
+    the disk radius is
+
+        a = sqrt(2*N/nu) * l_B.
+
+    With
+
+        N  = number of electrons,
+        nu = 1/3,
+
+
+    All coordinates supplied to candidate expressions are measured in
+    units of l_B.
+
+    The dimensionless disk radius used in the symbolic regression problem is therefore
+
+        a / l_B = sqrt(6*N)
+
+    The Landau-level-mixing parameter of the target state is
+
+        kappa = 100,
+
+    where kappa is the ratio between the Coulomb interaction energy scale
+    and the cyclotron energy scale.
+
+
+    In SI units, \[ \boxed{ \kappa = \frac{e^2m^\ast}{4\pi\epsilon_0\epsilon_r\hbar^2} \sqrt{\frac{\hbar}{eB}} } \].
+
+    corresponding to an extreme strong-Landau-level-mixing regime.
+
+    The target neural-network wavefunction belongs to the full real-space Hilbert
+    space and is not assumed to be projected into the lowest Landau level.
+    Both holomorphic and non-holomorphic structures are therefore allowed; neither
+    is assumed a priori.
+
+
+    Coordinates and symmetries
+    --------------------------
+    Use throughout
+
+         z_j = x_j - i*y_j
+
+    and define
+
+        z_ij = z_i - z_j
+        Z_cm = (z1 + ... + zN) / N
+        r_ij = |z_ij|.
+
+    You can also think about consecutive multiplications and sums
+    Build pair differences, conjugates, distances, center-of-mass coordinates,
+    and other rotational invariants directly from the z_j arguments.
+
+    The wavefunction must satisfy fermionic exchange antisymmetry,
+
+        Psi(..., r_i, ..., r_j, ...) = -Psi(..., r_j, ..., r_i, ...),
+
+    for every pair i != j.
+
+    Under a counterclockwise rotation,
+
+        z_i     -> exp(-i*phi) z_i
+        z_i_bar -> exp(+i*phi) z_i_bar.
+
+    The target is expected to belong to a single integer total-angular-momentum
+    sector M:
+
+        Psi({exp(-i*phi) z_i})
+        =
+        exp(-i*M*phi) Psi({z_i}).
+
+    The value of M is not assumed beforehand. Candidates must enforce both exchange
+    antisymmetry and a single angular-momentum sector by construction and must avoid
+    superpositions of unrelated sectors.
+
+    The evaluator deliberately does not test, report, reward, or penalize either
+    exchange antisymmetry or angular-momentum covariance. These are hard scientific
+    requirements that you must verify algebraically before submitting a candidate.
+
+
+    Candidate interface
+    -------------------
+    Modify only code between
+
+        EVOLVE-BLOCK-START
+
+    and
+
+        EVOLVE-BLOCK-END.
+
+    Preserve the wavefunction() interface defined in initial_program.py. For the
+    current N=2 problem, its first two required arguments must be z1 and z2.
+
+    wavefunction() must directly return the vectorized analytic wavefunction.
+    Do not return a dictionary or an expression string. Any fitted real-valued
+    parameters must follow z1 and z2 as positional arguments with finite numeric
+    defaults, for example
+
+        def wavefunction(z1, z2, alpha=1.0):
+            return (z1 - z2) * np.exp(-alpha * (np.abs(z1)**2 + np.abs(z2)**2))
+
+    The evaluator fits those defaulted parameters. Complex coefficients can be
+    represented by separate real and imaginary parameters. The function body
+    must contain one return statement. Vectorized numpy calls np.exp, np.sqrt,
+    np.abs, np.conj, np.conjugate, np.real, np.imag, np.log, np.sin, np.cos, and
+    np.tanh are available, as are abs(...) and np.pi.
+
+    Do not modify the function name, the names or order of z1 and z2, imports,
+    evaluator code, or code outside the evolution block. You may add, remove, or
+    rename the fitted parameters that follow z1 and z2.
+
+
+    Allowed structures
+    ------------------
+    Search broadly over compact, mathematically distinct fermionic
+    representations.
+
+    Relevant representation classes include:
+
+    - determinants or small sums of determinants;
+    - general pair-product structures whose powers and functions are inferred
+    from data;
+    - antisymmetric factors multiplied by symmetric functions;
+    - explicitly antisymmetrized pair or cluster structures;
+    - compact pairing or Pfaffian-like structures when appropriate;
+    - relative-coordinate and center-of-mass structures;
+    - mixed z and conjugate-z expressions;
+    - functions of rotational invariants such as |z_i|^2 and |z_i-z_j|^2;
+    - small sums of structurally distinct antisymmetric components;
+    - compact non-holomorphic structures associated with Landau-level mixing.
+
+    These are possible representation classes, not preferred answers.
+
+    Products, sums, determinants, antisymmetrization, polynomial, rational, and
+    compact transcendental structures may all be considered when physically and
+    numerically well behaved.
+
+    Exponentials may be used when supported by evaluator evidence, but adding
+    increasingly complicated functions inside an exponential must not become the
+    default mechanism for improving a candidate.
+
+    Use at most 15 fitted numerical parameters. Every non-structural numerical
+    constant must be a named fitted parameter in the wavefunction signature.
+    Decimal literals are forbidden in the return expression. The evaluator accepts
+    only integer structural literals with absolute value at most 12, 1j, and np.pi.
+    Write exact rational structure using integer arithmetic, for example 1 / 2,
+    and write a continuous coefficient or scale as a fitted parameter. Decimal
+    defaults remain allowed in the function signature because the evaluator fits
+    those parameters.
+
+    Do not add parameters whose only effect is an overall complex normalization or
+    global phase. The evaluator removes those two degrees of freedom analytically.
+
+
+    Exploration strategy
+    --------------------
+    Treat every candidate as a physical hypothesis.
+
+    Use two complementary types of evolutionary moves:
+
+    1. LOCAL REFINEMENT:
+    simplify or improve a promising candidate while retaining its main
+    architecture.
+
+    2. STRUCTURAL RESET:
+    construct a candidate from a qualitatively different representation,
+    without preserving the dominant algebraic skeleton of its parent.
+
+    No factor or motif appearing in a high-scoring parent is protected.
+
+    A high score for a complete expression is not evidence that each of its
+    individual factors is physically correct.
+
+    Maintain diversity at the level of complete algebraic architecture. If several
+    recent high-performing candidates share the same dominant motif, deliberately
+    test an underrepresented representation family rather than repeatedly adding
+    corrections to that motif.
+
+    A modest temporary reduction in score is acceptable when testing a genuinely
+    different low-complexity structure.
+
+    The evolutionary search should primarily modify analytic structure rather than
+    fitted numerical constants.
+
+    For promising candidates, also test whether terms or parameters can be removed
+    without materially degrading the fit.
+
+    The six islands start from the six distinct low-complexity programs listed in
+    evolve.metadata.island_initial_files. Preserve this architectural diversity:
+
+    - island 0 begins with a holomorphic relative coordinate;
+    - island 1 begins with its antiholomorphic counterpart;
+    - island 2 begins with relative/center-of-mass coupling;
+    - island 3 begins with a one-body radial symmetric factor;
+    - island 4 begins with a pair-distance factor;
+    - island 5 begins with a fitted radial exponential.
+
+    Each island may leave its seed family during structural reset. Do not collapse
+    all islands back to the same motif merely because one family scores well early.
+
+
+    Evaluation
+    ----------
+    All finite neural-network samples form one uniformly sampled full-data pool.
+    Numerical parameters are fitted and candidates are scored on this pool.
+
+    The scalar accuracy returned to LoongFlow is
+
+        accuracy = fidelity * finite_fraction.
+
+    Exchange antisymmetry and angular momentum never enter this value. Expression
+    complexity also does not multiply the scalar score. Instead, the evaluator
+    counts expression-tree nodes in the PySR/SymbolicRegression.jl style: each
+    operator, function, variable occurrence, fitted-parameter occurrence, and
+    literal is one node. The numpy attribute wrapper in np.exp, np.conj, and similar
+    calls is not an extra symbolic node.
+
+    The evaluator maintains a persistent accuracy-complexity archive. It first keeps
+    the highest-accuracy candidate at each exact integer complexity, then discards
+    candidates dominated by another candidate with no greater complexity and no
+    lower accuracy. Evaluation feedback reports whether the new candidate improved
+    its complexity bin, whether it lies on the Pareto front, and the current front.
+
+    Use the archive during search: alternate between improving accuracy at a fixed
+    or nearby complexity and reducing complexity at nearly fixed accuracy. The
+    archive also records three final representatives: maximum accuracy, the
+    normalized Pareto knee, and the PySR-style largest decrease in log loss per
+    added node among candidates close to the best loss. Report the full front rather
+    than presenting one scalar winner as the only result.
+
+    Parameter fitting uses adaptive numerical bounds. When a fitted parameter
+    reaches a boundary, the evaluator expands that parameter's range and refits,
+    subject to finite expansion and magnitude limits. Treat a parameter that still
+    reaches the final boundary as evidence of a scaling degeneracy or missing
+    structure, not as a directly interpretable physical constant.
+
+    The evaluator also writes the current non-dominated front to pareto_archive.csv
+    in a PySR-style table alongside pareto_archive.json. Each row includes the raw
+    symbolic expression, score, fidelity, loss, NMSE, complexity, fitted parameters,
+    and model-selection labels.
+
+
+    Prohibited behavior
+    -------------------
+    Candidate code must not read datasets, evaluator source code, checkpoints,
+    logs, or previous output files directly.
+
+    Do not use lookup tables, nearest-neighbor interpolation, sample-dependent
+    branches, memorized samples, random predictions, subprocesses, network access,
+    or dynamically generated executable code.
+
+    Do not hard-code an expected analytic solution.
+
+    Physical knowledge should constrain and organize the search, not insert a
+    presumed answer.
+
+
+    Success criterion
+    -----------------
+    The goal is a small collection of compact analytic candidates that combine:
+
+    - strong full-data fidelity;
+    - correct fermionic antisymmetry;
+    - a well-defined angular-momentum sector;
+    - stable finite numerical behavior;
+    - low analytic complexity;
+    - reproducibility across independent runs;
+    - and a clear physical interpretation.
+
+    The primary objective is to discover testable analytic structure rather than
+    to obtain the lowest possible numerical loss at arbitrary complexity.
+
+
+  # --------------------------------------------------------------------------
+  # Components
+  # --------------------------------------------------------------------------
+
+  planner_name: "evolve_planner"
+  executor_name: "evolve_executor_fuse"
+  summary_name: "evolve_summary"
+
+
+  # --------------------------------------------------------------------------
+  # Evolution parameters
+  # --------------------------------------------------------------------------
+
+  max_iterations: 5
+  target_score: 0.995
+  concurrency: 1
+
+  # The accompanying minimal LoongFlow patch resolves these paths relative to this
+  # task_config.yaml and passes a different program to each island's empty database.
+  metadata:
+    island_initial_files:
+      - "initial_programs/island_0.py"
+      - "initial_programs/island_1.py"
+      - "initial_programs/island_2.py"
+      - "initial_programs/island_3.py"
+      - "initial_programs/island_4.py"
+      - "initial_programs/island_5.py"
+
+
+  # --------------------------------------------------------------------------
+  # Evaluator
+  # --------------------------------------------------------------------------
+
+  evaluator:
+    timeout: 1200
+
+
+  # --------------------------------------------------------------------------
+  # Evolutionary database
+  # --------------------------------------------------------------------------
+
+  database:
+    storage_type: "in_memory"
+    num_islands: 6
+    population_size: 45
+    migration_interval: 20
+    checkpoint_interval: 5
+    sampling_weight_power: 0.35

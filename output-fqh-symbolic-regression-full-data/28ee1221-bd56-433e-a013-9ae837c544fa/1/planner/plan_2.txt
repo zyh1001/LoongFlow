@@ -1,0 +1,63 @@
+================================================================================
+CHILD SOLUTION GENERATION PLAN  —  island_0, iteration 1
+Outline #2:  Non-holomorphic generalised-Laughlin (LL-mixing screening factor).
+================================================================================
+
+--------------------------------------------------------------------------------
+1. MATHEMATICAL FORMULATION
+--------------------------------------------------------------------------------
+VARIABLES
+  Continuous fitted parameters:  eta, alpha     (defaults 0.0 and 0.25).
+
+STRUCTURAL BUILDING BLOCKS
+      d_ij = z_i - z_j ;  J = prod_{i<j} d_ij ;  S = sum_i |z_i|^2 .
+      R    = prod_{i<j} |z_ij|^{2 eta}    (symmetric real pair-product factor).
+
+CANDIDATE FAMILY
+      Psi = J^3 * R * exp(-alpha*S)
+          = J^3 * [ prod_{i<j} |z_i - z_j|^{2 eta} ] * exp(-alpha*S).
+
+HARD CONSTRAINTS  C
+  C1 ANTISYMMETRY: J^3 is antisymmetric (odd power); |z_ij|^{2 eta} and the
+     exponential are symmetric, so the product is antisymmetric.        [constr.]
+  C2 SINGLE M SECTOR: |z_ij|^{2 eta} is rotationally invariant; only J^3 carries
+     angular momentum, giving M = 3 * N(N-1)/2 = 45 (single sector).     [constr.]
+  C3 FINITENESS: continuous modulus powers of |z_ij| are finite except at exact
+     coincidences (measure zero); alpha > 0 keeps the envelope bounded.
+  C4 LEGALITY: no decimal literal in the return expression; eta and alpha are the
+     only non-structural constants; integer literal 3 for the Jastrow power.
+
+OBJECTIVE
+  maximize accuracy = fidelity * finite_fraction (loss = 1 - fidelity).
+
+--------------------------------------------------------------------------------
+2. SOLVER STRATEGY
+--------------------------------------------------------------------------------
+  HARD/structure: fix the topology J^3 * prod|z_ij|^{2 eta} * exp(-alpha S)
+  (a genuine STRUCTURAL RESET relative to plan 1: it injects a non-holomorphic
+  conjugate-z component, i.e. a controlled Landau-level-mixing screening).
+  EASY/parameters: delegate (eta, alpha) to the evaluator's adaptive bounded fit
+  from defaults (0.0, 0.25); the default eta = 0 reduces exactly to the
+  plan-1 state, so the fit is a safe extension of the leading ansatz.
+  MULTI-START: discrete choice {eta = 0 baseline} vs {eta free}; deterministic,
+  no randomness.
+
+--------------------------------------------------------------------------------
+3. VALIDITY MECHANISM / SAFETY VALVE
+--------------------------------------------------------------------------------
+  V1: analytic antisymmetry & single-M proofs by construction.
+  V2: checklist (odd power; M=45; no decimals; finite).
+  V3: FALLBACK / reduction: because eta=0 reproduces the Laughlin candidate
+      exactly, the search can only ADD structure; if the fit does not improve
+      fidelity, deterministically reset eta -> 0.
+
+--------------------------------------------------------------------------------
+4. WHY THIS SOLUTION
+--------------------------------------------------------------------------------
+Expected improvement: a small eta > 0 can capture the leading non-holomorphic
+(LL-mixing) correction that kappa = 100 introduces, potentially closing part of
+the residual gap left by the pure-Laughlin ansatz.
+Advantages: keeps the guaranteed-valid antisymmetric M=45 skeleton while adding a
+physically-motivated non-holomorphic degree of freedom; eta=0 is a safe fallback.
+Disadvantages: higher complexity; the extra modulus powers can slow the fit and
+may be redundant if the target is effectively LLL (eta -> 0).

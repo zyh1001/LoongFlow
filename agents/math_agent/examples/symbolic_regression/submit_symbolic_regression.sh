@@ -74,11 +74,11 @@ usage() {
   --                      后面的参数原样传给 math_evolve_agent.py。
 
 默认数据集：
-  <loongflow-root>/datasets/disk_n6_Q18_kapa1/dataset_uniform_4096.npz
+  <loongflow-root>/datasets/disk_n2_Q6_kapa_100/dataset_uniform.npz
   若不存在，则自动尝试 <loongflow-root>/../datasets/ 下的同一路径。
 
 默认输出和可视化：
-  输出写入 <loongflow-root>/../output。
+  输出写入 <loongflow-root>/../output-n2-kapa100。
   作业运行期间可通过 http://<主机>:8888 查看实时可视化结果。
 EOF
 }
@@ -255,16 +255,16 @@ else
   EVAL_FILE="$(absolute_from_start_dir "${EVAL_FILE}")"
 fi
 if [[ -z "${DATASET}" ]]; then
-  DATASET="${LOONGFLOW_ROOT}/datasets/disk_n6_Q18_kapa1/dataset_uniform_4096.npz"
+  DATASET="${LOONGFLOW_ROOT}/datasets/disk_n2_Q6_kapa_100/dataset_uniform.npz"
   if [[ ! -f "${DATASET}" ]]; then
-    DATASET="${LOONGFLOW_ROOT}/../datasets/disk_n6_Q18_kapa1/dataset_uniform_4096.npz"
+    DATASET="${LOONGFLOW_ROOT}/../datasets/disk_n2_Q6_kapa_100/dataset_uniform.npz"
   fi
 else
   DATASET="$(absolute_from_start_dir "${DATASET}")"
 fi
 
 if [[ -z "${OUTPUT_DIR}" ]]; then
-  OUTPUT_DIR="$(dirname -- "${LOONGFLOW_ROOT%/}")/output"
+  OUTPUT_DIR="$(dirname -- "${LOONGFLOW_ROOT%/}")/output-n2-kapa100"
 else
   OUTPUT_DIR="$(absolute_from_start_dir "${OUTPUT_DIR}")"
 fi

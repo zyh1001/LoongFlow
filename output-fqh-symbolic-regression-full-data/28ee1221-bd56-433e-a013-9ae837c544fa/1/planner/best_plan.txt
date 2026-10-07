@@ -1,0 +1,209 @@
+================================================================================
+FINAL CHILD SOLUTION GENERATION PLAN  —  island_0, iteration 1
+================================================================================
+
+OBJECTIVE
+Discover a compact, physically interpretable, analytically valid wavefunction
+Psi({z_i}) for the N=6, nu=1/3, kappa=100 fractional-quantum-Hall state that
+maximizes the evaluator scalar
+        accuracy = fidelity * finite_fraction ,
+        fidelity  = |<Psi|Psi_target>|^2 / ( ||Psi||^2 * ||Psi_target||^2 )
+while enforcing, BY CONSTRUCTION, fermionic exchange antisymmetry and a single
+integer total-angular-momentum sector M.
+
+SELECTED OUTLINE
+"Physically-anchored Laughlin-core with analytic invariant envelope"
+  (plan_1).  Chosen over plan_2 (non-holomorphic |z_ij|^{2 eta} screening) and
+  plan_3 (quartic-invariant envelope) because it has the LOWEST complexity, is
+  analytically valid with zero numeric repair, is perfectly reproducible, and its
+  envelopes gamma / higher-order corrections are exactly recovered as special
+  cases if the pure Laughlin envelope is insufficient.
+
+RATIONALE FOR SELECTION
+1. The parent score is 3.53e-06 (~ random) because it omits BOTH the correct
+   Jastrow power (it uses m = 1) and the guiding envelope.  For nu = 1/3 the
+   dominant structure is the m = 3 Laughlin factor, so the single highest-value
+   move is to fix those two defects while changing nothing else.
+2. The antisymmetry and single-M constraints are provable by hand for this
+   family, so no numerical projection/LP repair is needed -> least likely to
+   crash or emit an invalid candidate.
+3. Structure (discrete exponent m) is DECOUPLED from parameters (alpha, gamma),
+   which are delegated to the evaluator's adaptive bounded fit; we only supply
+   physically exact defaults so the optimizer starts in the correct basin.
+
+--------------------------------------------------------------------------------
+PHASE 1: MATHEMATICAL DEFINITION
+--------------------------------------------------------------------------------
+VARIABLES
+  X_discrete = m  in {1,3,5,7,9}  (odd Laughlin exponent; a structural literal,
+                                    NOT a fitted parameter, must stay odd).
+  X_cont     = (alpha, gamma)     (fitted real parameters with finite defaults).
+
+STRUCTURAL OBJECTS (N = 6 -> 15 pairs)
+  d_ij = z_i - z_j ,  i < j
+  J    = prod_{i<j} d_ij                 # Vandermonde numerator
+  S    = sum_i |z_i|^2                   # rotational invariant
+  G    = |sum_i z_i|^2                   # center-of-mass rotational invariant
+
+CANDIDATE (to be written inside EVOLVE-BLOCK)
+  Psi(z; alpha, gamma) = J^m * exp( -alpha*S - gamma*G )
+  with the submitted topology m = 3 (the minimal odd exponent consistent with
+  Phi = N*Phi0/nu, nu = 1/3):
+
+          Psi = J^3 * exp( -alpha*S - gamma*G ),   alpha=0.25, gamma=0.0 (defaults)
+
+CONSTRAINTS C (hard, satisfied constructively)
+  C1  ANTISYMMETRY.  Exchange i<->j sends d_ij -> -d_ij, hence J -> -J.  Because
+      m is ODD, J^m -> -J^m; S and G are exchange invariant.  Therefore
+      Psi(...,r_i,...,r_j,...) = -Psi(...,r_j,...,r_i,...).         [PROVED]
+  C2  SINGLE ANGULAR-MOMENTUM SECTOR.  z_i -> e^{-i phi} z_i gives
+      J^m -> e^{-i phi * m * N(N-1)/2} J^m = e^{-i phi * m * 15} J^m; both S and G
+      are invariant.  So Psi lies in the pure sector
+      M = m * N(N-1)/2 = 3 * 15 = 45.                                [PROVED]
+  C3  FINITENESS.  alpha = 0.25 > 0 makes the Gaussian decay at infinity and J^m
+      is polynomial; the returned array is finite for every finite sample
+      (=> finite_fraction = 1).
+  C4  REPRESENTATION LEGALITY.  Only the integer literal 3 (|.|<=12) and integer
+      powers appear; NO decimal literal in the return expression; the only
+      non-structural constants alpha, gamma are named fitted parameters with
+      finite defaults; the return value is a vectorized numpy expression
+      (not a dict / string).
+
+OBJECTIVE f(X)
+  maximize   accuracy(X) = fidelity(X) * finite_fraction(X)  ;
+  minimize (conceptually)  L(X) = 1 - fidelity(X) ,
+  evaluated on the fixed 50000-sample full-data pool.
+
+--------------------------------------------------------------------------------
+PHASE 2: THE OPTIMIZATION LOOP  (structure decoupled from parameters)
+--------------------------------------------------------------------------------
+Step 2.1  HARD/discrete search (structure finding).
+    Enumerate m in {1,3,5,7,9} (deterministic, 5 evaluations, no randomness).
+    Select m = 3 : it is the minimal odd exponent matching the filling factor
+    nu = 1/3 and therefore the lowest-complexity high-fidelity architecture.
+    (The parent already uses m = 1; the enumeration formally confirms m = 3 is
+     the correct radical rather than assuming it.)
+
+Step 2.2  EASY/continuous tuning (parameters), DELEGATED to the evaluator.
+    Supply physically exact finite defaults so the evaluator's adaptive bounded
+    refit starts in the correct basin:
+        alpha = 0.25   (the exact LLL Gaussian scale 1/4 for this z-convention)
+        gamma = 0.0    (no center-of-mass distortion by construction)
+    The evaluator then minimizes L = 1 - fidelity over (alpha, gamma) with its
+    bound-expansion refit.  gamma is provided to absorb a smooth kappa=100
+    (Landau-level-mixing) envelope broadening WITHOUT altering the algebra.
+
+Step 2.3  MULTI-START / VARIANCE CONTROL.
+    The discrete enumeration over m plus the single physically-anchored default
+    (alpha, gamma) is a fully deterministic multi-start; there is NO random
+    initialisation, so the result has zero run-to-run variance (reproducibility
+    requirement satisfied).  If the evaluator reports an optimizer boundary hit
+    on gamma, re-seed gamma = 0 (see Phase 3).
+
+Step 2.4  PARETO housekeeping.
+    Record the submitted point (complexity, accuracy) and, within the same
+    generation, also note the pure-Laughlin special case (gamma = 0) so the
+    archive keeps the minimal-complexity representative.
+
+--------------------------------------------------------------------------------
+PHASE 3: THE "SAFETY VALVE"  (deterministic validity enforcement)
+--------------------------------------------------------------------------------
+The three checks below are run deterministically on the produced expression
+BEFORE it is emitted; they never rely on luck or on the numeric fit.
+
+Step 3.1  ANALYTIC VALIDITY ASSERTIONS (guarantee hard constraints).
+    - assert the Jastrow exponent literal is odd (m = 3)         -> enforces C1;
+    - assert the angular momentum is the single integer M = m*N(N-1)/2 = 45
+      (only J^m carries angular weight; S, G invariant)          -> enforces C2;
+    - assert alpha_default > 0 so the envelope decays            -> enforces C3;
+    - assert the return expression contains no decimal literal, no
+      np.random, no file I/O, no dynamic code                     -> enforces C4.
+
+Step 3.2  NUMERIC SANITY CHECK (guarantee finite_fraction = 1).
+    Evaluate the expression on a synthetic vectorized grid
+      z_i = a + 1j*b  with a, b in linspace(-a_disk, a_disk, ...),
+      a_disk = sqrt(2N/nu) = sqrt(12) ~ 3.464,
+    using the DEFAULT parameters, and assert np.all(np.isfinite(Psi)).
+    (This uses only locally constructed coordinates; it never reads the dataset.)
+
+Step 3.3  DETERMINISTIC FALLBACK / CORRECTION (guarantee no regression).
+    - If the fitted gamma != 0 does NOT improve fidelity over the pure Laughlin
+      candidate (gamma = 0), reset gamma = 0 -> emit
+          Psi = J^3 * exp(-alpha*S) .
+    - If the m = 3 fit were to fail the finite check (it cannot, but as a hard
+      safety net), fall back to the analytically safe leading state
+          Psi = J^3 * exp(-alpha*S)  with alpha defaulted to 0.25 .
+    This "safety valve" reduces the search space monotonically: because
+    gamma = 0 reproduces the leading ansatz exactly, the plan can only IMPROVE on
+    the Laughlin candidate and can never regress below it.
+
+--------------------------------------------------------------------------------
+PHASE 4: IMPLEMENTATION DETAILS  (code-ready)
+--------------------------------------------------------------------------------
+Libraries / functions used: ONLY standard numpy (np.abs, np.exp) plus Python
+integer arithmetic.  No scipy call is needed inside the candidate (all parameter
+fitting is performed by the evaluator's own optimizer); scipy.optimize is not
+required and no obscure package is used.
+
+Write EXACTLY the following code between the EVOLVE-BLOCK markers, preserving the
+wavefunction() name and the z1..z6 argument order:
+
+    import numpy as np
+
+
+    # EVOLVE-BLOCK-START
+    def wavefunction(z1, z2, z3, z4, z5, z6, alpha=0.25, gamma=0.0):
+        # ------------------------------------------------------------------
+        # nu = 1/3 Laughlin-type ansatz, N = 6 (island_0 local refinement).
+        #   J    = prod_{i<j} (z_i - z_j)        (Vandermonde, 15 pairs)
+        #   core = J^3                            (ODD power => antisymmetric)
+        #   S    = sum_i |z_i|^2                  (rotational invariant)
+        #   G    = |z1+...+z6|^2                  (CM rotational invariant)
+        #   Psi  = core * exp(-alpha*S - gamma*G) (single M-sector, M = 45)
+        # ------------------------------------------------------------------
+        d12 = z1 - z2
+        d13 = z1 - z3
+        d14 = z1 - z4
+        d15 = z1 - z5
+        d16 = z1 - z6
+        d23 = z2 - z3
+        d24 = z2 - z4
+        d25 = z2 - z5
+        d26 = z2 - z6
+        d34 = z3 - z4
+        d35 = z3 - z5
+        d36 = z3 - z6
+        d45 = z4 - z5
+        d46 = z4 - z6
+        d56 = z5 - z6
+        J = ((((d12 * d13) * (d14 * d15)) * ((d16 * d23) * (d24 * d25))) *
+             (((d26 * d34) * (d35 * d36)) * ((d45 * d46) * d56)))
+        core = (J * J) * J
+        S = (((np.abs(z1) ** 2 + np.abs(z2) ** 2) +
+              (np.abs(z3) ** 2 + np.abs(z4) ** 2)) +
+             (np.abs(z5) ** 2 + np.abs(z6) ** 2))
+        Z = z1 + z2 + z3 + z4 + z5 + z6
+        G = np.abs(Z) ** 2
+        return core * np.exp(-alpha * S - gamma * G)
+    # EVOLVE-BLOCK-END
+
+Notes for the executor:
+  - DO NOT modify the function name, the z1..z6 names/order, imports, or any code
+    outside the EVOLVE-BLOCK.
+  - The exponent is written as J*J*J (integer literal 3) so antisymmetry and the
+    M = 45 sector are guaranteed; do NOT make the exponent a fitted parameter.
+  - alpha=0.25 and gamma=0.0 are the ONLY fitted parameters; keep their finite
+    defaults exactly as above so the evaluator starts in the physical basin.
+  - gamma is the escape hatch for kappa=100 LL-mixing envelope broadening; if the
+    evaluator's fitted gamma worsens fidelity, the safety valve sets it to 0.
+
+--------------------------------------------------------------------------------
+EXPECTED PERFORMANCE IMPROVEMENT
+--------------------------------------------------------------------------------
+- Parent: fidelity ~3.5e-06 (missing Jastrow power and envelope).
+- Child : restores the m = 3 Jastrow power and the alpha = 1/4 LLL Gaussian, the
+  two features whose absence explains the parent's near-random score, so a large,
+  monotone jump in fidelity is expected; the fitted gamma term can only add.
+- Guarantees: antisymmetry (C1) and a single angular-momentum sector M = 45 (C2)
+  hold by construction; finite_fraction = 1 by C3; the deterministic safety valve
+  prevents any regression below the Laughlin candidate.

@@ -1,0 +1,42 @@
+[
+  {
+    "round": 0,
+    "candidates": [
+      {
+        "round_idx": 0,
+        "candidate_idx": 0,
+        "random_idx": "_ee3",
+        "solution_file_path": "output-fqh-symbolic-regression-full-data/6c891dc8-b701-4392-ad28-0e6cf64c525e/1/executor/0_0/solution_ee3.py",
+        "evaluation_file_path": "output-fqh-symbolic-regression-full-data/6c891dc8-b701-4392-ad28-0e6cf64c525e/1/executor/0_0/evaluation_ee3.json",
+        "score": 0.0,
+        "reason": "{\n  \"status\": \"validation_failed\",\n  \"summary\": \"Candidate validation failed: wavefunction() must contain one return statement.\",\n  \"score\": 0.0,\n  \"metrics\": {\n    \"validity\": 0.0,\n    \"eval_time\": 0.0006975820288062096\n  },\n  \"artifacts\": {\n    \"error_type\": \"CandidateValidationError\",\n    \"reason\": \"Candidate validation failed: wavefunction() must contain one return statement.\"\n  }\n}",
+        "source": "disk"
+      }
+    ]
+  },
+  {
+    "round": 1,
+    "candidates": [
+      {
+        "round_idx": 1,
+        "candidate_idx": 0,
+        "random_idx": "_4e5",
+        "solution_file_path": "output-fqh-symbolic-regression-full-data/6c891dc8-b701-4392-ad28-0e6cf64c525e/1/executor/1_0/solution_4e5.py",
+        "evaluation_file_path": "output-fqh-symbolic-regression-full-data/6c891dc8-b701-4392-ad28-0e6cf64c525e/1/executor/1_0/evaluation_4e5.json",
+        "score": 0.0,
+        "reason": "{\n  \"status\": \"validation_failed\",\n  \"summary\": \"Candidate validation failed: wavefunction() must contain one return statement.\",\n  \"score\": 0.0,\n  \"metrics\": {\n    \"validity\": 0.0,\n    \"eval_time\": 0.0008281070040538907\n  },\n  \"artifacts\": {\n    \"error_type\": \"CandidateValidationError\",\n    \"reason\": \"Candidate validation failed: wavefunction() must contain one return statement.\"\n  }\n}",
+        "source": "disk"
+      },
+      {
+        "round_idx": 1,
+        "candidate_idx": 1,
+        "random_idx": "_141",
+        "solution_file_path": "output-fqh-symbolic-regression-full-data/6c891dc8-b701-4392-ad28-0e6cf64c525e/1/executor/1_1/solution_141.py",
+        "evaluation_file_path": "output-fqh-symbolic-regression-full-data/6c891dc8-b701-4392-ad28-0e6cf64c525e/1/executor/1_1/evaluation_141.json",
+        "score": 0.9544875449625873,
+        "reason": "{\n  \"status\": \"success\",\n  \"summary\": \"accuracy=0.954488; full_data_fidelity=0.954488; full_data_nmse=0.0455125; finite=1.0000; complexity=45; pareto_front=True; front_size=2; fitted={'a': 0.18564289905551554, 'b': 0.6254947465053895, 'c': 19.999999997306542, 'd': -0.6952512343983872}\",\n  \"score\": 0.9544875449625873,\n  \"metrics\": {\n    \"validity\": 1.0,\n    \"full_data_nmse\": 0.04551245503741369,\n    \"full_data_fidelity\": 0.9544875449625873,\n    \"finite_fraction\": 1.0,\n    \"expression_complexity\": 45,\n    \"parameter_count\": 4,\n    \"accuracy\": 0.9544875449625873,\n    \"pareto_front_member\": true,\n    \"pareto_bin_improved\": true,\n    \"pareto_front_size\": 2,\n    \"eval_time\": 2.299415127024986\n  },\n  \"artifacts\": {\n    \"candidate_id\": \"0650dadc412e65c1bcd4\",\n    \"expression\": \"(z1 - z2) ** 3 * (1 + c * np.abs(z1 - z2) ** 2 + d * np.abs(z1 - z2) ** 4) * np.exp(-a * np.abs(z1 - z2) ** 2 - b * np.abs(z1 + z2) ** 2)\",\n    \"fitted_parameters\": {\n      \"a\": 0.18564289905551554,\n      \"b\": 0.6254947465053895,\n      \"c\": 19.999999997306542,\n      \"d\": -0.6952512343983872\n    },\n    \"global_scale\": {\n      \"real\": 0.0013128154692665936,\n      \"imag\": 1.739893843544147e-05\n    },\n    \"optimizer\": {\n      \"attempted\": true,\n      \"success\": true,\n      \"nfev\": 14,\n      \"message\": \"`ftol` termination condition is satisfied.\",\n      \"residual_cost\": 2275.6227518706837\n    },\n    \"pareto\": {\n      \"archive_path\": \"/home/ubuntu/symbolic_regression/LoongFlow/output/n2_kapa100_test/pareto_archive.json\",\n      \"improved_complexity_bin\": true,\n      \"on_pareto_front\": true,\n      \"front_size\": 2,\n      \"complexity_bin_best_accuracy\": 0.9544875449625873,\n      \"selections\": {\n        \"max_accuracy_id\": \"0650dadc412e65c1bcd4\",\n        \"knee_id\": \"0650dadc412e65c1bcd4\",\n        \"pysr_score_id\": \"0650dadc412e65c1bcd4\"\n      },\n      \"front\": [\n        {\n          \"id\": \"09d51be2ad327894a218\",\n          \"complexity\": 3,\n          \"accuracy\": 3.856002582973692e-05,\n          \"expression\": \"z1 - z2\"\n        },\n        {\n          \"id\": \"0650dadc412e65c1bcd4\",\n          \"complexity\": 45,\n          \"accuracy\": 0.9544875449625873,\n          \"expression\": \"(z1 - z2) ** 3 * (1 + c * np.abs(z1 - z2) ** 2 + d * np.abs(z1 - z2) ** 4) * np.exp(-a * np.abs(z1 - z2) ** 2 - b * np.abs(z1 + z2) ** 2)\"\n        }\n      ]\n    },\n    \"evaluation_mode\": \"full_data_accuracy_complexity_pareto\",\n    \"samples_used\": 50000,\n    \"dataset\": \"/home/ubuntu/symbolic_regression/LoongFlow/datasets/disk_n2_Q6_kapa_100/dataset_uniform.npz\"\n  }\n}",
+        "source": "disk"
+      }
+    ]
+  }
+]

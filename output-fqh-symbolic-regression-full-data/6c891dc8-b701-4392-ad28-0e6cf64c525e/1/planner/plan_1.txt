@@ -1,0 +1,142 @@
+PLAN 1 (SELECTED CANDIDATE)
+=====================================================================
+Title: Physics-Seeded Symmetry-Constructed Ansatz with a Symbolic
+       Constraint Certificate and Decoupled Linear/Nonlinear Fitting
+=====================================================================
+
+TASK OBJECTIVE
+--------------
+Maximize the evaluator scalar  accuracy = fidelity * finite_fraction
+for a compact analytic N=2 fermionic wavefunction of a nu=1/3 FQH state
+with extreme Landau-level mixing (kappa=100), disk geometry, l_B = 1.
+Baseline to beat: parent np.conj(z1 - z2)  ->  accuracy = 2.21e-5.
+Target threshold: accuracy >= 1.0 (i.e. essentially unit fidelity with
+finite everywhere)).
+
+---------------------------------------------------------------------
+1. MATHEMATICAL DEFINITION  (Model: Variables / Constraints / Objective)
+---------------------------------------------------------------------
+
+Coordinate variables (given): z1, z2 (complex), z_j = x_j - i y_j.
+Derived invariants used by the structure:
+    z_ij  = z1 - z2                       (relative coordinate)
+    w     = z1 + z2                       (twice the center-of-mass coordinate)
+    r2    = |z1 - z2|^2  = (z1-z2)*conj(z1-z2)   (rotational invariant)
+    R2    = |z1 + z2|^2                          (rotational invariant)
+
+FITTED PARAMETERS  X = (a, b, c, d) in R^4  (all defaulted, <=15 allowed):
+    a  = relative Gaussian scale          (default 0.25)
+    b  = center-of-mass Gaussian scale    (default 0.25)
+    c  = first  LL-mixing radial coeff.   (default 0.0)
+    d  = second LL-mixing radial coeff.   (default 0.0)
+
+FIXED STRUCTURE (the "topology" of the expression):
+    Psi(z1,z2) = (z1 - z2)^3
+                 * (1 + c*|z1 - z2|^2 + d*|z1 - z2|^4)
+                 * exp( -a*|z1 - z2|^2 - b*|z1 + z2|^2 )
+
+CONSTRAINTS  C  (hard, must hold for ALL X):
+    C1 ANTISYMMETRY : Psi(z2,z1) = -Psi(z1,z2)  for every pair exchange.
+       Proof-by-construction: z1<->z2  sends (z1-z2) -> -(z1-z2), hence
+       (z1-z2)^3 -> -(z1-z2)^3 ; r2, R2 and both Gaussians are invariant.
+    C2 ANGULAR MOMENTUM : single sector M = 3.
+       Under rotation z_j -> t z_j , conj(z_j) -> t^{-1} conj(z_j) with
+       t = exp(-i*phi):  (z1-z2)^3 -> t^3 (z1-z2)^3, r2 and R2 invariant.
+       Hence Psi -> exp(-3 i phi) Psi, i.e. M = 3 exactly.
+       (Physical justification: N=2, nu=1/3 Laughlin -> M = 3*N(N-1)/2 = 3.
+        The parent exp-.conj(z1-z2) lives in the M=1 sector and is therefore
+        ORTHOGONAL to the target - this explains its ~0 fidelity.)
+    C3 FINITENESS : polynomial x Gaussian is entire in (z1,z2), finite on
+       all of C^2, and the norm is strictly positive for a>0,b>0.
+    C4 SYNTAX BUDGET : <=15 fitted parameters ; only integer structural
+       literals |value|<=12, 1j, np.pi ; NO decimal literal in the return ;
+       exactly one return statement ; vectorized numpy only.
+
+OBJECTIVE FUNCTION  f(X)  =  fidelity(X) * finite_fraction(X)  -> maximize.
+
+DECOUPLING (the key mathematical trick):
+    For FIXED (a,b) the map (c,d) -> Psi is LINEAR (c,d multiply the fixed
+    Gaussian core), so (c,d) is a convex least-squares sub-problem with a
+    UNIQUE global optimum (normal equations). Only (a,b) is a genuine 2-D
+    non-convex search. This splits "structure finding" (discrete) from
+    "parameter tuning" (a 2-D nonlinear search + a 2-D linear solve).
+
+---------------------------------------------------------------------
+2. THE OPTIMIZATION LOOP  (Structure enumeration + multi-start fitting)
+---------------------------------------------------------------------
+Step 2.1  Enumerate the ranked skeleton list (executor emits the FIRST one
+          that the evaluator reports as finite and improving):
+      S1  Laughlin LLL          : (z1-z2)^3 * exp(-a*r2 - b*R2)        (c=d=0)
+      S2  + 1 LL-mixing term    : (z1-z2)^3 * (1 + c*r2) * exp(...)
+      S3  + 2 LL-mixing terms   : (z1-z2)^3 * (1 + c*r2 + d*r2^2) * exp(...)
+      S4  M-fallback (only if S1..S3 all ~0): repeat with exponent 5 then 1.
+Step 2.2  Multi-start over (a,b): seed a grid
+          a in {0.10,0.25,0.40,0.60},  b in {0.10,0.25,0.40,0.60}
+          (or the evaluator's own multi-start). For each (a,b): solve
+          (c,d) in closed form  via  np.linalg.lstsq(A, y)  where the rows
+          of A are the two core columns and y the target overlap samples.
+Step 2.3  Keep the (a,b,c,d) with maximal accuracy; this is the child.
+Step 2.4  Complexity reduction sweep: set c->0, then d->0, re-fit the rest;
+          accept the reduction if accuracy drops < 2%.
+
+---------------------------------------------------------------------
+3. SAFETY VALVE (deterministic validity enforcement - CRITICAL)
+---------------------------------------------------------------------
+This is enforced by a symbolic CERTIFICATE and a hard FALLBACK, so the
+constraints hold regardless of what the numeric optimizer does.
+
+Step 3.1  Sympy symbolic certificate (run OFFLINE by the executor, NOT in
+          the returned function; candidate code never imports sympy):
+             import sympy as sp
+             z1,z2,c1,c2 = sp.symbols('z1 z2 c1 c2')      # z1c=conj(var)
+             a,b,c,d,t = sp.symbols('a b c d t', positive=True)
+             r2 = (z1-z2)*(c1-c2); R2 = (z1+z2)*(c1+c2)
+             Psi = (z1-z2)**3*(1+c*r2+d*r2**2)*sp.exp(-a*r2-b*R2)
+             # C1: simultaneous exchange
+             exch = Psi.subs([(z1,z2),(z2,z1),(c1,c2),(c2,c1)],simultaneous=True)
+             assert sp.simplify(exch + Psi) == 0
+             # C2: rotation  z->t z , conj z -> z/t
+             rot = Psi.subs([(z1,t*z1),(z2,t*z2),(c1,c1/t),(c2,c2/t)])
+             assert sp.simplify(rot - t**3*Psi) == 0
+          Both identities must hold symbolically for arbitrary X.
+Step 3.2  Numeric gate: evaluate Psi on a 200x200 grid of the sampled
+          region; require np.all(np.isfinite(Psi)) and norm>0. Any NaN/Inf
+          -> reject.
+Step 3.3  FALLBACK (guaranteed-valid minimal candidate), used only if all
+          certificates/gates fail:
+             def wavefunction(z1, z2):
+                 return (z1 - z2)**3
+          This is antisymmetric (parity 3 odd), single-sector M=3, finite,
+          complexity-3, and provably valid. It also serves as the minimal
+          sanity reference when the Gaussian exponent collapses.
+
+---------------------------------------------------------------------
+4. IMPLEMENTATION DETAILS (exact typed code the executor should emit)
+---------------------------------------------------------------------
+# EVOLVE-BLOCK-START
+def wavefunction(z1, z2, a=0.25, b=0.25, c=0.0, d=0.0):
+    return ((z1 - z2)**3
+            * (1 + c * np.abs(z1 - z2)**2 + d * np.abs(z1 - z2)**4)
+            * np.exp(-a * np.abs(z1 - z2)**2 - b * np.abs(z1 + z2)**2))
+# EVOLVE-BLOCK-END
+
+Notes for the executor:
+ - Single return statement; vectorized numpy; integer literals only (3,1,4).
+ - The two Gaussian scales a,b are the ONLY nonlinear parameters; if the
+   evaluator optimizer stalls, the physical defaults a=b=0.25 already give
+   the Laughlin LLL state (maximal expected overlap).
+ - Libraries: numpy only inside the candidate; scipy/sympy allowed only in
+   the executor's offline verification scripts.
+
+---------------------------------------------------------------------
+5. WHY THIS PLAN
+---------------------------------------------------------------------
++ Physically motivated (Laughlin M=3 + LLL Gaussian + LL-mixing radial
+  polynomial) so the DEFAULT parameter values are already near-optimal.
++ Constraints C1/C2 are encoded in the STRUCTURE, so no optimizer move can
+  violate fermionic antisymmetry or the angular-momentum sector.
++ The (c,d) sub-problem is convex (unique least-squares optimum), removing
+  most multi-start variance; only a 2-D non-convex search remains.
++ Guaranteed finite with a hard, provably-valid fallback -> cannot crash,
+  cannot return invalid results. This matches the required "solve, don't
+  guess" philosophy.

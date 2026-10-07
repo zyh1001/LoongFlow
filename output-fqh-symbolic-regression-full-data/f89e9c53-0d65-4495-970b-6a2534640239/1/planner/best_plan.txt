@@ -1,0 +1,59 @@
+### Final Child Solution Generation Plan (island_0)
+
+**Objective:** Maximize the evaluator accuracy = full_data_fidelity × finite_fraction for the N=2, ν=1/3, κ=100 fractional-quantum-Hall target, with a compact analytic, fermionic-antisymmetric wavefunction living in a single angular-momentum sector (M=3). Target accuracy ≥ 1.0.
+
+**Selected Outline:** Single-M relative expansion = **Laughlin holomorphic anchor + non-holomorphic LL-mixing term + relative/center-of-mass coupling**, times a common symmetric Gaussian envelope (multi-start nested: deterministic discrete-structure lattice + exact linear inner solve + nonlinear outer solve over the 2 envelope scalars).
+
+**Rationale for Selection:**
+1. It strictly *contains* the pure-Laughlin baseline (a0·d³); the extra terms can only help, so it cannot score worse than the anchor alone.
+2. It **decouples structure (discrete, non-convex) from parameters (linear, exact)** — the hard part is a tiny deterministic enumeration, the easy part is one `numpy.linalg` solve; no reliance on luck.
+3. Antisymmetry and single-M=3 hold **algebraically by construction** (every basis monomial is exchange-odd and has angular weight p−q=3), so it can never emit an invalid state.
+4. It encodes the two structures physics demands at κ=100: non-holomorphic LL mixing and the rotationally-symmetric disk confinement / relative–CM coupling. (Plan-3 LL determinants are more general but far more complex and over-fit prone; Plan-1 risks a fidelity ceiling.)
+
+**Best Plan:**
+
+**Phase 1 — Mathematical Definition.** With z_j = x_j − i·y_j (l_B=1):
+- d = z1 − z2 (odd under exchange, M=1); u = |d|² (even, M=0); S = |z1|²+|z2|² (even, M=0); Z = z1 + z2 (M=1, so d·Z² has M=3).
+- Continuous variables X = (g, h, a0, a1, cnl_re, cnl_im, ccm_re, ccm_im) (8 ≤ 15); discrete structure σ = active subset of {d³, d³u, d³u², d·Z²}.
+- Ansatz: Ψ = [a0·d³ + a1·d³·u + (cnl_re+i·cnl_im)·d³·u² + (ccm_re+i·ccm_im)·d·Z²] · exp(−(g·S + h·u)).
+- Constraints: C1 antisymmetry (odd factor × even envelope ⇒ Ψ(z2,z1)=−Ψ(z1,z2) identically); C2 single M=3 (every monomial has p−q=3); C3 finite (g>0, h≥0); C4 ≤15 params, one return, no decimal literals, integer literals |·|≤12 and 1j.
+- Objective f = maximize accuracy = fidelity × finite_fraction (evaluator removes the 2 global-phase dof, so relative complex coefficients are physical and kept as (re,im) pairs).
+
+**Phase 2 — Optimization Loop (structure ↔ parameters).**
+- 2.1 Deterministic structure lattice: σ0={d³,d³u,d³u²,d·Z²} → σ1={d³,d³u,d·Z²} → σ2={d³,d·Z²} → σ3={d³,d³u²} → σ4={d³}.
+- 2.2 Exact inner solve (convex/linear): for fixed (g,h) the coefficients enter linearly → build design matrix A, Gram G=AᴴA, b=AᴴΨ_target, and obtain the globally optimal coefficients in one step via the generalized Rayleigh problem `eig(G, AᴴA)` (or `lstsq`). No gradient loop.
+- 2.3 Outer nonlinear search over (g,h): coarse deterministic grid g∈{0.05,0.125,0.25,0.5,0.75,1.0}, h∈{0,0.125,0.25,0.5,0.75}; polish with `scipy.optimize.minimize(fun=1−fidelity, method='Nelder-Mead', xatol=1e-4, fatol=1e-8)`. **Multi-Start mandate:** any randomized init → N=20 restarts with `np.random.default_rng(seed)`, keep min-loss.
+- 2.4 Occam pruning: drop correction terms with |coeff| < 1e-3, re-solve; keep lowest-complexity candidate within 0.5% of best. Never remove the a0·d³ anchor.
+- 2.5 Accept child if accuracy > 2.21e-5; prefer higher accuracy, break ties by lower complexity.
+
+**Phase 3 — The "Safety Valve" (deterministic validity enforcement).**
+- 3.1 Algebraic guarantee: antisymmetry and single-M are identities in (z1,z2), not numerical targets.
+- 3.2 Fixed-grid numeric self-test (no randomness) on P = [(1+2j,0.3−0.7j),(0,0),(2−1j,2−1j),(−1.5+0.5j,3+2j),(0.7+0.7j,−0.7−0.7j),(4−3j,4−3j)]; assert (A) Ψ(z2,z1)=−Ψ(z1,z2), (B) Ψ(e^{−iφ}z)=e^{−i3φ}Ψ(z) for φ=0.37, (C) all finite; and check ≤15 params + no decimal literal in the return (regex on return expression).
+- 3.3 Fallback (repair): if any assertion fails, or any |coeff|>1e3, or non-finite/non-positive fidelity → return the guaranteed-valid minimal form `d**3 * np.exp(-(g*S + h*u))`, g=0.25, h=0.0 (antisymmetric, single-M=3, finite, strictly better than the seed).
+
+**Phase 4 — Implementation Details (standard libraries only: numpy, scipy).** Write exactly:
+
+```python
+import numpy as np
+
+# EVOLVE-BLOCK-START
+def wavefunction(z1, z2, g=0.25, h=0.25,
+                 a0=1.0, a1=0.0,
+                 cnl_re=0.0, cnl_im=0.0,
+                 ccm_re=0.0, ccm_im=0.0):
+    d = z1 - z2
+    S = np.abs(z1) ** 2 + np.abs(z2) ** 2
+    u = np.abs(d) ** 2
+    Z = z1 + z2
+    env = np.exp(-(g * S + h * u))
+    pref = (a0 * d ** 3
+            + a1 * d ** 3 * u
+            + (cnl_re + 1j * cnl_im) * d ** 3 * u ** 2
+            + (ccm_re + 1j * ccm_im) * d * Z ** 2)
+    return pref * env
+# EVOLVE-BLOCK-END
+```
+
+Interface checks: name unchanged; first two args exactly z1,z2; ONE return; returns the vectorized array; finite numeric defaults; return uses only integer literals (3,2,1) and 1j (no decimals); 8 ≤ 15 fitted params. Submission sequence: compile+validate σ0 → set defaults (g,h) from the Phase-2.3 search and correction defaults from the exact inner solve (or 0 if no data) → submit and read accuracy → prune negligible/unstable terms and resubmit → fall back to Phase 3.3 if anything is non-finite.
+
+**Expected Performance Improvement:** Parent accuracy = 2.21e-5 (fidelity ≈ 0). The Laughlin anchor alone should lift fidelity into the 0.8–1.0 range (the N=2, ν=1/3 ground state is Laughlin-dominated), and the LL-mixing (d³u²) plus relative/CM (d·Z²) terms target the κ=100 residual to push fidelity toward 1.0. Because exchange antisymmetry, single M=3, and finiteness are guaranteed, finite_fraction = 1.0 and accuracy = fidelity. Low complexity, an exact linear coefficient solve, and a deterministic fallback make the child robust and reproducible across runs.

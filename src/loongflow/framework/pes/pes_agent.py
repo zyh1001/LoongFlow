@@ -211,12 +211,34 @@ class PESAgent(AgentBase):
             if num_islands > 0:
                 current_island_id = iteration_id % num_islands
 
+            island_initial_codes = evolve_conf.metadata.get(
+                "island_initial_codes", []
+            )
+            has_seed_portfolio = bool(island_initial_codes)
+            island_initial_code = (
+                island_initial_codes[current_island_id]
+                if has_seed_portfolio
+                else evolve_conf.initial_code
+            )
+            island_initial_evaluations = evolve_conf.metadata.get(
+                "island_initial_evaluations", []
+            )
+
             context = Context(
                 task=evolve_conf.task,
                 base_path=evolve_conf.workspace_path,
-                init_solution=evolve_conf.initial_code,
-                init_evaluation=evolve_conf.initial_evaluation,
-                init_score=evolve_conf.initial_score,
+                init_solution=island_initial_code,
+                init_evaluation=(
+                    island_initial_evaluations[current_island_id]
+                    if has_seed_portfolio and island_initial_evaluations
+                    else evolve_conf.initial_evaluation
+                ),
+                init_score=(
+                    evolve_conf.metadata.get("island_initial_scores", [])[current_island_id]
+                    if has_seed_portfolio
+                    and evolve_conf.metadata.get("island_initial_scores", [])
+                    else evolve_conf.initial_score
+                ),
                 task_id=self.task_id,
                 island_id=current_island_id,
                 current_iteration=iteration_id,
@@ -407,14 +429,40 @@ class PESAgent(AgentBase):
         self._stop_event.clear()
         self._running_tasks.clear()
         was_interrupted_flag = False
-        init_solution_message = Message.from_text(
-            sender="assistant",
-            role=Role.ASSISTANT,
-            data=self.config.evolve.initial_code,
+        island_initial_codes = self.config.evolve.metadata.get(
+            "island_initial_codes", []
         )
-
-        # If initial score is not set and the first iteration, evaluate the initial code and set it.
-        if self.config.evolve.initial_code and self.config.evolve.evaluator.evaluate_code and self.config.evolve.initial_score is None and self._current_iteration == 0:
+        if (
+            island_initial_codes
+            and self.config.evolve.evaluator.evaluate_code
+            and self._current_iteration == 0
+        ):
+            initial_scores = []
+            initial_evaluations = []
+            for initial_code in island_initial_codes:
+                message = Message.from_text(
+                    sender="assistant", role=Role.ASSISTANT, data=initial_code
+                )
+                evaluation = await self.evaluator.evaluate(message)
+                initial_scores.append(evaluation.score)
+                initial_evaluations.append(
+                    json.dumps(evaluation.to_dict(), ensure_ascii=False, indent=2)
+                )
+            self.config.evolve.metadata["island_initial_scores"] = initial_scores
+            self.config.evolve.metadata[
+                "island_initial_evaluations"
+            ] = initial_evaluations
+        elif (
+            self.config.evolve.initial_code
+            and self.config.evolve.evaluator.evaluate_code
+            and self.config.evolve.initial_score is None
+            and self._current_iteration == 0
+        ):
+            init_solution_message = Message.from_text(
+                sender="assistant",
+                role=Role.ASSISTANT,
+                data=self.config.evolve.initial_code,
+            )
             init_evaluation = await self.evaluator.evaluate(init_solution_message)
             self.config.evolve.initial_score = init_evaluation.score
             self.config.evolve.initial_evaluation = json.dumps(
